@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdStoreroomDao">
+    
+	<sql id="pdStoreroomColumns">
+		a.id AS "id",
+		a.storeroom_code AS "storeroomCode",
+		a.storeroom_name AS "storeroomName",
+		a.linkman AS "linkman",
+		a.linkman_phone AS "linkmanPhone",
+		a.linkman_mail AS "linkmanMail",
+		a.linkman_addss AS "linkmanAddss",
+		a.storeroom_class AS "storeroomClass",
+		a.storeroom_type AS "storeroomType",
+		a.date_remind AS "dateRemind",
+		a.longtime_remind AS "longtimeRemind",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.extend1 AS "extend1",
+		a.extend2 AS "extend2",
+		a.extend3 AS "extend3"
+	</sql>
+	
+	<sql id="pdStoreroomJoins">
+	</sql>
+    
+	<select id="get" resultType="PdStoreroom">
+		SELECT 
+			<include refid="pdStoreroomColumns"/>
+		FROM pd_storeroom a
+		<include refid="pdStoreroomJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdStoreroom">
+		SELECT 
+			<include refid="pdStoreroomColumns"/>
+		FROM pd_storeroom a
+		<include refid="pdStoreroomJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="storeroomCode != null and storeroomCode != ''">
+				AND a.storeroom_code = #{storeroomCode}
+			</if>
+			<if test="storeroomName != null and storeroomName != ''">
+				AND a.storeroom_name = #{storeroomName}
+			</if>
+			<if test="linkman != null and linkman != ''">
+				AND a.linkman = #{linkman}
+			</if>
+			<if test="storeroomClass != null and storeroomClass != ''">
+				AND a.storeroom_class = #{storeroomClass}
+			</if>
+			<if test="storeroomType != null and storeroomType != ''">
+				AND a.storeroom_type = #{storeroomType}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdStoreroom">
+		SELECT 
+			<include refid="pdStoreroomColumns"/>
+		FROM pd_storeroom a
+		<include refid="pdStoreroomJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_storeroom(
+			id,
+			storeroom_code,
+			storeroom_name,
+			linkman,
+			linkman_phone,
+			linkman_mail,
+			linkman_addss,
+			storeroom_class,
+			storeroom_type,
+			date_remind,
+			longtime_remind,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3
+		) VALUES (
+			#{id},
+			#{storeroomCode},
+			#{storeroomName},
+			#{linkman},
+			#{linkmanPhone},
+			#{linkmanMail},
+			#{linkmanAddss},
+			#{storeroomClass},
+			#{storeroomType},
+			#{dateRemind},
+			#{longtimeRemind},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{extend1},
+			#{extend2},
+			#{extend3}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_storeroom SET 	
+			storeroom_code = #{storeroomCode},
+			storeroom_name = #{storeroomName},
+			linkman = #{linkman},
+			linkman_phone = #{linkmanPhone},
+			linkman_mail = #{linkmanMail},
+			linkman_addss = #{linkmanAddss},
+			storeroom_class = #{storeroomClass},
+			storeroom_type = #{storeroomType},
+			date_remind = #{dateRemind},
+			longtime_remind = #{longtimeRemind},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			extend1 = #{extend1},
+			extend2 = #{extend2},
+			extend3 = #{extend3}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_storeroom SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findFirstStoreroom" resultType="string">
+		SELECT 
+			a.id
+		FROM pd_storeroom a
+		<include refid="pdStoreroomJoins"/>
+		WHERE a.del_flag = 0
+		AND a.storeroom_type = 0
+		limit 1
+	</select>
+	
+	<select id="findByUserid" resultType="PdStoreroom">
+		SELECT 
+			<include refid="pdStoreroomColumns"/>
+		FROM pd_storeroom a,
+             pd_storeroom_admin b
+		<where>
+			a.del_flag = '0'
+		AND b.del_flag = '0'
+		AND a.id=b.storeroom_id
+		AND b.admin_id = #{adminId}
+		</where>
+	</select>
+
+
+
+	<select id="findByStoreroom" resultType="PdStoreroom">
+		SELECT
+		<include refid="pdStoreroomColumns"/>
+		FROM pd_storeroom a,
+		pd_storeroom_admin b
+		<where>
+			a.del_flag = '0'
+			AND b.del_flag = '0'
+			AND a.id=b.storeroom_id
+			AND b.admin_id = #{adminId}
+		</where>
+		<if test="storeroomClass != null and storeroomClass != ''">
+			AND a.storeroom_class = #{storeroomClass}
+		</if>
+	</select>
+
+
+
+	<select id="findStoreroomList" resultType="java.util.Map">
+		SELECT
+		a.id AS "kfId",
+		a.storeroom_code AS "kfNo",
+		a.storeroom_name AS "kfName",
+		a.storeroom_type AS "storeroomType"
+		FROM pd_storeroom a
+		<include refid="pdStoreroomJoins"/>
+		<where>
+			a.del_flag = '0'
+		</where>
+		<if test="id != null and id != ''">
+			AND a.id = #{id}
+		</if>
+		<if test="storeroomName != null and storeroomName != ''">
+			AND a.storeroom_name LIKE CONCAT('%', #{storeroomName}, '%')
+		</if>
+	</select>
+</mapper>

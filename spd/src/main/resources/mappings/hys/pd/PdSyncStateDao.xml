@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdSyncStateDao">
+    
+	<sql id="pdSyncStateColumns">
+		a.id AS "id",
+		a.purchase_order_state AS "purchaseOrderState",
+		a.stock_record_state AS "stockRecordState",
+		a.rt_product_state AS "rtProductState",
+		a.sync_date AS "syncDate",
+		a.remarks AS "remarks",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="pdSyncStateJoins">
+	</sql>
+    
+	<select id="get" resultType="PdSyncState">
+		SELECT 
+			<include refid="pdSyncStateColumns"/>
+		FROM pd_sync_state a
+		<include refid="pdSyncStateJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdSyncState">
+		SELECT 
+			<include refid="pdSyncStateColumns"/>
+		FROM pd_sync_state a
+		<include refid="pdSyncStateJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdSyncState">
+		SELECT 
+			<include refid="pdSyncStateColumns"/>
+		FROM pd_sync_state a
+		<include refid="pdSyncStateJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_sync_state(
+			id,
+			purchase_order_state,
+			stock_record_state,
+			rt_product_state,
+			sync_date,
+			remarks,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{purchaseOrderState},
+			#{stockRecordState},
+			#{rtProductState},
+			#{syncDate},
+			#{remarks},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_sync_state SET 	
+			purchase_order_state = #{purchaseOrderState},
+			stock_record_state = #{stockRecordState},
+			rt_product_state = #{rtProductState},
+			sync_date = #{syncDate},
+			remarks = #{remarks},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_sync_state SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据同步时间查询 -->
+	<select id="findByDate" resultType="PdSyncState">
+		SELECT 
+			<include refid="pdSyncStateColumns"/>
+		FROM pd_sync_state a
+		<include refid="pdSyncStateJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="syncDate != null and syncDate != ''">
+				AND DATE_FORMAT(sync_date,'%Y-%m-%d') = DATE_FORMAT( #{syncDate}, '%Y-%m-%d')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 根据同步状态查询 -->
+	<select id="findListByState" resultType="PdSyncState">
+		SELECT 
+			<include refid="pdSyncStateColumns"/>
+		FROM pd_sync_state a
+		<include refid="pdSyncStateJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			AND 
+			 (
+				a.purchase_order_state = #{purchaseOrderState}
+				OR a.rt_product_state = #{stockRecordState}
+				OR a.stock_record_state = #{rtProductState})
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+</mapper>

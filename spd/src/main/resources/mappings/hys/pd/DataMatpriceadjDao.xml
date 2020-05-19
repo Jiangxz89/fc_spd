@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.DataMatpriceadjDao">
+    
+	<sql id="dataMatpriceadjColumns">
+		a.id AS "id",
+		a.hospitalid AS "hospitalid",
+		a.hospitalname AS "hospitalname",
+		a.depid AS "depid",
+		a.deptname AS "deptname",
+		a.billdate AS "billdate",
+		a.billno AS "billno",
+		a.billkd AS "billkd",
+		a.reason AS "reason",
+		a.adjtype AS "adjtype",
+		a.billstf AS "billstf",
+		a.billstfname AS "billstfname",
+		a.hdlstf AS "hdlstf",
+		a.hdlstfname AS "hdlstfname",
+		a.state AS "state",
+		a.iptdate AS "iptdate",
+		a.adjdate AS "adjdate"
+	</sql>
+	
+	<sql id="dataMatpriceadjJoins">
+	</sql>
+    
+	<select id="get" resultType="DataMatpriceadj">
+		SELECT 
+			<include refid="dataMatpriceadjColumns"/>
+		FROM data_matpriceadj a
+		<include refid="dataMatpriceadjJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DataMatpriceadj">
+		SELECT 
+			<include refid="dataMatpriceadjColumns"/>
+		FROM data_matpriceadj a
+		<include refid="dataMatpriceadjJoins"/>
+		<where>
+			1 = 1
+			<if test="billno != null and billno != ''">
+				AND a.billno LIKE concat('%',#{billno},'%')
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND a.billdate BETWEEN #{startDate} AND #{endDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DataMatpriceadj">
+		SELECT 
+			<include refid="dataMatpriceadjColumns"/>
+		FROM data_matpriceadj a
+		<include refid="dataMatpriceadjJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO data_matpriceadj(
+			id,
+			hospitalid,
+			hospitalname,
+			depid,
+			deptname,
+			billdate,
+			billno,
+			billkd,
+			reason,
+			adjtype,
+			billstf,
+			billstfname,
+			hdlstf,
+			hdlstfname,
+			state,
+			iptdate,
+			adjdate
+		) VALUES (
+			#{id},
+			#{hospitalid},
+			#{hospitalname},
+			#{depid},
+			#{deptname},
+			#{billdate},
+			#{billno},
+			#{billkd},
+			#{reason},
+			#{adjtype},
+			#{billstf},
+			#{billstfname},
+			#{hdlstf},
+			#{hdlstfname},
+			#{state},
+			#{iptdate},
+			#{adjdate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE data_matpriceadj SET 	
+			hospitalid = #{hospitalid},
+			hospitalname = #{hospitalname},
+			depid = #{depid},
+			deptname = #{deptname},
+			billdate = #{billdate},
+			billno = #{billno},
+			billkd = #{billkd},
+			reason = #{reason},
+			adjtype = #{adjtype},
+			billstf = #{billstf},
+			billstfname = #{billstfname},
+			hdlstf = #{hdlstf},
+			hdlstfname = #{hdlstfname},
+			state = #{state},
+			iptdate = #{iptdate},
+			adjdate = #{adjdate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM data_matpriceadj
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

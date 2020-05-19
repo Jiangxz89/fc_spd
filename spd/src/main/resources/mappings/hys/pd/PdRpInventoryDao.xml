@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdRpInventoryDao">
+    
+	<sql id="pdRpInventoryColumns">
+		a.id AS "id",
+		a.storeroom_id AS "storeroomId",
+		a.product_id AS "productId",
+		a.product_no AS "productNo",
+		a.prod_barcode AS "prodBarcode",
+		a.stock_num AS "stockNum",
+		a.ruk_num AS "rukNum",
+		a.zhengc_num AS "zhengcNum",
+		a.diaoc_num AS "diaocNum",
+		a.diaor_num AS "diaorNum",
+		a.tuihc_num AS "tuihcNum",
+		a.tuihr_num AS "tuihrNum",
+		a.shiy_num AS "shiyNum",
+		a.tuih_num AS "tuihNum",
+		a.yyth_num AS "yythNum",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.extend1 AS "extend1",
+		a.extend2 AS "extend2",
+		a.extend3 AS "extend3",
+		a.recording_date AS "recordingDate"
+	</sql>
+	
+	<sql id="pdRpInventoryJoins">
+	</sql>
+	
+	<sql id="pdStockRecordProductJoins">
+		LEFT JOIN pd_stock_record_product srp ON sr.id = srp.record_id
+	</sql>
+    
+	<select id="get" resultType="PdRpInventory">
+		SELECT 
+			<include refid="pdRpInventoryColumns"/>
+		FROM pd_rp_inventory a
+		<include refid="pdRpInventoryJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdRpInventory">
+		SELECT 
+			<include refid="pdRpInventoryColumns"/>
+		FROM pd_rp_inventory a
+		<include refid="pdRpInventoryJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdRpInventory">
+		SELECT 
+			<include refid="pdRpInventoryColumns"/>
+		FROM pd_rp_inventory a
+		<include refid="pdRpInventoryJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_rp_inventory(
+			id,
+			storeroom_id,
+			product_id,
+			product_no,
+			prod_barcode,
+			stock_num,
+			ruk_num,
+			zhengc_num,
+			diaoc_num,
+			diaor_num,
+			tuihc_num,
+			tuihr_num,
+			shiy_num,
+			tuih_num,
+			yyth_num,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3,
+			recording_date
+		) VALUES (
+			#{id},
+			#{storeroomId},
+			#{productId},
+			#{productNo},
+			#{prodBarcode},
+			#{stockNum},
+			#{rukNum},
+			#{zhengcNum},
+			#{diaocNum},
+			#{diaorNum},
+			#{tuihcNum},
+			#{tuihrNum},
+			#{shiyNum},
+			#{tuihNum},
+			#{yythNum},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{extend1},
+			#{extend2},
+			#{extend3},
+			#{recordingDate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_rp_inventory SET 	
+			storeroom_id = #{storeroomId},
+			product_id = #{productId},
+			product_no = #{productNo},
+			prod_barcode = #{prodBarcode},
+			stock_num = #{stockNum},
+			ruk_num = #{rukNum},
+			zhengc_num = #{zhengcNum},
+			diaoc_num = #{diaocNum},
+			diaor_num = #{diaorNum},
+			tuihc_num = #{tuihcNum},
+			tuihr_num = #{tuihrNum},
+			shiy_num = #{shiyNum},
+			tuih_num = #{tuihNum},
+			yyth_num = #{yythNum},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			extend1 = #{extend1},
+			extend2 = #{extend2},
+			extend3 = #{extend3},
+			recording_date = #{recordingDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_rp_inventory SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 批量保存到订销存明细表中根据库存总表的数据 -->
+	<insert id="batchInsert">
+		INSERT INTO pd_rp_inventory(
+			id,
+			storeroom_id,
+			product_id,
+			product_no,
+			prod_barcode,
+			stock_num,
+			ruk_num,
+			zhengc_num,
+			diaoc_num,
+			diaor_num,
+			tuihc_num,
+			tuihr_num,
+			shiy_num,
+			tuih_num,
+			yyth_num,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3,
+			recording_date
+		) VALUES 
+		<foreach collection="list" separator="," item="item">
+			(
+			#{item.id},
+			#{item.storeroomId},
+			#{item.productId},
+			#{item.productNo},
+			#{item.prodBarcode},
+			#{item.stockNum},
+			#{item.rukNum},
+			#{item.zhengcNum},
+			#{item.diaocNum},
+			#{item.diaorNum},
+			#{item.tuihcNum},
+			#{item.tuihrNum},
+			#{item.shiyNum},
+			#{item.tuihNum},
+			#{item.yythNum},
+			#{item.createBy.id},
+			#{item.createDate},
+			#{item.updateBy.id},
+			#{item.updateDate},
+			#{item.remarks},
+			#{item.delFlag},
+			#{item.extend1},
+			#{item.extend2},
+			#{item.extend3},
+			#{item.recordingDate}
+		)
+		</foreach>
+	</insert>
+	
+	<!-- 根据进销存表中的数据查询期初库存 -->
+	<select id="initialInventoryQuery" resultType="PdRpInventory">
+		SELECT
+			pst.storeroom_id AS "storeroomId",
+			pst.product_id AS "productId",
+			yy.total AS "total"
+		FROM
+			(
+				SELECT
+					pdps.create_by,
+					pdps.update_by,
+					pdps.product_id,
+					pdps.storeroom_id,
+					pdps.stock_num,
+					b.number
+				FROM
+					pd_product_stock_total pdps
+				LEFT JOIN pd_product b ON pdps.product_id = b.id
+				WHERE
+					pdps.del_flag = #{DEL_FLAG_NORMAL}
+			) pst
+		LEFT JOIN (
+			SELECT
+				pst.storeroom_id,
+				pst.prod_id,
+				sum(pst.stock_num) AS "total"
+			FROM
+				pd_product_stock_time pst
+			WHERE
+				pst.stock_date BETWEEN DATE_FORMAT(
+					#{startDate}, '%Y-%m-%d %T') and DATE_FORMAT( #{endDate}, '%Y-%m-%d %T')
+					GROUP BY
+						pst.storeroom_id,
+						pst.prod_id
+				) yy ON pst.product_id = yy.prod_id
+			AND pst.storeroom_id = yy.storeroom_id
+			WHERE
+				yy.total IS NOT NULL
+	</select>
+	
+	<!-- 进销存明细表查询入库数 -->
+	<select id="inStockRecordQuery" resultType="PdRpInventory">
+		SELECT
+			pst.storeroom_id AS "storeroomId",
+			pst.product_id AS "productId",
+			xx.total AS "rukNum"
+		FROM
+			(
+				SELECT
+					pdps.create_by,
+					pdps.update_by,
+					pdps.product_id,
+					pdps.storeroom_id,
+					pdps.stock_num,
+					b.number
+				FROM
+					pd_product_stock_total pdps
+				LEFT JOIN pd_product b ON pdps.product_id = b.id
+				WHERE
+					pdps.del_flag = #{DEL_FLAG_NORMAL}
+			) pst
+		LEFT JOIN (
+			SELECT
+				sr.in_id,
+				srp.product_id,
+				sum(srp.product_num) total
+			FROM
+				pd_stock_record sr
+			LEFT JOIN pd_stock_record_product srp ON sr.id = srp.record_id
+			WHERE
+				sr.record_state = #{recordState}
+			AND sr.recode_type = #{recodeType}
+			AND sr.check_time between DATE_FORMAT( #{startDate}, '%Y-%m-%d %T') and DATE_FORMAT( #{endDate}, '%Y-%m-%d %T')
+			GROUP BY
+				sr.in_id,
+				srp.product_id
+		) xx ON pst.storeroom_id = xx.in_id
+		AND pst.product_id = xx.product_id
+		WHERE
+			xx.total IS NOT NULL
+	</select>
+	
+	<!-- 进销存明细表查询出入库记录 -->
+	<select id="bringUpTheQuery" resultType="PdRpInventory">
+		SELECT
+			pst.storeroom_id AS "storeroomId",
+			pst.product_id AS "productId",
+			yy.total AS "total"
+		FROM
+			(
+				SELECT
+					pdps.create_by,
+					pdps.update_by,
+					pdps.product_id,
+					pdps.storeroom_id,
+					pdps.stock_num,
+					b.number
+				FROM
+					pd_product_stock_total pdps
+				LEFT JOIN pd_product b ON pdps.product_id = b.id
+				WHERE
+					pdps.del_flag = #{DEL_FLAG_NORMAL}
+			) pst
+		LEFT JOIN (
+				SELECT
+					<if test="outType != null and outType != ''">
+						sr.out_id,
+					</if>
+					<if test="inType != null and inType != ''">
+						sr.in_id,
+					</if>
+					srp.product_id,
+					sum(srp.product_num) total
+				FROM
+					pd_stock_record sr
+				LEFT JOIN pd_stock_record_product srp ON sr.id = srp.record_id
+				<where>
+					1 = 1 
+					<if test="recordState != null and recordState != ''">
+						AND	sr.record_state =  #{recordState}
+					</if>
+					<if test="recodeType != null and recodeType != ''">
+						AND sr.recode_type = #{recodeType}
+					</if>
+					<if test="outType != null and outType != ''">
+						AND sr.out_type = #{outType}
+					</if>
+					<if test="inType != null and inType != ''">
+						AND sr.in_type = #{inType}
+					</if>
+						AND sr.check_time between DATE_FORMAT( #{startDate}, '%Y-%m-%d %T') and DATE_FORMAT( #{endDate}, '%Y-%m-%d %T')
+				</where>
+				GROUP BY
+					<if test="outType != null and outType != ''">
+						sr.out_id,
+					</if>
+					<if test="inType != null and inType != ''">
+						sr.in_id,
+					</if>
+					srp.product_id
+			) yy
+			ON
+		 	pst.product_id = yy.product_id
+		 	<if test="outType != null and outType != ''">
+				AND pst.storeroom_id = yy.out_id
+			</if>
+			<if test="inType != null and inType != ''">
+				AND pst.storeroom_id = yy.in_id
+			</if>
+			WHERE
+			yy.total IS NOT NULL
+	</select>
+	
+	<!-- 进销存明细表查询器械使用记录 -->
+	<select id="equipmentUseQuery" resultType="PdRpInventory">
+		SELECT
+			pst.storeroom_id AS "storeroomId",
+			pst.product_id AS "productId",
+			yy.total AS "total"
+		FROM
+			(
+				SELECT
+					pdps.create_by,
+					pdps.update_by,
+					pdps.product_id,
+					pdps.storeroom_id,
+					pdps.stock_num,
+					b.number
+				FROM
+					pd_product_stock_total pdps
+				LEFT JOIN pd_product b ON pdps.product_id = b.id
+				WHERE
+					pdps.del_flag = #{DEL_FLAG_NORMAL}
+			) pst
+		LEFT JOIN (
+			SELECT
+				ds.warehouse_id,
+				dsd.prod_id,
+				sum(dsd.dosage_count) total
+			FROM
+				pd_dosage ds
+			LEFT JOIN pd_dosage_detail dsd ON ds.dosage_no = dsd.dosage_no
+			WHERE
+				ds.dosage_date BETWEEN DATE_FORMAT( #{startDate}, '%Y-%m-%d %T') and DATE_FORMAT( #{endDate}, '%Y-%m-%d %T')
+			GROUP BY
+				ds.warehouse_id,
+				dsd.prod_id
+		) yy ON pst.product_id = yy.prod_id
+		AND pst.storeroom_id = yy.warehouse_id
+		WHERE
+			yy.total IS NOT NULL
+	</select>
+	
+	<!-- 进销存明细表查询用量退回记录 -->
+	<select id="amountOfReturnQuery" resultType="PdRpInventory">
+		SELECT
+			pst.storeroom_id AS "storeroomId",
+			pst.product_id AS "productId",
+			yy.total AS "total"
+		FROM
+			(
+				SELECT
+					pdps.create_by,
+					pdps.update_by,
+					pdps.product_id,
+					pdps.storeroom_id,
+					pdps.stock_num,
+					b.number
+				FROM
+					pd_product_stock_total pdps
+				LEFT JOIN pd_product b ON pdps.product_id = b.id
+				WHERE
+					pdps.del_flag =  #{DEL_FLAG_NORMAL}
+			) pst
+		LEFT JOIN (
+				SELECT
+					ds.dosagert_room_id,
+					dsd.prod_id,
+					sum(dsd.rt_count) total
+				FROM
+					pd_dosagert ds
+				LEFT JOIN pd_dosagert_detail dsd ON ds.id = dsd.dosagert_id
+				WHERE
+					ds.dosagert_date BETWEEN DATE_FORMAT( #{startDate}, '%Y-%m-%d %T') and DATE_FORMAT( #{endDate}, '%Y-%m-%d %T')
+				GROUP BY
+					ds.dosagert_room_id,
+					dsd.prod_id
+			) yy
+		ON
+			pst.product_id = yy.prod_id
+		AND pst.storeroom_id = yy.dosagert_room_id
+		WHERE
+			yy.total IS NOT NULL
+	</select>
+	
+	<!-- 进销存明细表查询院外退货记录 -->
+	<select id="hospitalReturnTheGoodsQuery" resultType="PdRpInventory">
+		SELECT
+			pst.storeroom_id AS "storeroomId",
+			pst.product_id AS "productId",
+			yy.total AS "total"
+		FROM
+			(
+				SELECT
+					pdps.create_by,
+					pdps.update_by,
+					pdps.product_id,
+					pdps.storeroom_id,
+					pdps.stock_num,
+					b.number
+				FROM
+					pd_product_stock_total pdps
+				LEFT JOIN pd_product b ON pdps.product_id = b.id
+				WHERE
+					pdps.del_flag = #{DEL_FLAG_NORMAL}
+			) pst
+		LEFT JOIN (
+				SELECT
+					rlh.rejected_repo_id,
+					ps.product_id,
+					sum(rlhc.rejected_count) total
+				FROM
+					pd_rejected_list_head rlh
+				LEFT JOIN pd_rejected_list_child rlhc ON rlh.id = rlhc.head_id
+				LEFT JOIN pd_product_stock ps ON rlhc.product_stock_id = ps.id
+				WHERE
+					DATE_FORMAT(
+						rlh.rejected_date,
+						'%Y-%m-%d %T'
+					) BETWEEN DATE_FORMAT( #{startDate}, '%Y-%m-%d %T') and DATE_FORMAT( #{endDate}, '%Y-%m-%d %T')
+				GROUP BY
+					rlh.rejected_repo_id,
+					ps.product_id
+			) yy
+		ON
+			pst.product_id = yy.product_id
+		AND pst.storeroom_id = yy.rejected_repo_id
+		WHERE
+			yy.total IS NOT NULL
+	</select>
+	
+	<!-- 更新各类数据 -->
+	<update id="updateRpInventoryByData">
+		UPDATE pd_rp_inventory 	
+			 <trim prefix="set" suffixOverrides=",">
+				<if test="stockNum != null and stockNum != ''">
+						stock_num = #{stockNum},
+				</if>
+				<if test="rukNum != null and rukNum != ''">
+					ruk_num = #{rukNum},
+				</if>
+				<if test="zhengcNum != null and zhengcNum != ''">
+					zhengc_num = #{zhengcNum},
+				</if>
+				<if test="diaocNum != null and diaocNum != ''">
+					diaoc_num = #{diaocNum},
+				</if>
+				<if test="diaorNum != null and diaorNum != ''">
+					diaor_num = #{diaorNum},
+				</if>
+				<if test="tuihcNum != null and tuihcNum != ''">
+					tuihc_num = #{tuihcNum},
+				</if>
+				<if test="tuihrNum != null and tuihrNum != ''">
+					tuihr_num = #{tuihrNum},
+				</if>
+				<if test="shiyNum != null and shiyNum != ''">
+					shiy_num = #{shiyNum},
+				</if>
+				<if test="tuihNum != null and tuihNum != ''">
+					tuih_num = #{tuihNum},
+				</if>
+				<if test="yythNum != null and yythNum != ''">
+					yyth_num = #{yythNum},
+				</if>
+			</trim>
+		WHERE storeroom_id = #{storeroomId}
+			AND product_id = #{productId}
+			AND DATE_FORMAT(recording_date,'%Y-%m-%d') = DATE_FORMAT( #{recordingDate}, '%Y-%m-%d')
+	</update>
+	
+	<!-- 进销存明细统计查询 -->
+	<select id="findEntersSellsQuery" resultType="PdRpInventory">
+		SELECT
+			xx.*, ifnull(yy.begin_stock_num, 0) AS "beginStockNum",
+			ifnull(mm.end_stock_num, 0) AS "endStockNum"
+		FROM
+			(
+				SELECT
+					sp.supplier_name AS "supplier",
+					sss.supplier_id AS "supplierId",
+					pri.storeroom_id AS "storeroomId",
+					pri.product_id AS "productId",
+					pri.product_no AS "productNo",
+					p.`name` AS "productName",
+					p.version AS "version",
+					sum(pri.ruk_num) AS "rukNum",
+					sum(pri.zhengc_num) AS "zhengcNum",
+					sum(pri.diaoc_num) AS "diaocNUm",
+					sum(pri.diaor_num) AS "diaorNum",
+					sum(pri.tuihc_num) AS "tuihcNum",
+					sum(pri.tuihr_num) AS "tuihrNum",
+					sum(pri.shiy_num) AS "shiyNum",
+					sum(pri.tuih_num) AS "tuihNum",
+					sum(pri.yyth_num) AS "yythNum",
+					p.selling_price AS "sellingPrice",
+					(pri.shiy_num - pri.tuih_num) * p.selling_price AS "dosageAmount"
+				FROM
+					`pd_rp_inventory` pri
+				LEFT JOIN pd_product p ON pri.product_id = p.id
+				LEFT JOIN pd_product_stock_total pst ON pri.storeroom_id = pst.storeroom_id
+					AND pri.product_id = pst.product_id
+				LEFT JOIN (select * from pd_product_stock_total t where t.supplier_id is not null GROUP BY product_id ) sss 
+					on pri.product_id = sss.product_id
+				LEFT JOIN pd_supplier sp ON sss.supplier_id = sp.id
+				<where>
+					1 = 1 
+					<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+						AND pri.recording_date BETWEEN DATE_FORMAT(
+						#{queryStartDate}, '%Y-%m-%d') and DATE_FORMAT( #{queryEndDate}, '%Y-%m-%d')
+					</if>	
+				</where>
+						GROUP BY
+							pri.storeroom_id,
+							pri.product_id
+					) xx
+				LEFT JOIN (
+					SELECT
+						a.storeroom_id,
+						a.product_id,
+						a.stock_num AS "begin_stock_num"
+					FROM
+						pd_rp_inventory a
+					<where>
+						1 = 1 
+						<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+							AND a.recording_date = DATE_FORMAT(#{queryStartDate},'%Y-%m-%d')
+						</if>	
+					</where>
+			) yy ON xx.storeroomId = yy.storeroom_id
+					AND xx.productId = yy.product_id
+			LEFT JOIN (
+				SELECT
+					pst.storeroom_id,
+					pst.prod_id,
+					sum(pst.stock_num) AS "end_stock_num"
+				FROM
+					pd_product_stock_time pst
+				<where>
+					1 = 1 
+					<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+						AND pst.stock_date = DATE_FORMAT( #{queryEndDate}, '%Y-%m-%d %T')
+					</if>
+				</where>
+						GROUP BY
+							pst.storeroom_id,
+							pst.prod_id
+					) mm ON xx.productId = mm.prod_id
+				AND xx.storeroomId = mm.storeroom_id
+		<where>
+			1 = 1 
+			<if test="version != null and version != ''">
+				AND xx.version = #{version}
+			</if>		
+			<if test="storeroomId != null and storeroomId != ''">
+				AND xx.storeroomId = #{storeroomId}
+			</if>
+			<if test="productName != null and productName != ''">
+				AND xx.productName LIKE concat('%',#{productName},'%')
+			</if>
+			<if test="supplierId != null and supplierId != ''">
+				AND xx.supplierId = #{supplierId}
+			</if>
+			<if test="productNo != null and productNo != ''">
+				AND xx.productNo LIKE concat('%',#{productNo},'%')
+			</if>
+		</where>			
+	</select>
+	
+	<!-- 查询有没有昨天的数据如果有  不执行定时任务 -->
+	<select id="findListByDate" resultType="PdRpInventory">
+		SELECT
+			<include refid="pdRpInventoryColumns"/>
+		FROM pd_rp_inventory a 
+			WHERE a.recording_date = DATE_FORMAT(#{recordingDate},'%Y-%m-%d')
+	</select>
+	
+	
+</mapper>

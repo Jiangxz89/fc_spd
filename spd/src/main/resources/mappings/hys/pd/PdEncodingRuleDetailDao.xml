@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdEncodingRuleDetailDao">
+    
+	<sql id="pdEncodingRuleDetailColumns">
+		a.id AS "id",
+		a.code_id AS "codeId",
+		a.identifier AS "identifier",
+		a.length AS "length",
+		a.code_order AS "codeOrder",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+
+	<sql id="pdEncodingRuleDetailJoins">
+	</sql>
+
+	<sql id="pdEncodingIdentifierColumns">
+		b.`value` as "value" ,b.meaning as "meaning",b.type as "type",b.length as "size"
+	</sql>
+
+	<!-- 应用标识符表 -->
+	<sql id="pdEncodingIdentifierJoins">
+		LEFT JOIN pd_encoding_identifier b on a.identifier = b.id
+	</sql>
+    
+	<select id="get" resultType="PdEncodingRuleDetail">
+		SELECT 
+			<include refid="pdEncodingRuleDetailColumns"/>
+		FROM pd_encoding_rule_detail a
+		<include refid="pdEncodingRuleDetailJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdEncodingRuleDetail">
+		SELECT 
+			<include refid="pdEncodingRuleDetailColumns"/>,
+			<include refid="pdEncodingIdentifierColumns"/>
+		FROM pd_encoding_rule_detail a
+		<include refid="pdEncodingRuleDetailJoins"/>
+		<include refid="pdEncodingIdentifierJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="codeId != null and codeId != ''">
+				AND a.code_id = #{codeId}
+			</if>
+			<if test="identifier != null and identifier != ''">
+				AND a.identifier = #{identifier}
+			</if>
+
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC ,a.code_order ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdEncodingRuleDetail">
+		SELECT 
+			<include refid="pdEncodingRuleDetailColumns"/>
+		FROM pd_encodibng_rule_detail a
+		<include refid="pdEncodingRuleDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_encoding_rule_detail(
+			id,
+			code_id,
+			identifier,
+			length,
+			code_order,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{item.id},
+			#{codeId},
+			#{identifier},
+			#{length},
+			#{codeOrder},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_encoding_rule_detail SET 	
+			code_id = #{codeId},
+			identifier = #{identifier},
+			length = #{length},
+			code_order = #{codeOrder},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_encoding_rule_detail SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<!--批量保存应用标识符 -->
+	<insert id="batchSave">
+		INSERT INTO pd_encoding_rule_detail(
+		id,
+		code_id,
+		identifier,
+		length,
+		code_order,
+		create_by,
+		create_date,
+		update_by,
+		update_date,
+		remarks,
+		del_flag
+		)  VALUES
+		<foreach collection="list" separator="," item="item">
+			(
+			#{item.id},
+			#{item.codeId},
+			#{item.identifier},
+			#{item.length},
+			#{item.codeOrder},
+			#{item.createBy.id},
+			#{item.createDate},
+			#{item.updateBy.id},
+			#{item.updateDate},
+			#{item.remarks},
+			#{item.delFlag}
+			)
+		</foreach>
+	</insert>
+
+	<update id="updateByPdEncodingRule">
+		UPDATE pd_encoding_rule_detail SET
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE code_id = #{id}
+	</update>
+
+	<delete id="deleteByPdEncodingRule">
+		delete FROM pd_encoding_rule_detail
+		WHERE code_id = #{id}
+	</delete>
+</mapper>

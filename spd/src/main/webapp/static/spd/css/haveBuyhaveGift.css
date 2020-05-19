@@ -1,0 +1,63 @@
+.topText h3.buyGiftTit{font-weight: 600;font-size: 15px;line-height: 40px;border-bottom: 2px solid #459df5;}
+.topText h3>span.littleTit{padding-left: 20px;font-size: 13px;font-weight: 400;color: #666;}
+.listInfo>.listInfo-item{margin-top:20px;}
+.listInfo-item label{display: inline-block;width: 95px;font-size: 14px;}
+.listInfo-item input[type='text']{width: 30%;height: 30px;padding-left:5px;border:1px solid #ccc;border-radius: 2px;}
+.listInfo-item textarea{width: 30%;height: 200px;}
+.listInfo-item .selTime>input[type='text']{border: none;width: 90px;margin: 0;display: inline;padding-left: 6px;}
+.listInfo-item input[type='radio']{vertical-align: middle;margin:0 10px 0 5px;}
+.listInfo-item-group{margin-bottom:10px;}
+.listInfo-item-group label{width:auto;font-size:13px;padding-right:15px;}
+.listInfo-item-group input[type='text']{width:80px;height:24px;border:1px solid #ccc;margin-right: 10px;}
+input.laydate-icon{background:none;background-image:none;!important}
+.selTable{display: inline-block;width: 100%;}
+.hcy-btn-o{margin-top:20px;}
+.addImage{display: inline-block;padding:5px 20px;border:1px solid #459df5;color: #459df5;border-radius: 2px;}
+/* 文字提示 */
+.wordTip{padding-left:20px;}
+/*  客户分组  */
+.selUserBox{margin-left: 95px;display: none;}
+.topTitle{clear: both;overflow: hidden;border-bottom: 2px solid #459df5;margin-top: 20px;}
+.topTitle a{font-size: 14px; float: left;width: 120px;height:36px;line-height: 36px;text-align: center;color: #415161;border:1px solid #ccc;border-radius: 1px; }
+.topTitle a:first-child{border-right:0;}
+.topTitle a:last-child{border:none;border-top:1px solid #ccc;border-right: 1px solid #ccc;}
+.topTitle a.online{background: #459df5;color: #fff;border:none;}
+.prompt{font-size: 13px;color: #e35b5b;padding-left: 30px;display: inline-block;margin-top: 10px;}
+#numberUser{line-height: 30px;color:#e35b5b;font-size: 13px; }
+.gruopUser{height: 50px;}
+.groupA{color: #000;font-size: 15px;font-weight: 600;padding-right: 20px;}
+.hcy-btn{position: relative;}
+.hcy-btn.hcy-btn-select{border-color: #0f93ce;}
+.hcy-btn.hcy-btn-select b{display: block;position: absolute;right: 0;bottom:0;width: 18px;height: 16px;background-image: url(../img/little-icon.jpg)};
+/* 表格添加 */
+.layui-layer-page{overflow: auto;padding:0 20px;!important}
+/* 添加客户样式 */
+.newUser-item{margin-right: 10px; display: inline-block;padding: 5px 34px 5px 20px;position: relative;border:1px solid #459df5;color:#40464a;margin-top: 20px;vertical-align: middle;}
+.delUser-item{position: absolute;right:4px;top:4px; width: 14px;height: 14px;background-image: url(../img/del-icon.jpg);}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

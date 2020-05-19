@@ -1,0 +1,89 @@
+*{ margin:0; padding:0;}
+body{ font-size:13px; font-family:微软雅黑;font-style:normal;}
+a{ text-decoration:none;color:#656565;}
+a:hover{color: #0f93ce;}
+em, i{font-style: normal;}
+ul, ol, li{list-style: none;}
+img{ border:none;vertical-align:middle;}
+input,select,textarea{outline:none;border:none;background:none;}
+textarea{resize:none;}
+p{line-height:22px;}
+.fl{float: left;}
+.fr{float: right;}
+.cl{ clear:both;overflow:hidden;}
+.position{position:relative;}
+.pa{position: absolute;}
+/*  */
+.wrap{width: 100%;height:auto;}
+.hcy-wrapper{width: 100%;height: auto;background: #fff;border-bottom: 1px solid #ccc;}
+.hcy-content{width:1100px;min-height:768px; margin:0 auto;min-width: 1100px;padding-bottom: 30px;}
+/* 顶部 */
+.hcy-top{width: 100%;height: 35px;background: #EAEAEA;}
+.hcy-top .hcy-top-content{width: 1100px;height: 35px;margin:0 auto;line-height: 35px;}
+.hcy-top .hcy-top-content .hcy-top-info span{padding:0 5px;color:#656565;}
+.hcy-top-content .login{padding-right: 20px;}
+/* 右侧固定 */
+.rightFixed{width: 40px;height: 100%;background: #363636;border-right: 1px solid #eee;right:0;top:0;position: fixed;}
+/* 搜索 */
+.hcy-search{width: 1100px;margin: 0 auto;}
+.hcy-search .searchInput{width: 562px;height: 35px;border:1px solid #ccc;padding-left: 8px;border-radius: 2px;}
+.hcy-search .searchButton{width: 74px;height: 36px;border-radius: 2px;background: #62BD60;color: #fff;}
+.hcy-search .switchCity{color: #999999;cursor: pointer;}
+/* 导航 */
+.hcy-nav{width: 1100px;margin: 0 auto;}
+.hcy-nav .productType{display: inline-block;width: 204px;height: 35px;text-align: center;line-height: 35px;background:#62BD60;color: #fff; font-size: 15px;}
+.hcy-nav .hcy-nav-list>li{float: left;height: 35px;line-height: 35px;margin-right: 50px;}
+.hcy-nav .hcy-nav-list>li>a{font-size: 15px;}
+.hcy-nav .hcy-nav-list>li>a.on{color:#62BD60;border-bottom: 2px solid #62BD60;padding-bottom: 6px;}
+.hcy-nav .quickBuy{color:#64BC66;font-size: 13px; }
+/* 主体 */
+.hcy-banner{margin-top: 20px;position: relative;}
+.hcy-banner .wordBox{width: 478px;height: 310px;background:#21092D;position: absolute;left: 311px;top:68px;}
+.hcy-banner .wordBox .buyGift{display: inline-block;width: 56px;height: 32px;text-align: center;line-height: 32px;background: #FF3334;color: #fff;}
+.hcy-banner .wordBox .wordBox-text{text-align: center;}
+.hcy-banner .wordBox .wordBox-text .h-title{color: #fff;}
+.hcy-banner .wordBox .wordBox-text .h-title .startTime{font-size: 13px;}
+.hcy-banner .wordBox .wordBox-text .h-title .endTime{font-size: 13px;}
+.hcy-banner .wordBox .outTime>a{display: inline-block;width: 40px;height: 52px;background: #5FB961;color: #fff;text-align: center;line-height: 52px;border-radius: 10px;}
+.hcy-banner .wordBox .outTime>span{padding:0 17px 0 7px;color: #fff;}
+/* 产品列表 */
+.hcy-product{margin-top: 30px;}
+.hcy-product .hcy-product-top{line-height: 35px;border-bottom: 1px solid #fff;}
+.hcy-product .hcy-product-top h1{font-size: 16px;color: #fff;}
+.hcy-product .hcy-product-top .rulesList{color: #fff;font-size: 13px;}
+.hcy-product .hcy-produsct-list .product-box{width: 208px;height: 324px;float:left;margin:27px 12px 0 0;border:1px solid #fff;background: #fff;}
+.hcy-product .hcy-produsct-list .product-box:nth-child(5n){margin-right: 0;}
+.hcy-product .hcy-produsct-list .product-box .product-img{width: 208px;height: 208px;background: #ccc;}
+.hcy-product .hcy-produsct-list .product-box .product-text{padding: 10px 7px 0 7px;}
+.hcy-product .hcy-produsct-list .product-box .product-text ul>li{line-height: 21px;color: #666;font-size: 12px;width: 100%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.hcy-product .hcy-produsct-list .product-box .nowBuy{display: inline-block;width:100%;height: 25px;line-height: 25px;text-align: center;background: #62BD60;color: #fff;font-size: 13px;margin-top: 10px; }
+/* 购物车 */
+.hcy-shop-table{width: 100%;border-collapse: separate;border-spacing: 0;text-align: center;border-radius: 3px 3px 0 0;overflow: hidden;padding-top: 20px;}
+.hcy-shop-table thead{height: 35px;line-height: 35px;background: #F6F6F6;}
+.hcy-shop-table thead tr th{color: #656565;font-size: 12px;}
+.hcy-shop-table tbody tr{height: 80px;line-height: 80px;}
+.hcy-shop-table tbody tr td{color: #656565;font-size: 13px;border-bottom: 1px solid #ccc;}
+.hcy-shop-table tbody tr td:nth-child(1){text-align: left;padding-left: 30px;}
+.hcy-shop-table tbody tr:hover{background-color:#fff9df;}
+.hcy-shop-table tbody tr td .numAdd,.hcy-shop-table tbody tr td .numReduce{cursor: pointer;display: inline-block;width: 24px;height: 24px;text-align: center;line-height: 24px;background: #fff;border:1px solid #ccc;border-radius: 50%;}
+.hcy-shop-table tbody tr td .numReduce{ font-size: 30px;vertical-align: middle; line-height: 20px;}
+.hcy-shop-table tbody tr td .numAdd{font-size: 20px;vertical-align: middle;line-height: 22px;}
+.hcy-shop-table tbody tr td .numInput{width: 48px;height: 26px;border:1px solid #ccc;}
+.hcy-shop-table tbody tr td .fullCut{padding:2px 4px;background:#FE3432;color: #fff;}
+.hcy-shop-table tbody tr td .infos{line-height:36px;color:#999;padding-left: 52px;}
+
+
+/* 按钮公共样式 */
+.hcy-btn{vertical-align: middle; display: inline-block; padding:4px 10px;background:#fff;color: #323232;font-size: 13px;min-width: 70px;text-align: center;border: 1px solid #bfcad1;border-radius: 3px;}
+.hcy-btn.hcy-btn-primary{border: 1px solid #62BD60;background-color:#62BD60;color: white;}
+.hcy-btn:hover,.hcy-btn:active{border: 1px solid #a1b1bc;background-color: #f2f2f2;}
+.hcy-btn.hcy-btn-primary:hover,.hcy-btn.hcy-btn-primary:active{border:1px solid #62BD60;background-color:#62BD60;}
+.hcy-btn.hcy-btn-o{color: #62BD60;border-color:#62BD60;}
+/* 底部 */
+.hcy-bottom{width:100%;height: 225px;background:#363636;padding:20px 0 0 0;}
+.hcy-bottom .hcy-bottom-text{width: 1100px;height: 225px;margin:0 auto;}
+.hcy-bottom .hcy-bottom-text h3{color: #cdcdcd;font-size: 14px;padding-bottom: 20px;}
+.hcy-bottom .hcy-bottom-text .companyText{width: 460px;color: #cdcdcd;font-size: 12px;}
+.hcy-bottom .hcy-bottom-text ul li{line-height: 20px;font-size: 12px;color: #cdcdcd;}
+.aboutBox{border-right: 1px solid #cdcdcd;padding-right: 40px;margin-right: 40px;}
+.redSpan{padding:3px;color: #fff;font-size: 12px;background: #FF3334;}

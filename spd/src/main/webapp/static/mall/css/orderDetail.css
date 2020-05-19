@@ -1,0 +1,43 @@
+.pageTitle{padding:30px 0 15px 0;font-size:15px;color: #666;font-weight: 400;}
+.orderStepBox .orderState{width: 300px;height: 180px;border-right: 1px solid #ccc;text-align: center;}
+.orderStepBox .orderState>div{font-size: 12px;color: #666;padding-top: 20px;}
+.orderStepBox .orderState>h4{font-size:18px;color:#62BD60;padding-top: 20px;}
+.orderStepBox .orderState>h2,.orderStepBox .orderState>h1{padding:5px 18px;background: #f5f5f5;border-radius: 2px;border:1px solid #ccc; margin: 20px auto 5px auto;font-size: 13px;font-weight: 400;font-size: 12px;color: #666;width: 80px;cursor: pointer;}
+.orderStepBox .orderState>h1{margin: 10px auto;background: #fff;color:#E4393C;border-color: #E4393C;display: block;line-height:inherit;}
+.orderStepIcon{height: 180px;padding-left:301px;line-height:200px;text-align: center;}
+.orderStepIcon>ul>li{display: inline-block;color: #666;}
+.orderStepIcon>ul>li>p>span{letter-spacing: 4px;color: #666;}
+.stepNumberIcon{width: 20px;height: 20px;font-size: 12px;color:#666;border:1px solid #64BC65;border-radius: 50%;text-align: center;line-height: 20px;margin-left:15px;margin-bottom: 15px;}
+.stepNumberIcon.onStep{background:#64BC65;color: #fff;}
+.stepText{font-size: 12px;color: #666;}
+.otherInfoBox{height: 220px;border:1px solid #ccc;padding:10px 0;margin-top: 20px;}
+.otherInfoBox>div{width:230px;height: 220px;border-right: 1px solid #ccc;padding:0 20px;}
+.otherInfoBox>div:last-child{border-right: 0;}
+.otherInfoBox>div>p{font-size: 12px;color: #666;line-height: 24px;}
+.otherInfoBox>div>p.otherTitle{font-size: 14px;color: #999;padding-bottom: 15px;}
+.orderInfoTabBox{margin-top: 20px;}
+.orderTable{width: 100%;border-collapse: collapse;}
+.orderTable>thead>tr{height: 35px;background: #f6f6f6;}
+.orderTable>thead>tr>th{font-size: 12px;color:#666;text-align: center;}
+.orderTable>tbody>tr>td{padding:20px;color: #666;font-size: 12px;text-align: center;border-bottom: 1px solid #ddd;}
+.orderTable>tbody>tr>td:first-child{text-align: left;}
+.orderTable>tbody>tr:last-child>td{border-bottom: 0;}
+.orderTable>tbody>tr>td>img{width: 55px;height: 55px;border:1px solid #ccc;}
+.orderTable>tbody>tr>td>span{padding-left: 15px;}
+.orderTable>tbody>tr>td>a{display: block;width: 56px;height: 22px;text-align: center;line-height: 22px;border:1px solid #999;margin:0 auto;margin-bottom: 7px;}
+.orderTable>tbody>tr>td>a.buyAgain{border-color: #FE9A00;color: #FE9A00;margin-bottom: 0;}
+.orderTimePlace{margin-top: 20px;padding:10px 0;border:1px solid #ccc;}
+.orderLogistic{height: 180px;width: 300px;border-right: 1px solid #ccc;text-align: center;float: left;}
+.orderLogistic>img{float: left;width: 55px;height: 55px;border:1px solid #ccc;margin: 60px 0 0 40px;}
+.orderLogistic>ul{margin: 57px 0 0 10px;float: left;}
+.orderLogistic>ul>li{line-height: 20px;font-size: 12px;}
+.timeLIistBox{height: 180px;overflow: auto;padding:0 15px;}
+.timeLIistBox .trackList{margin:0;}
+.timeLIistBox .trackList>li{ position: relative;padding: 9px 0 0 15px;line-height: 22px;border-left: 1px solid #ccc;color: #666;}
+.timeLIistBox .trackList>li.afterdate{padding-top: 0; }
+.timeLIistBox .trackList>li.afterdate>i.fa{top: -4px;padding-top: 10px;color:#62BC62;}
+.timeLIistBox .trackList>li.afterdate>.time{margin-left: 2px;}
+.timeLIistBox .trackList>li>i.fa{position: absolute;left: -6px;top: 15px;width: 11px;height: 11px;color: #ccc;background: #fff;}
+.timeLIistBox .trackList>li>.time{display: inline-block;width: 50px;margin-right: 20px;margin-left: 106px;vertical-align: top;font-size: 12px;}
+.timeLIistBox .trackList>li>.txt{display: inline-block;max-width: 520px;color: #666;font-size: 12px;vertical-align: top;}
+.timeLIistBox .trackList>li>.date{width: 135px;color: #666;border-radius: 14px;font-size: 12px;text-align: left;display: inline-block;vertical-align: top;}

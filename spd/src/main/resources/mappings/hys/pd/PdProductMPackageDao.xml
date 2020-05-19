@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdProductMPackageDao">
+    
+	<sql id="pdProductMPackageColumns">
+		a.id AS "id",
+		a.product_id AS "productId",
+		a.package_id AS "packageId",
+		a.product_count AS "productCount",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.udpate_by AS "udpateBy",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		b.name AS "pdProduct.name",
+		b.number AS "pdProduct.number",
+		b.spec AS "pdProduct.spec",
+		b.version AS "pdProduct.version",
+		b.unit AS "pdProduct.unit",
+		b.id AS "pdProduct.id",
+		b.category_name AS "pdProduct.categoryName",
+		b.group_name AS "pdProduct.groupName",
+		b.vender_name AS "pdProduct.venderName",
+		b.registration AS "pdProduct.registration",
+		b.remarks AS "pdProduct.remarks"
+	</sql>
+	
+	<sql id="pdProductMPackageJoins">
+		LEFT JOIN pd_product b ON a.product_id = b.id
+	</sql>
+	
+	<sql id="stockColumn">
+		IFNULL(c.stock_num,'0') AS "stockNum",
+		IFNULL(c1.stock_num,'0') AS "yourStockNum"
+	</sql>
+	<!-- 查询该产品所在当前人仓库中的库存 -->
+	<sql id="storeroomStockSql">
+		LEFT JOIN (
+					select t.* from pd_product_stock_total t
+					<where>
+						t.del_flag = '0'
+						<choose>
+							<when test="storeroomId != null and storeroomId != ''">
+								and t.storeroom_id = #{storeroomId}
+							</when>
+							<otherwise>
+								and (t.storeroom_id is null or t.storeroom_id = '')
+							</otherwise>
+						</choose>
+					</where>
+				)c
+		ON a.product_id = c.product_id
+		LEFT JOIN (
+					select t.* from pd_product_stock_total t
+					<where>
+						t.del_flag = '0'
+						<choose>
+							<when test="otherDeptId != null and otherDeptId != ''">
+								and t.storeroom_id = #{otherDeptId}
+							</when>
+							<otherwise>
+								and (t.storeroom_id is null or t.storeroom_id = '')
+							</otherwise>
+						</choose>
+					</where>
+				)c1
+		ON a.product_id = c1.product_id
+	</sql>
+    
+	<select id="get" resultType="PdProductMPackage">
+		SELECT 
+			<include refid="pdProductMPackageColumns"/>
+		FROM pd_product_m_package a
+		<include refid="pdProductMPackageJoins"/>
+		WHERE a.id = #{id} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<select id="findList" resultType="PdProductMPackage">
+		SELECT 
+			<include refid="pdProductMPackageColumns"/>,
+			<include refid="stockColumn"/>
+		FROM pd_product_m_package a
+		<include refid="pdProductMPackageJoins"/>
+		<include refid="storeroomStockSql"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="packageId != null and packageId != ''">
+				AND a.package_id = #{packageId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdProductMPackage">
+		SELECT 
+			<include refid="pdProductMPackageColumns"/>
+		FROM pd_product_m_package a
+		<include refid="pdProductMPackageJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_product_m_package(
+			id,
+			product_id,
+			package_id,
+			product_count,
+			create_by,
+			create_date,
+			udpate_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{productId},
+			#{packageId},
+			#{productCount},
+			#{createBy.id},
+			#{createDate},
+			#{udpateBy},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_product_m_package SET 	
+			id = #{id},
+			product_id = #{productId},
+			package_id = #{packageId},
+			product_count = #{productCount},
+			udpate_by = #{udpateBy},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_product_m_package SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	<!-- 有包Id查询 -->
+	<select id="getProdListByPackageId" resultType="PdProductMPackage" parameterType="java.lang.String">
+		SELECT 
+			<include refid="pdProductMPackageColumns"/>,
+			<include refid="stockColumn"/>
+		FROM pd_product_m_package a
+		<include refid="pdProductMPackageJoins"/>
+		<include refid="storeroomStockSql"/>
+		WHERE a.del_flag = '0' AND a.package_id = #{packageId}
+	</select>
+	
+	
+	<select id="getAllByPackageId" resultType="PdProductMPackage">
+		SELECT 
+			<include refid="pdProductMPackageColumns"/>
+		FROM pd_product_m_package a
+		<include refid="pdProductMPackageJoins"/>
+		WHERE a.del_flag = '0' AND a.package_id = #{packageId}
+	</select>
+	
+</mapper>

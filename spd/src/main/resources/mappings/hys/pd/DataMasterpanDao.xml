@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.DataMasterpanDao">
+    
+	<sql id="dataMasterpanColumns">
+		a.masterid AS "masterid",
+		a.hospitalid AS "hospitalid",
+		a.hospitalname AS "hospitalname",
+		a.deptid AS "deptid",
+		a.deptname AS "deptname",
+		a.type AS "type",
+		a.billdate AS "billdate",
+		a.billno AS "billno",
+		a.billstf AS "billstf",
+		a.billstfname AS "billstfname",
+		a.state AS "state",
+		a.audstf AS "audstf",
+		a.audstfname AS "audstfname",
+		a.audtime AS "audtime",
+		a.ykdid AS "ykdid"
+	</sql>
+	
+	<sql id="dataMasterpanJoins">
+	</sql>
+    
+	<select id="get" resultType="DataMasterpan">
+		SELECT 
+			<include refid="dataMasterpanColumns"/>
+		FROM data_masterpan a
+		<include refid="dataMasterpanJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DataMasterpan">
+		SELECT 
+			<include refid="dataMasterpanColumns"/>
+		FROM data_masterpan a
+		<include refid="dataMasterpanJoins"/>
+		<where>
+			1 = 1
+			<if test="billno != null and billno != ''">
+				AND a.billno LIKE concat('%',#{billno},'%')
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND a.billdate BETWEEN #{startDate} AND #{endDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DataMasterpan">
+		SELECT 
+			<include refid="dataMasterpanColumns"/>
+		FROM data_masterpan a
+		<include refid="dataMasterpanJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO data_masterpan(
+			masterid,
+			hospitalid,
+			hospitalname,
+			deptid,
+			deptname,
+			type,
+			billdate,
+			billno,
+			billstf,
+			billstfname,
+			state,
+			audstf,
+			audstfname,
+			audtime,
+			ykdid
+		) VALUES (
+			#{masterid},
+			#{hospitalid},
+			#{hospitalname},
+			#{deptid},
+			#{deptname},
+			#{type},
+			#{billdate},
+			#{billno},
+			#{billstf},
+			#{billstfname},
+			#{state},
+			#{audstf},
+			#{audstfname},
+			#{audtime},
+			#{ykdid}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE data_masterpan SET 	
+			masterid = #{masterid},
+			hospitalid = #{hospitalid},
+			hospitalname = #{hospitalname},
+			deptid = #{deptid},
+			deptname = #{deptname},
+			type = #{type},
+			billdate = #{billdate},
+			billno = #{billno},
+			billstf = #{billstf},
+			billstfname = #{billstfname},
+			state = #{state},
+			audstf = #{audstf},
+			audstfname = #{audstfname},
+			audtime = #{audtime},
+			ykdid = #{ykdid}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM data_masterpan
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

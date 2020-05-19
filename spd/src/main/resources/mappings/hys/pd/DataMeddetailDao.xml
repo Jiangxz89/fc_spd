@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.DataMeddetailDao">
+    
+	<sql id="dataMeddetailColumns">
+		a.id AS "id",
+		a.masterid AS "masterid",
+		a.stockid AS "stockid",
+		a.medname AS "medname",
+		a.batch AS "batch",
+		a.qty AS "qty",
+		a.actualqty AS "actualqty",
+		a.unit AS "unit",
+		a.spec AS "spec",
+		a.inprice AS "inprice",
+		a.clinprice AS "clinprice",
+		a.wardprice AS "wardprice",
+		a.batchno AS "batchno",
+		a.expidate AS "expidate",
+		a.matpayid AS "matpayid",
+		a.matpaydate AS "matpaydate",
+		a.invno AS "invno",
+		a.invdate AS "invdate",
+		a.dspt AS "dspt",
+		a.checkdspt AS "checkdspt",
+		a.permdoc AS "permdoc",
+		a.facname AS "facname",
+		a.totalbatchqty AS "totalbatchqty",
+		a.indetailid AS "indetailid"
+	</sql>
+	
+	<sql id="dataMeddetailJoins">
+	</sql>
+    
+	<select id="get" resultType="DataMeddetail">
+		SELECT 
+			<include refid="dataMeddetailColumns"/>
+		FROM data_meddetail a
+		<include refid="dataMeddetailJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DataMeddetail">
+		SELECT 
+			<include refid="dataMeddetailColumns"/>
+		FROM data_meddetail a
+		<include refid="dataMeddetailJoins"/>
+		<where>
+			1 = 1
+			<if test="medname != null and medname != ''">
+				AND a.medname LIKE concat('%',#{medname},'%')
+			</if>
+			<if test="facname != null and facname != ''">
+				AND a.facname LIKE concat('%',#{facname},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DataMeddetail">
+		SELECT 
+			<include refid="dataMeddetailColumns"/>
+		FROM data_meddetail a
+		<include refid="dataMeddetailJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO data_meddetail(
+			id,
+			masterid,
+			stockid,
+			medname,
+			batch,
+			qty,
+			actualqty,
+			unit,
+			spec,
+			inprice,
+			clinprice,
+			wardprice,
+			batchno,
+			expidate,
+			matpayid,
+			matpaydate,
+			invno,
+			invdate,
+			dspt,
+			checkdspt,
+			permdoc,
+			facname,
+			totalbatchqty,
+			indetailid
+		) VALUES (
+			#{id},
+			#{masterid},
+			#{stockid},
+			#{medname},
+			#{batch},
+			#{qty},
+			#{actualqty},
+			#{unit},
+			#{spec},
+			#{inprice},
+			#{clinprice},
+			#{wardprice},
+			#{batchno},
+			#{expidate},
+			#{matpayid},
+			#{matpaydate},
+			#{invno},
+			#{invdate},
+			#{dspt},
+			#{checkdspt},
+			#{permdoc},
+			#{facname},
+			#{totalbatchqty},
+			#{indetailid}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE data_meddetail SET 	
+			masterid = #{masterid},
+			stockid = #{stockid},
+			medname = #{medname},
+			batch = #{batch},
+			qty = #{qty},
+			actualqty = #{actualqty},
+			unit = #{unit},
+			spec = #{spec},
+			inprice = #{inprice},
+			clinprice = #{clinprice},
+			wardprice = #{wardprice},
+			batchno = #{batchno},
+			expidate = #{expidate},
+			matpayid = #{matpayid},
+			matpaydate = #{matpaydate},
+			invno = #{invno},
+			invdate = #{invdate},
+			dspt = #{dspt},
+			checkdspt = #{checkdspt},
+			permdoc = #{permdoc},
+			facname = #{facname},
+			totalbatchqty = #{totalbatchqty},
+			indetailid = #{indetailid}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM data_meddetail
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

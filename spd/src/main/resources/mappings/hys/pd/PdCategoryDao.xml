@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdCategoryDao">
+    
+	<sql id="pdCategoryColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.type AS "type",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.syn_flag AS "synFlag"
+	</sql>
+	
+	<sql id="pdCategoryJoins">
+	</sql>
+    
+	<select id="get" resultType="PdCategory">
+		SELECT 
+			<include refid="pdCategoryColumns"/>
+		FROM pd_category a
+		<include refid="pdCategoryJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getByName" resultType="PdCategory">
+		SELECT 
+			<include refid="pdCategoryColumns"/>
+		FROM pd_category a
+		<include refid="pdCategoryJoins"/>
+		WHERE a.name = #{name} and a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<select id="findList" resultType="PdCategory">
+		SELECT 
+			<include refid="pdCategoryColumns"/>
+		FROM pd_category a
+		<include refid="pdCategoryJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findUnsynchronizedList" resultType="com.thinkgem.hys.pd.entity.bo.PdCategoryBO">
+		SELECT
+			a.id AS "id",
+			a.name AS "name",
+			a.type AS "type",
+			a.create_by AS "createBy",
+			a.create_date AS "createDate",
+			a.update_by AS "updateBy.id",
+			a.update_date AS "updateDate",
+			a.remarks AS "remarks",
+			a.del_flag AS "delFlag",
+			a.syn_flag AS "synFlag"
+		FROM pd_category a
+		<where>
+		 	1=1
+			and (a.syn_flag &lt;&gt; 1 or a.syn_flag is null)
+		</where>
+	</select>
+
+	<select id="findAllList" resultType="PdCategory">
+		SELECT 
+			<include refid="pdCategoryColumns"/>
+		FROM pd_category a
+		<include refid="pdCategoryJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_category(
+			id,
+			name,
+			type,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			syn_flag
+		) VALUES (
+			#{id},
+			#{name},
+			#{type},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{synFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_category SET 	
+			id = #{id},
+			name = #{name},
+			type = #{type},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			syn_flag = #{synFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete" parameterType="PdCategory">
+		UPDATE pd_category SET
+			syn_flag = 0,
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="deleteById" parameterType="string">
+		UPDATE pd_category SET
+			syn_flag = 0,
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{_parameter}
+	</update>
+
+	<update id="updateSynFlag" parameterType="com.thinkgem.hys.pd.entity.bo.PdCategoryBO">
+		UPDATE pd_category SET
+			syn_flag = #{synFlag}
+		WHERE id = #{id}
+	</update>
+
+		<!-- 校验分类是否重复 -->
+	<select id="verify" resultType="PdCategory">
+		SELECT 
+			<include refid="pdCategoryColumns"/>
+		FROM pd_category a
+		<include refid="pdCategoryJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			and a.name = #{name}
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+			<if test="id != null and id != ''">
+				AND a.id != #{id}
+			</if>
+		</where>
+	</select>
+	
+		<!-- 校验组别是否输入正确 -->
+	<select id="findByName" resultType="PdCategory">
+		SELECT 
+			<include refid="pdCategoryColumns"/>
+		FROM pd_category a
+		<include refid="pdCategoryJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			and a.name = #{name}
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+			<if test="id != null and id != ''">
+				AND a.id != #{id}
+			</if>
+		</where>
+	</select>
+</mapper>

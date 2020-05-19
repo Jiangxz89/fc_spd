@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdRejectedDao">
+    
+	<sql id="pdRejectedColumns">
+		a.id AS "id",
+		a.rejected_no AS "rejectedNo",
+		a.rejected_date AS "rejectedDate",
+		a.storeroom_id AS "storeroomId",
+		a.storeroom_name AS "storeroomName",
+		a.supplier_id AS "supplierId",
+		a.supplier_name AS "supplierName",
+		a.oper_person AS "operPerson",
+		a.is_end AS "isEnd",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="pdRejectedJoins">
+	</sql>
+    
+	<select id="get" resultType="PdRejected">
+		SELECT 
+			<include refid="pdRejectedColumns"/>
+		FROM pd_rejected a
+		<include refid="pdRejectedJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdRejected">
+		SELECT 
+			<include refid="pdRejectedColumns"/>
+		FROM pd_rejected a
+		<include refid="pdRejectedJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="rejectedNo != null and rejectedNo != ''">
+				AND a.rejected_no = #{rejectedNo}
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND a.rejected_date BETWEEN #{startDate} AND #{endDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdRejected">
+		SELECT 
+			<include refid="pdRejectedColumns"/>
+		FROM pd_rejected a
+		<include refid="pdRejectedJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_rejected(
+			id,
+			rejected_no,
+			rejected_date,
+			storeroom_id,
+			storeroom_name,
+			supplier_id,
+			supplier_name,
+			oper_person,
+			is_end,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{rejectedNo},
+			#{rejectedDate},
+			#{storeroomId},
+			#{storeroomName},
+			#{supplierId},
+			#{supplierName},
+			#{operPerson},
+			#{isEnd},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_rejected SET 	
+			rejected_no = #{rejectedNo},
+			rejected_date = #{rejectedDate},
+			storeroom_id = #{storeroomId},
+			storeroom_name = #{storeroomName},
+			supplier_id = #{supplierId},
+			supplier_name = #{supplierName},
+			oper_person = #{operPerson},
+			is_end = #{isEnd},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_rejected SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.DictMedicineDao">
+    
+	<sql id="dictMedicineColumns">
+		a.medid AS "medid",
+		a.numcode AS "numcode",
+		a.number AS "number",
+		a.cname AS "cname",
+		a.ename AS "ename",
+		a.tname AS "tname",
+		a.lname AS "lname",
+		a.pycode AS "pycode",
+		a.wbcode AS "wbcode",
+		a.pycodet AS "pycodet",
+		a.wbcodet AS "wbcodet",
+		a.cuscode AS "cuscode",
+		a.invclass AS "invclass",
+		a.itemclass AS "itemclass",
+		a.drugclass AS "drugclass",
+		a.drugtype AS "drugtype",
+		a.drugform AS "drugform",
+		a.packunit AS "packunit",
+		a.packamount AS "packamount",
+		a.miniunit AS "miniunit",
+		a.doseunit AS "doseunit",
+		a.dosenum AS "dosenum",
+		a.spec AS "spec",
+		a.dosunit AS "dosunit",
+		a.dosage AS "dosage",
+		a.basedos AS "basedos",
+		a.maxdos AS "maxdos",
+		a.inprice AS "inprice",
+		a.sellprice AS "sellprice",
+		a.hstprice AS "hstprice",
+		a.isgmp AS "isgmp",
+		a.isaze AS "isaze",
+		a.isposion AS "isposion",
+		a.isbasic AS "isbasic",
+		a.iscostly AS "iscostly",
+		a.islunacy AS "islunacy",
+		a.isbid AS "isbid",
+		a.isskin AS "isskin",
+		a.mretype AS "mretype",
+		a.isstop AS "isstop",
+		a.isantibiotic AS "isantibiotic",
+		a.modstaff AS "modstaff",
+		a.modstaffname AS "modstaffname",
+		a.moddate AS "moddate",
+		a.userange AS "userange",
+		a.printclass AS "printclass",
+		a.sicode AS "sicode",
+		a.nhcode AS "nhcode",
+		a.facid AS "facid",
+		a.facname AS "facname",
+		a.zxauditstatus AS "zxauditstatus",
+		a.zxauditor AS "zxauditor",
+		a.zxauditorname AS "zxauditorname",
+		a.roundingmode AS "roundingmode",
+		a.hospitalid AS "hospitalid",
+		a.hospitalname AS "hospitalname",
+		a.ishormone AS "ishormone"
+	</sql>
+	
+	<sql id="dictMedicineJoins">
+	</sql>
+    
+	<select id="get" resultType="DictMedicine">
+		SELECT 
+			<include refid="dictMedicineColumns"/>
+		FROM dict_medicine a
+		<include refid="dictMedicineJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DictMedicine">
+		SELECT 
+			<include refid="dictMedicineColumns"/>
+		FROM dict_medicine a
+		<include refid="dictMedicineJoins"/>
+		<where>
+			1 = 1
+			<if test="cname != null and cname != ''">
+				AND a.cname LIKE concat('%',#{cname},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DictMedicine">
+		SELECT 
+			<include refid="dictMedicineColumns"/>
+		FROM dict_medicine a
+		<include refid="dictMedicineJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO dict_medicine(
+			medid,
+			numcode,
+			number,
+			cname,
+			ename,
+			tname,
+			lname,
+			pycode,
+			wbcode,
+			pycodet,
+			wbcodet,
+			cuscode,
+			invclass,
+			itemclass,
+			drugclass,
+			drugtype,
+			drugform,
+			packunit,
+			packamount,
+			miniunit,
+			doseunit,
+			dosenum,
+			spec,
+			dosunit,
+			dosage,
+			basedos,
+			maxdos,
+			inprice,
+			sellprice,
+			hstprice,
+			isgmp,
+			isaze,
+			isposion,
+			isbasic,
+			iscostly,
+			islunacy,
+			isbid,
+			isskin,
+			mretype,
+			isstop,
+			isantibiotic,
+			modstaff,
+			modstaffname,
+			moddate,
+			userange,
+			printclass,
+			sicode,
+			nhcode,
+			facid,
+			facname,
+			zxauditstatus,
+			zxauditor,
+			zxauditorname,
+			roundingmode,
+			hospitalid,
+			hospitalname,
+			ishormone
+		) VALUES (
+			#{medid},
+			#{numcode},
+			#{number},
+			#{cname},
+			#{ename},
+			#{tname},
+			#{lname},
+			#{pycode},
+			#{wbcode},
+			#{pycodet},
+			#{wbcodet},
+			#{cuscode},
+			#{invclass},
+			#{itemclass},
+			#{drugclass},
+			#{drugtype},
+			#{drugform},
+			#{packunit},
+			#{packamount},
+			#{miniunit},
+			#{doseunit},
+			#{dosenum},
+			#{spec},
+			#{dosunit},
+			#{dosage},
+			#{basedos},
+			#{maxdos},
+			#{inprice},
+			#{sellprice},
+			#{hstprice},
+			#{isgmp},
+			#{isaze},
+			#{isposion},
+			#{isbasic},
+			#{iscostly},
+			#{islunacy},
+			#{isbid},
+			#{isskin},
+			#{mretype},
+			#{isstop},
+			#{isantibiotic},
+			#{modstaff},
+			#{modstaffname},
+			#{moddate},
+			#{userange},
+			#{printclass},
+			#{sicode},
+			#{nhcode},
+			#{facid},
+			#{facname},
+			#{zxauditstatus},
+			#{zxauditor},
+			#{zxauditorname},
+			#{roundingmode},
+			#{hospitalid},
+			#{hospitalname},
+			#{ishormone}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE dict_medicine SET 	
+			medid = #{medid},
+			numcode = #{numcode},
+			number = #{number},
+			cname = #{cname},
+			ename = #{ename},
+			tname = #{tname},
+			lname = #{lname},
+			pycode = #{pycode},
+			wbcode = #{wbcode},
+			pycodet = #{pycodet},
+			wbcodet = #{wbcodet},
+			cuscode = #{cuscode},
+			invclass = #{invclass},
+			itemclass = #{itemclass},
+			drugclass = #{drugclass},
+			drugtype = #{drugtype},
+			drugform = #{drugform},
+			packunit = #{packunit},
+			packamount = #{packamount},
+			miniunit = #{miniunit},
+			doseunit = #{doseunit},
+			dosenum = #{dosenum},
+			spec = #{spec},
+			dosunit = #{dosunit},
+			dosage = #{dosage},
+			basedos = #{basedos},
+			maxdos = #{maxdos},
+			inprice = #{inprice},
+			sellprice = #{sellprice},
+			hstprice = #{hstprice},
+			isgmp = #{isgmp},
+			isaze = #{isaze},
+			isposion = #{isposion},
+			isbasic = #{isbasic},
+			iscostly = #{iscostly},
+			islunacy = #{islunacy},
+			isbid = #{isbid},
+			isskin = #{isskin},
+			mretype = #{mretype},
+			isstop = #{isstop},
+			isantibiotic = #{isantibiotic},
+			modstaff = #{modstaff},
+			modstaffname = #{modstaffname},
+			moddate = #{moddate},
+			userange = #{userange},
+			printclass = #{printclass},
+			sicode = #{sicode},
+			nhcode = #{nhcode},
+			facid = #{facid},
+			facname = #{facname},
+			zxauditstatus = #{zxauditstatus},
+			zxauditor = #{zxauditor},
+			zxauditorname = #{zxauditorname},
+			roundingmode = #{roundingmode},
+			hospitalid = #{hospitalid},
+			hospitalname = #{hospitalname},
+			ishormone = #{ishormone}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM dict_medicine
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

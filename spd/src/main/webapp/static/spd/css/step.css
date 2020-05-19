@@ -1,0 +1,37 @@
+/*头部*/
+.stepBox{height: 100px;line-height: 100px;text-align: center;background-color: #fff;}
+.stepBox h3{width: 185px;height: 46px;color:#03b8cc;font-size:18px;font-weight:400; line-height: 46px;text-align: center;background-color: #fff;display: inline-block;border-radius: 24px;border:1px solid #ccc;}
+.stepBox h3.line{width: 65px;height: 46px;line-height: 46px;background: none;border:none;}
+.stepBox h3.active{background-color: #03b8cc;color: #fff}
+.stepBox h3.line span{display: inline-block;width: 100%;height: 2px;background-color: #ccc;vertical-align: middle;}
+/* 底部 */
+.stepList{background-color: #fff;}
+.stepList .stepList-item>div{height: 80px;line-height: 80px;}
+.stepList .stepList-item>div select{width: 160px;height: 30px;}
+.stepList .stepList-item>div label{display: inline-block;width: 80px;height: 30px;line-height: 30px;}
+
+.stepInfo{height: 50px;line-height: 50px;background-color: #fff;}
+.stepInfo>div{margin:0 20px;display: inline-block;}
+.stepInfo>div>span.stepTip{width:80px;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

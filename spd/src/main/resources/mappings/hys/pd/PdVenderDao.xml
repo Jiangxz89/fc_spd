@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdVenderDao">
+    
+	<sql id="pdVenderColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.licence_name1 AS "licenceName1",
+		a.licence_num1 AS "licenceNum1",
+		a.licence_date1 AS "licenceDate1",
+		a.licence_site1 AS "licenceSite1",
+		a.licence_name2 AS "licenceName2",
+		a.licence_num2 AS "licenceNum2",
+		a.licence_date2 AS "licenceDate2",
+		a.licence_site2 AS "licenceSite2",
+		a.licence_name3 AS "licenceName3",
+		a.licence_num3 AS "licenceNum3",
+		a.licence_date3 AS "licenceDate3",
+		a.licence_site3 AS "licenceSite3",
+		a.licence_name4 AS "licenceName4",
+		a.licence_num4 AS "licenceNum4",
+		a.licence_date4 AS "licenceDate4",
+		a.licence_site4 AS "licenceSite4",
+		a.licence_name5 AS "licenceName5",
+		a.licence_num5 AS "licenceNum5",
+		a.licence_date5 AS "licenceDate5",
+		a.licence_site5 AS "licenceSite5",
+		a.licence_name6 AS "licenceName6",
+		a.licence_num6 AS "licenceNum6",
+		a.licence_date6 AS "licenceDate6",
+		a.licence_site6 AS "licenceSite6",
+		a.licence_name7 AS "licenceName7",
+		a.licence_num7 AS "licenceNum7",
+		a.licence_date7 AS "licenceDate7",
+		a.licence_site7 AS "licenceSite7",
+		a.licence_name8 AS "licenceName8",
+		a.licence_num8 AS "licenceNum8",
+		a.licence_date8 AS "licenceDate8",
+		a.licence_site8 AS "licenceSite8",
+		a.licence_name9 AS "licenceName9",
+		a.licence_num9 AS "licenceNum9",
+		a.licence_date9 AS "licenceDate9",
+		a.licence_site9 AS "licenceSite9",
+		a.licence_name10 AS "licenceName10",
+		a.licence_num10 AS "licenceNum10",
+		a.licence_date10 AS "licenceDate10",
+		a.licence_site10 AS "licenceSite10",
+		a.licence_name11 AS "licenceName11",
+		a.licence_num11 AS "licenceNum11",
+		a.licence_date11 AS "licenceDate11",
+		a.licence_site11 AS "licenceSite11",
+		a.licence_name12 AS "licenceName12",
+		a.licence_num12 AS "licenceNum12",
+		a.licence_date12 AS "licenceDate12",
+		a.licence_site12 AS "licenceSite12",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.syn_flag AS "synFlag",
+		a.avl_type AS "avlType",
+		a.pinyin AS "pinyin"
+	</sql>
+	
+	<sql id="pdVenderSimpleColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.syn_flag AS "synFlag",
+		a.pinyin AS "pinyin"
+	</sql>
+	
+	<sql id="pdVenderJoins">
+	</sql>
+    
+	<select id="get" resultType="PdVender">
+		SELECT 
+			<include refid="pdVenderColumns"/>
+		FROM pd_vender a
+		<include refid="pdVenderJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getByName" resultType="PdVender">
+		SELECT 
+			<include refid="pdVenderColumns"/>
+		FROM pd_vender a
+		<include refid="pdVenderJoins"/>
+		WHERE a.name = #{name} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<select id="findList" resultType="PdVender">
+		SELECT 
+			<include refid="pdVenderColumns"/>
+		FROM pd_vender a
+		<include refid="pdVenderJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.avl_type DESC,a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findUnsynchronizedList" resultType="com.thinkgem.hys.pd.entity.bo.PdVenderBO">
+		SELECT
+			a.id AS "id",
+			a.name AS "name",
+			a.licence_name1 AS "licenceName1",
+			a.licence_num1 AS "licenceNum1",
+			a.licence_date1 AS "licenceDate1",
+			a.licence_site1 AS "licenceSite1",
+			a.licence_name2 AS "licenceName2",
+			a.licence_num2 AS "licenceNum2",
+			a.licence_date2 AS "licenceDate2",
+			a.licence_site2 AS "licenceSite2",
+			a.licence_name3 AS "licenceName3",
+			a.licence_num3 AS "licenceNum3",
+			a.licence_date3 AS "licenceDate3",
+			a.licence_site3 AS "licenceSite3",
+			a.licence_name4 AS "licenceName4",
+			a.licence_num4 AS "licenceNum4",
+			a.licence_date4 AS "licenceDate4",
+			a.licence_site4 AS "licenceSite4",
+			a.licence_name5 AS "licenceName5",
+			a.licence_num5 AS "licenceNum5",
+			a.licence_date5 AS "licenceDate5",
+			a.licence_site5 AS "licenceSite5",
+			a.licence_name6 AS "licenceName6",
+			a.licence_num6 AS "licenceNum6",
+			a.licence_date6 AS "licenceDate6",
+			a.licence_site6 AS "licenceSite6",
+			a.licence_name7 AS "licenceName7",
+			a.licence_num7 AS "licenceNum7",
+			a.licence_date7 AS "licenceDate7",
+			a.licence_site7 AS "licenceSite7",
+			a.licence_name8 AS "licenceName8",
+			a.licence_num8 AS "licenceNum8",
+			a.licence_date8 AS "licenceDate8",
+			a.licence_site8 AS "licenceSite8",
+			a.licence_name9 AS "licenceName9",
+			a.licence_num9 AS "licenceNum9",
+			a.licence_date9 AS "licenceDate9",
+			a.licence_site9 AS "licenceSite9",
+			a.licence_name10 AS "licenceName10",
+			a.licence_num10 AS "licenceNum10",
+			a.licence_date10 AS "licenceDate10",
+			a.licence_site10 AS "licenceSite10",
+			a.licence_name11 AS "licenceName11",
+			a.licence_num11 AS "licenceNum11",
+			a.licence_date11 AS "licenceDate11",
+			a.licence_site11 AS "licenceSite11",
+			a.licence_name12 AS "licenceName12",
+			a.licence_num12 AS "licenceNum12",
+			a.licence_date12 AS "licenceDate12",
+			a.licence_site12 AS "licenceSite12",
+			a.create_by AS "createBy",
+			a.create_date AS "createDate",
+			a.update_by AS "updateBy",
+			a.update_date AS "updateDate",
+			a.remarks AS "remarks",
+			a.del_flag AS "delFlag",
+			a.syn_flag AS "synFlag",
+			a.pinyin AS "pinyin"
+		FROM pd_vender a
+		<where>
+			1=1
+			and (a.syn_flag &lt;&gt; 1 or a.syn_flag is null)
+		</where>
+	</select>
+
+	<select id="findSimpleList" resultType="PdVender">
+		SELECT 
+			<include refid="pdVenderSimpleColumns"/>
+		FROM pd_vender a
+		<include refid="pdVenderJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdVender">
+		SELECT 
+			<include refid="pdVenderColumns"/>
+		FROM pd_vender a
+		<include refid="pdVenderJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_vender(
+			id,
+			name,
+			licence_name1,
+			licence_num1,
+			licence_date1,
+			licence_site1,
+			licence_name2,
+			licence_num2,
+			licence_date2,
+			licence_site2,
+			licence_name3,
+			licence_num3,
+			licence_date3,
+			licence_site3,
+			licence_name4,
+			licence_num4,
+			licence_date4,
+			licence_site4,
+			licence_name5,
+			licence_num5,
+			licence_date5,
+			licence_site5,
+			licence_name6,
+			licence_num6,
+			licence_date6,
+			licence_site6,
+			licence_name7,
+			licence_num7,
+			licence_date7,
+			licence_site7,
+			licence_name8,
+			licence_num8,
+			licence_date8,
+			licence_site8,
+			licence_name9,
+			licence_num9,
+			licence_date9,
+			licence_site9,
+			licence_name10,
+			licence_num10,
+			licence_date10,
+			licence_site10,
+			licence_name11,
+			licence_num11,
+			licence_date11,
+			licence_site11,
+			licence_name12,
+			licence_num12,
+			licence_date12,
+			licence_site12,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			syn_flag,
+			pinyin
+		) VALUES (
+			#{id},
+			#{name},
+			#{licenceName1},
+			#{licenceNum1},
+			#{licenceDate1},
+			#{licenceSite1},
+			#{licenceName2},
+			#{licenceNum2},
+			#{licenceDate2},
+			#{licenceSite2},
+			#{licenceName3},
+			#{licenceNum3},
+			#{licenceDate3},
+			#{licenceSite3},
+			#{licenceName4},
+			#{licenceNum4},
+			#{licenceDate4},
+			#{licenceSite4},
+			#{licenceName5},
+			#{licenceNum5},
+			#{licenceDate5},
+			#{licenceSite5},
+			#{licenceName6},
+			#{licenceNum6},
+			#{licenceDate6},
+			#{licenceSite6},
+			#{licenceName7},
+			#{licenceNum7},
+			#{licenceDate7},
+			#{licenceSite7},
+			#{licenceName8},
+			#{licenceNum8},
+			#{licenceDate8},
+			#{licenceSite8},
+			#{licenceName9},
+			#{licenceNum9},
+			#{licenceDate9},
+			#{licenceSite9},
+			#{licenceName10},
+			#{licenceNum10},
+			#{licenceDate10},
+			#{licenceSite10},
+			#{licenceName11},
+			#{licenceNum11},
+			#{licenceDate11},
+			#{licenceSite11},
+			#{licenceName12},
+			#{licenceNum12},
+			#{licenceDate12},
+			#{licenceSite12},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{synFlag},
+			#{pinyin}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_vender SET 	
+			id = #{id},
+			name = #{name},
+			
+			licence_name1 = #{licenceName1},
+			licence_num1 = #{licenceNum1},
+			licence_date1 = #{licenceDate1},
+			licence_site1 = #{licenceSite1},
+			
+			licence_name2 = #{licenceName2},
+			licence_num2 = #{licenceNum2},
+			licence_date2 = #{licenceDate2},
+			licence_site2 = #{licenceSite2},
+			
+			licence_name3 = #{licenceName3},
+			licence_num3 = #{licenceNum3},
+			licence_date3 = #{licenceDate3},
+			licence_site3 = #{licenceSite3},
+			
+			licence_name4 = #{licenceName4},
+			licence_num4 = #{licenceNum4},
+			licence_date4 = #{licenceDate4},
+			licence_site4 = #{licenceSite4},
+			
+			licence_name5 = #{licenceName5},
+			licence_num5 = #{licenceNum5},
+			licence_date5 = #{licenceDate5},
+			licence_site5 = #{licenceSite5},
+			
+			licence_name6 = #{licenceName6},
+			licence_num6 = #{licenceNum6},
+			licence_date6 = #{licenceDate6},
+			licence_site6 = #{licenceSite6},
+			
+			licence_name7 = #{licenceName7},
+			licence_num7 = #{licenceNum7},
+			licence_date7 = #{licenceDate7},
+			licence_site7 = #{licenceSite7},
+			
+			licence_name8 = #{licenceName8},
+			licence_num8 = #{licenceNum8},
+			licence_date8 = #{licenceDate8},
+			licence_site8 = #{licenceSite8},
+			
+			licence_name9 = #{licenceName9},
+			licence_num9 = #{licenceNum9},
+			licence_date9 = #{licenceDate9},
+			licence_site9 = #{licenceSite9},
+			
+			licence_name10 = #{licenceName10},
+			licence_num10 = #{licenceNum10},
+			licence_date10 = #{licenceDate10},
+			licence_site10 = #{licenceSite10},
+			
+			licence_name11 = #{licenceName11},
+			licence_num11 = #{licenceNum11},
+			licence_date11 = #{licenceDate11},
+			licence_site11 = #{licenceSite11},
+			
+			licence_name12 = #{licenceName12},
+			licence_num12 = #{licenceNum12},
+			licence_date12 = #{licenceDate12},
+			licence_site12 = #{licenceSite12},
+			
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+				syn_flag = #{synFlag},
+				pinyin = #{pinyin},
+				avl_type = #{avlType}
+
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_vender SET
+			syn_flag = 0,
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+
+	<update id="updateSynFlag" parameterType="com.thinkgem.hys.pd.entity.bo.PdVenderBO">
+		UPDATE pd_vender SET
+			syn_flag = #{synFlag}
+		WHERE id = #{id}
+	</update>
+
+		<!-- 校验生产厂家是否唯一 -->
+	<select id="verify" resultType="PdVender">
+		SELECT 
+			<include refid="pdVenderColumns"/>
+		FROM pd_vender a
+		<include refid="pdVenderJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			and a.name = #{name}
+			<if test="id != null and id != ''">
+				AND a.id != #{id}
+			</if>
+		</where>
+	</select>
+	
+	<!--  校验生产厂家是否输入正确 -->
+	<select id="findByName" resultType="PdVender">
+		SELECT 
+			<include refid="pdVenderColumns"/>
+		FROM pd_vender a
+		<include refid="pdVenderJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			and a.name = #{name}
+			<if test="id != null and id != ''">
+				AND a.id != #{id}
+			</if>
+		</where>
+	</select>
+	
+		<update id="deleteById">
+		UPDATE pd_vender SET
+			syn_flag = 0,
+			del_flag = 1
+		WHERE id = #{id}
+	</update>
+</mapper>

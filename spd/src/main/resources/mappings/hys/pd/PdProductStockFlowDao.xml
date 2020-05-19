@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdProductStockFlowDao">
+    
+	<sql id="pdProductStockFlowColumns">
+		a.id AS "id",
+		a.record_id AS "recordId",
+		a.record_date AS "recordDate",
+		a.record_type AS "recordType",
+		a.flow_num AS "flowNum",
+		a.product_id AS "productId",
+		a.storeroom_id AS "storeroomId",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.extend1 AS "extend1",
+		a.extend2 AS "extend2",
+		a.extend3 AS "extend3"
+	</sql>
+	
+	<sql id="pdProductStockFlowJoins">
+	</sql>
+    
+	<select id="get" resultType="PdProductStockFlow">
+		SELECT 
+			<include refid="pdProductStockFlowColumns"/>
+		FROM pd_product_stock_flow a
+		<include refid="pdProductStockFlowJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdProductStockFlow">
+		SELECT 
+			<include refid="pdProductStockFlowColumns"/>
+		FROM pd_product_stock_flow a
+		<include refid="pdProductStockFlowJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="recordId != null and recordId != ''">
+				AND a.record_id = #{recordId}
+			</if>
+			<if test="recordDate != null and recordDate != ''">
+				AND a.record_date = #{recordDate}
+			</if>
+			<if test="recordType != null and recordType != ''">
+				AND a.record_type = #{recordType}
+			</if>
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdProductStockFlow">
+		SELECT 
+			<include refid="pdProductStockFlowColumns"/>
+		FROM pd_product_stock_flow a
+		<include refid="pdProductStockFlowJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_product_stock_flow(
+			id,
+			record_id,
+			record_date,
+			record_type,
+			flow_num,
+			product_id,
+			storeroom_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3
+		) VALUES (
+			#{id},
+			#{recordId},
+			#{recordDate},
+			#{recordType},
+			#{flowNum},
+			#{productId},
+			#{storeroomId},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{extend1},
+			#{extend2},
+			#{extend3}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_product_stock_flow SET 	
+			record_id = #{recordId},
+			record_date = #{recordDate},
+			record_type = #{recordType},
+			flow_num = #{flowNum},
+			product_id = #{productId},
+			storeroom_id = #{storeroomId},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			extend1 = #{extend1},
+			extend2 = #{extend2},
+			extend3 = #{extend3}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_product_stock_flow SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

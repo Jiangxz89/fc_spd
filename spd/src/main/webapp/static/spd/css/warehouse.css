@@ -1,0 +1,35 @@
+/* 右侧仓库列表样式 */
+.warehouseList{padding:0 20px;}
+.deviceStore h3,.reagentStore h3,.otherStore h3{font-size: 15px;color:#415161;line-height: 40px;border-bottom: 2px solid #03b8cc;margin-top:20px;}
+.deviceStore .deviceItem,.reagentStore .reagentItem,.otherStore .otherItem{height: 50px;line-height: 50px; border-bottom: 1px solid #ccc;padding:0 10px; clear:both;overflow: hidden;}
+.deviceStore .deviceItem>a,.reagentStore .reagentItem>a,.otherStore .otherItem>a{color:#415161;font-size: 13px;float: left;}
+.deviceStore .deviceItem>a:first-child,.reagentStore .reagentItem>a:first-child,.otherStore .otherItem>a:first-child{margin-right: 60px;}
+.deviceStore .deviceItem>ul.deviceBtn,.reagentStore .reagentItem>ul.reagentBtn,.otherStore .otherItem>ul.otherBtn{float: right;}
+.deviceStore .deviceItem>ul.deviceBtn>li,.reagentStore .reagentItem>ul.reagentBtn>li,.otherStore .otherItem>ul.otherBtn>li{float: left;}
+.deviceStore .deviceItem>ul.deviceBtn>li>a,.reagentStore .reagentItem>ul.reagentBtn>li>a,.otherStore .otherItem>ul.otherBtn>li>a{color:#03b8cc;font-size: 13px;margin:0 10px;padding:5px 20px;border:1px solid #03b8cc;border-radius: 2px;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

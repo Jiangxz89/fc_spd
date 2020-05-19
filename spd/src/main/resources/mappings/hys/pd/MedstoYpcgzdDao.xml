@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.MedstoYpcgzdDao">
+    
+	<sql id="medstoYpcgzdColumns">
+		a.xh AS "xh",
+		a.czyh AS "czyh",
+		a.cjrq AS "cjrq",
+		a.djh AS "djh",
+		a.ksdm AS "ksdm",
+		a.shry AS "shry",
+		a.shrq AS "shrq",
+		a.jlzt AS "jlzt",
+		a.jzbz AS "jzbz",
+		a.memo AS "memo",
+		a.jjje AS "jjje",
+		a.lsje AS "lsje",
+		a.pfje AS "pfje",
+		a.tsypglbz AS "tsypglbz",
+		a.del_flag AS "delFlag",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.create_date AS "createDate",
+		a.hospital_code AS "hospitalCode",
+		a.hospital_name AS "hospitalName",
+		a.status AS "status"
+	</sql>
+	
+	<sql id="medstoYpcgzdJoins">
+	</sql>
+    
+	<select id="get" resultType="MedstoYpcgzd">
+		SELECT 
+			<include refid="medstoYpcgzdColumns"/>
+		FROM medsto_ypcgzd a
+		<include refid="medstoYpcgzdJoins"/>
+		WHERE a.xh = #{id}
+	</select>
+	
+	<select id="findList" resultType="MedstoYpcgzd">
+		SELECT 
+			<include refid="medstoYpcgzdColumns"/>
+		FROM medsto_ypcgzd a
+		<include refid="medstoYpcgzdJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="djh != null and djh != ''">
+				AND a.djh = #{djh}
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND ( a.cjrq between #{startDate} and #{endDate} )
+			</if>
+			<if test="ksdm != null and ksdm != ''">
+				AND a.ksdm = #{ksdm}
+			</if>
+			<if test="czyh != null and czyh != ''">
+				AND a.czyh = #{czyh}
+			</if>
+			<if test="jlzt != null and jlzt != ''">
+				AND a.jlzt = #{jlzt}
+			</if>
+			<if test="jzbz != null and jzbz != ''">
+				AND a.jzbz = #{jzbz}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MedstoYpcgzd">
+		SELECT 
+			<include refid="medstoYpcgzdColumns"/>
+		FROM medsto_ypcgzd a
+		<include refid="medstoYpcgzdJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO medsto_ypcgzd(
+			xh,
+			czyh,
+			cjrq,
+			djh,
+			ksdm,
+			shry,
+			shrq,
+			jlzt,
+			jzbz,
+			memo,
+			jjje,
+			lsje,
+			pfje,
+			tsypglbz,
+			del_flag,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			create_date,
+			hospital_code,
+			hospital_name,
+			status
+		) VALUES (
+			#{xh},
+			#{czyh},
+			#{cjrq},
+			#{djh},
+			#{ksdm},
+			#{shry},
+			#{shrq},
+			#{jlzt},
+			#{jzbz},
+			#{memo},
+			#{jjje},
+			#{lsje},
+			#{pfje},
+			#{tsypglbz},
+			#{delFlag},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{remarks},
+			#{createDate},
+			#{hospitalCode},
+			#{hospitalName},
+			#{status}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE medsto_ypcgzd SET 	
+			xh = #{xh},
+			czyh = #{czyh},
+			cjrq = #{cjrq},
+			djh = #{djh},
+			ksdm = #{ksdm},
+			shry = #{shry},
+			shrq = #{shrq},
+			jlzt = #{jlzt},
+			jzbz = #{jzbz},
+			memo = #{memo},
+			jjje = #{jjje},
+			lsje = #{lsje},
+			pfje = #{pfje},
+			tsypglbz = #{tsypglbz},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks},
+			hospital_code = #{hospitalCode},
+			hospital_name = #{hospitalName},
+			status = #{status}
+		WHERE xh = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE medsto_ypcgzd SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="batchUpdate" parameterType="com.thinkgem.hys.pd.entity.vo.TempEntity">
+		update medsto_ypcgzd set jlzt = 
+		<foreach collection="list" item="item" index="index" 
+	        separator=" " open="case xh" close="end">
+	        when #{item.xh} then #{item.jlzt}
+	    </foreach>
+	    where xh in
+	    <foreach collection="list" index="index" item="item" 
+	        separator="," open="(" close=")">
+	        #{item.xh,jdbcType=VARCHAR}
+	    </foreach>
+	</update>
+</mapper>

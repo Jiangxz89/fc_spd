@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.HisPurchaseOrderDao">
+    
+	<sql id="hisPurchaseOrderColumns">
+		a.id AS "id",
+		a.jgbm AS "jgbm",
+		a.pur_no AS "purNo",
+		a.pur_date AS "purDate",
+		a.oper_name AS "operName",
+		a.check_name AS "checkName",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.syn_flag AS "synFlag"
+	</sql>
+	
+	<sql id="hisPurchaseOrderJoins">
+	</sql>
+    
+	<select id="get" resultType="HisPurchaseOrder">
+		SELECT 
+			<include refid="hisPurchaseOrderColumns"/>
+		FROM his_purchase_order a
+		<include refid="hisPurchaseOrderJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HisPurchaseOrder">
+		SELECT 
+			<include refid="hisPurchaseOrderColumns"/>
+		FROM his_purchase_order a
+		<include refid="hisPurchaseOrderJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="jgbm != null and jgbm != ''">
+				AND a.jgbm like concat('%',#{jgbm},'%')
+			</if>
+			<if test="purNo != null and purNo != ''">
+				AND a.pur_no like concat('%',#{purNo},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy} desc
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="HisPurchaseOrder">
+		SELECT 
+			<include refid="hisPurchaseOrderColumns"/>
+		FROM his_purchase_order a
+		<include refid="hisPurchaseOrderJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findListForBusiness" resultType="com.thinkgem.hys.pd.entity.bo.HisPurchaseOrderBO">
+		SELECT
+			a.id AS "id",
+			a.jgbm AS "jgbm",
+			a.pur_no AS "purNo",
+			a.pur_date AS "purDate",
+			a.oper_name AS "operName",
+			a.check_name AS "checkName",
+			a.create_by AS "createBy",
+			a.create_date AS "createDate",
+			a.update_by AS "updateBy",
+			a.update_date AS "updateDate",
+			a.remarks AS "remarks",
+			a.del_flag AS "delFlag",
+			a.syn_flag AS "synFlag"
+		FROM his_purchase_order a
+		<where>
+			a.del_flag = 0
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+		</where>
+	</select>
+
+	<select id="findUnsynchronizedList"  resultType="com.thinkgem.hys.pd.entity.bo.HisPurchaseOrderBO">
+		SELECT
+		a.id AS "id",
+		a.jgbm AS "jgbm",
+		a.pur_no AS "purNo",
+		a.pur_date AS "purDate",
+		a.oper_name AS "operName",
+		a.check_name AS "checkName",
+		a.create_by AS "createBy",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.syn_flag AS "synFlag"
+		FROM his_purchase_order a
+		<where>
+			1=1
+			and (a.syn_flag &lt;&gt; 1 or a.syn_flag is null)
+		</where>
+	</select>
+
+	<insert id="insert">
+		INSERT INTO his_purchase_order(
+			id,
+			jgbm,
+			pur_no,
+			pur_date,
+			oper_name,
+			check_name,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			syn_flag
+		) VALUES (
+			#{id},
+			#{jgbm},
+			#{purNo},
+			#{purDate},
+			#{operName},
+			#{checkName},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{synFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE his_purchase_order SET 	
+			jgbm = #{jgbm},
+			pur_no = #{purNo},
+			pur_date = #{purDate},
+			oper_name = #{operName},
+			check_name = #{checkName},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			syn_flag = #{synFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE his_purchase_order SET
+			syn_flag = 0,
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<update id="updateSynFlag" parameterType="com.thinkgem.hys.pd.entity.bo.HisPurchaseOrderBO">
+		UPDATE his_purchase_order SET
+			syn_flag = #{synFlag}
+		WHERE id = #{id}
+	</update>
+</mapper>

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdPurchaseOrderMergeDao">
+    
+	<sql id="pdPurchaseOrderMergeColumns">
+		a.id AS "id",
+		a.order_no AS "orderNo",
+		a.purchase_date AS "purchaseDate",
+		a.dept_id AS "deptId",
+		a.dept_name AS "deptName",
+		a.purchase_by AS "purchaseBy",
+		a.order_status AS "orderStatus",
+		a.supplier_status AS "supplierStatus",
+		a.remarks AS "remarks",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag",
+		s.name AS "purchaseName"
+	</sql>
+	
+	<sql id="pdPurchaseOrderMergeJoins">
+		LEFT JOIN sys_user s ON a.purchase_by = s.id
+	</sql>
+    
+	<select id="get" resultType="PdPurchaseOrderMerge">
+		SELECT 
+			<include refid="pdPurchaseOrderMergeColumns"/>
+		FROM pd_purchase_order_merge a
+		<include refid="pdPurchaseOrderMergeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdPurchaseOrderMerge">
+		SELECT 
+			<include refid="pdPurchaseOrderMergeColumns"/>
+		FROM pd_purchase_order_merge a
+		<include refid="pdPurchaseOrderMergeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="orderNo != null and orderNo != ''">
+				AND a.order_no = #{orderNo}
+			</if>
+			<if test="purchaseDate != null and purchaseDate != ''">
+				AND a.purchase_date = #{purchaseDate}
+			</if>
+			<if test="deptId != null and deptId != ''">
+				AND a.dept_id = #{deptId}
+			</if>
+			<if test="deptName != null and deptName != ''">
+				AND a.dept_name = #{deptName}
+			</if>
+			<if test="purchaseBy != null and purchaseBy != ''">
+				AND a.purchase_by = #{purchaseBy}
+			</if>
+			<if test="orderStatus != null and orderStatus != ''">
+				AND a.order_status = #{orderStatus}
+			</if>
+			<if test="supplierStatus != null and supplierStatus != ''">
+				AND a.supplier_status = #{supplierStatus}
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+		 		AND a.purchase_date between #{startDate} and #{endDate}
+		 	</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdPurchaseOrderMerge">
+		SELECT 
+			<include refid="pdPurchaseOrderMergeColumns"/>
+		FROM pd_purchase_order_merge a
+		<include refid="pdPurchaseOrderMergeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_purchase_order_merge(
+			id,
+			order_no,
+			purchase_date,
+			dept_id,
+			dept_name,
+			purchase_by,
+			order_status,
+			supplier_status,
+			remarks,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{orderNo},
+			#{purchaseDate},
+			#{deptId},
+			#{deptName},
+			#{purchaseBy},
+			#{orderStatus},
+			#{supplierStatus},
+			#{remarks},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_purchase_order_merge SET 	
+			order_no = #{orderNo},
+			purchase_date = #{purchaseDate},
+			dept_id = #{deptId},
+			dept_name = #{deptName},
+			purchase_by = #{purchaseBy},
+			order_status = #{orderStatus},
+			supplier_status = #{supplierStatus},
+			remarks = #{remarks},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_purchase_order_merge SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	<!-- 更新订单状态 -->
+	<update id="updateMergeOrderStatus">
+		UPDATE pd_purchase_order_merge SET 
+			order_status = #{orderStatus},
+			update_date = now()
+		WHERE order_no = #{orderNo}
+	</update>
+	
+	<!-- 更新供应商受理状态 -->
+	<update id="updateMergeSupplierStatus">
+		UPDATE pd_purchase_order_merge SET 
+			supplier_status = #{supplierStatus},
+			update_date = now()
+		WHERE order_no = #{orderNo}
+	</update>
+	
+	<!-- 批量更新 -->
+	<update id="batchUpdate" parameterType="com.thinkgem.hys.pd.entity.vo.TempEntity">
+		update pd_purchase_order_merge set supplier_status = 
+		<foreach collection="list" item="item" index="index" 
+	        separator=" " open="case order_no" close="end">
+	        when #{item.xh} then #{item.jlzt}
+	    </foreach>
+	    where order_no in
+	    <foreach collection="list" index="index" item="item" 
+	        separator="," open="(" close=")">
+	        #{item.xh,jdbcType=VARCHAR}
+	    </foreach>
+	</update>
+
+
+	<select id="findChooseOrderList" resultType="PdPurchaseOrderMerge">
+		SELECT
+		<include refid="pdPurchaseOrderMergeColumns"/>
+		FROM pd_purchase_order_merge a
+		<include refid="pdPurchaseOrderMergeJoins"/>
+		LEFT JOIN pd_purchase_order b ON a.order_no = b.merge_order_no
+		LEFT JOIN pd_purchase_detail c ON b.order_no = c.order_no
+		LEFT JOIN pd_drug_supplier  d on c.prod_id = d.ypdm
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="orderNo != null and orderNo != ''">
+				AND a.order_no LIKE concat('%',#{orderNo},'%')
+			</if>
+			<if test="purchaseDate != null and purchaseDate != ''">
+				AND a.purchase_date = #{purchaseDate}
+			</if>
+			<if test="deptId != null and deptId != ''">
+				AND a.dept_id = #{deptId}
+			</if>
+			<if test="deptName != null and deptName != ''">
+				AND a.dept_name = #{deptName}
+			</if>
+			<if test="purchaseBy != null and purchaseBy != ''">
+				AND a.purchase_by = #{purchaseBy}
+			</if>
+			<if test="orderStatus != null and orderStatus != ''">
+				AND a.order_status = #{orderStatus}
+			</if>
+			<if test="supplierStatus != null and supplierStatus != ''">
+				AND a.supplier_status = #{supplierStatus}
+			</if>
+			<if test="supplierId != null and supplierId != ''">
+				AND d.ghdw_id = #{supplierId}
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND a.purchase_date between #{startDate} and #{endDate}
+			</if>
+			GROUP BY a.order_no
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+</mapper>

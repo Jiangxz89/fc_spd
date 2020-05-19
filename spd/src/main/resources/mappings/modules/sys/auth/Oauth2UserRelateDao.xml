@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sys.dao.auth.Oauth2UserRelateDao">
+    
+	<sql id="oauth2UserRelateColumns">
+		a.id AS "id",
+		a.user_name AS "userName",
+		a.code AS "code",
+		a.token AS "token",
+		a.refress_token AS "refressToken",
+		a.build_time AS "buildTime",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="oauth2UserRelateJoins">
+	</sql>
+    
+	<select id="get" resultType="Oauth2UserRelate">
+		SELECT 
+			<include refid="oauth2UserRelateColumns"/>
+		FROM oauth2_user_relate a
+		<include refid="oauth2UserRelateJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Oauth2UserRelate">
+		SELECT 
+			<include refid="oauth2UserRelateColumns"/>
+		FROM oauth2_user_relate a
+		<include refid="oauth2UserRelateJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Oauth2UserRelate">
+		SELECT 
+			<include refid="oauth2UserRelateColumns"/>
+		FROM oauth2_user_relate a
+		<include refid="oauth2UserRelateJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<select id="getUsernameByAuthCode" resultType="Oauth2UserRelate">
+		SELECT 
+			<include refid="oauth2UserRelateColumns"/>
+		FROM oauth2_user_relate a
+		<include refid="oauth2UserRelateJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="userName != null and userName != ''">
+		 	and a.user_name like CONCAT('%',#{userName},'%')	
+			</if>
+		</where>		
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO oauth2_user_relate(
+			id,
+			user_name,
+			code,
+			token,
+			refress_token,
+			build_time,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{userName},
+			#{code},
+			#{token},
+			#{refressToken},
+			#{buildTime},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	
+		<insert id="insertEntity">
+		INSERT INTO oauth2_user_relate(
+			id,
+			user_name,
+			code,
+			token,
+			refress_token,
+			build_time,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{userName},
+			#{code},
+			#{token},
+			#{refressToken},
+			#{buildTime},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE oauth2_user_relate SET 	
+			user_name = #{userName},
+			code = #{code},
+			token = #{token},
+			refress_token = #{refressToken},
+			build_time = #{buildTime},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<update id="addAccessToken">
+		UPDATE oauth2_user_relate SET 	
+			token = #{token},
+			refress_token = #{refressToken},
+			update_by = #{updateBy.id},
+			build_time = #{buildTime},
+			update_date = #{updateDate}
+		WHERE user_name = #{userName}
+	</update>
+	
+	<update id="delete">
+		UPDATE oauth2_user_relate SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

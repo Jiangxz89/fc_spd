@@ -1,0 +1,80 @@
+/* 右侧主体顶部搜索样式 */
+.searchBox{background: #f2f2f2;padding:10px 20px;line-height: 40px;margin:10px 10px 0;}
+.searchBox label,.searchBox input,.searchBox select{color:#415161;display: inline-block;height: 28px;line-height: 28px;border-radius:2px;font-size: 13px;}
+.searchBox select{width: 110px;margin:0 14px 0 5px;}
+.searchBox input,.searchBox select{background: #fff;border:1px solid #ccc;}
+.searchBox input[type='text']{width: 550px;}
+/* 右侧主体表格切换样式*/
+.tabContent{padding:0 20px;margin-top:20px;clear: both;overflow: hidden;}
+.tabContent .tabList{float: left;}
+.tabContent .tabBtn{float: right;}
+.tabContent .tabBox{clear: both;}
+.tabContent .tabList ul{clear: both;overflow: hidden;}
+.tabContent .tabList ul>li{float:left;padding: 0 20px; height: 35px;line-height: 35px;text-align: center; background: #fff;color:#415161; border:1px solid #999;}
+.tabContent .tabList ul>li>span{font-size: 13px;}
+.tabContent .tabList ul>li>a{color: #415161;font-size: 13px;}
+.tabContent .tabList ul>li.on{background:#03b8cc;color: #fff;}
+.tabContent .tabList ul>li.on>a{color: #fff;}
+.tabBox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

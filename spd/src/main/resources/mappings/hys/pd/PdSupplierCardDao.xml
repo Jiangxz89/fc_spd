@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdSupplierCardDao">
+    
+	<sql id="pdSupplierCardColumns">
+		a.id AS "id",
+		a.card_name AS "cardName",
+		a.card_code AS "cardCode",
+		a.validity_term AS "validityTerm",
+		a.img_url AS "imgUrl",
+		a.supplier_id AS "supplierId",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.extend1 AS "extend1",
+		a.extend2 AS "extend2",
+		a.extend3 AS "extend3"
+	</sql>
+	
+	<sql id="pdSupplierCardJoins">
+	</sql>
+    
+	<select id="get" resultType="PdSupplierCard">
+		SELECT 
+			<include refid="pdSupplierCardColumns"/>
+		FROM pd_supplier_card a
+		<include refid="pdSupplierCardJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdSupplierCard">
+		SELECT 
+			<include refid="pdSupplierCardColumns"/>
+		FROM pd_supplier_card a
+		<include refid="pdSupplierCardJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="supplierId != null and supplierId != ''">
+				AND a.supplier_id = #{supplierId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdSupplierCard">
+		SELECT 
+			<include refid="pdSupplierCardColumns"/>
+		FROM pd_supplier_card a
+		<include refid="pdSupplierCardJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_supplier_card(
+			id,
+			card_name,
+			card_code,
+			validity_term,
+			img_url,
+			supplier_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3
+		) VALUES (
+			#{id},
+			#{cardName},
+			#{cardCode},
+			#{validityTerm},
+			#{imgUrl},
+			#{supplierId},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{extend1},
+			#{extend2},
+			#{extend3}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_supplier_card SET 	
+			card_name = #{cardName},
+			card_code = #{cardCode},
+			validity_term = #{validityTerm},
+			img_url = #{imgUrl},
+			supplier_id = #{supplierId},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			extend1 = #{extend1},
+			extend2 = #{extend2},
+			extend3 = #{extend3}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_supplier_card SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+		
+	<delete id="deleteBySupplierId">
+		DELETE FROM pd_supplier_card WHERE supplier_id = #{supplierId}
+	</delete>
+	
+	<insert id="saveGroupBySupplierId">
+		INSERT INTO pd_supplier_card(
+			id,
+			card_name,
+			card_code,
+			validity_term,
+			img_url,
+			supplier_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3
+		) VALUES <foreach collection="list" item="item" index="index" open="" close="" separator=",">
+		(
+			#{item.id},
+			#{item.cardName},
+			#{item.cardCode},
+			#{item.validityTerm},
+			#{item.imgUrl},
+			#{item.supplierId},
+			#{item.createBy.id},
+			#{item.createDate},
+			#{item.updateBy.id},
+			#{item.updateDate},
+			#{item.remarks},
+			#{item.delFlag},
+			#{item.extend1},
+			#{item.extend2},
+			#{item.extend3}
+		)</foreach>
+	</insert>
+		
+</mapper>

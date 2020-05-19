@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.MedstoYplcmlkDao">
+    
+	<sql id="medstoYplcmlkColumns">
+		a.idm AS "idm",
+		a.ypmc AS "ypmc",
+		a.xwmc AS "xwmc",
+		a.py AS "py",
+		a.wb AS "wb",
+		a.ypjx AS "ypjx",
+		a.ggdw AS "ggdw",
+		a.jlzt AS "jlzt",
+		a.memo AS "memo",
+		a.flm AS "flm",
+		a.ypdm AS "ypdm",
+		a.lcyplx AS "lcyplx",
+		a.del_flag AS "delFlag",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.create_date AS "createDate"
+	</sql>
+	
+	<sql id="medstoYplcmlkJoins">
+	</sql>
+    
+	<select id="get" resultType="MedstoYplcmlk">
+		SELECT 
+			<include refid="medstoYplcmlkColumns"/>
+		FROM medsto_yplcmlk a
+		<include refid="medstoYplcmlkJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MedstoYplcmlk">
+		SELECT 
+			<include refid="medstoYplcmlkColumns"/>
+		FROM medsto_yplcmlk a
+		<include refid="medstoYplcmlkJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MedstoYplcmlk">
+		SELECT 
+			<include refid="medstoYplcmlkColumns"/>
+		FROM medsto_yplcmlk a
+		<include refid="medstoYplcmlkJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO medsto_yplcmlk(
+			idm,
+			ypmc,
+			xwmc,
+			py,
+			wb,
+			ypjx,
+			ggdw,
+			jlzt,
+			memo,
+			flm,
+			ypdm,
+			lcyplx,
+			del_flag,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			create_date
+		) VALUES (
+			#{idm},
+			#{ypmc},
+			#{xwmc},
+			#{py},
+			#{wb},
+			#{ypjx},
+			#{ggdw},
+			#{jlzt},
+			#{memo},
+			#{flm},
+			#{ypdm},
+			#{lcyplx},
+			#{delFlag},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{remarks},
+			#{createDate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE medsto_yplcmlk SET 	
+			idm = #{idm},
+			ypmc = #{ypmc},
+			xwmc = #{xwmc},
+			py = #{py},
+			wb = #{wb},
+			ypjx = #{ypjx},
+			ggdw = #{ggdw},
+			jlzt = #{jlzt},
+			memo = #{memo},
+			flm = #{flm},
+			ypdm = #{ypdm},
+			lcyplx = #{lcyplx},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE medsto_yplcmlk SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

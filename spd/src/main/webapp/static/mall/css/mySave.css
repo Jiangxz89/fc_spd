@@ -1,0 +1,28 @@
+.changeTitle{padding:40px 0 5px 0; width: 100%;border-bottom: 1px solid #ccc;}
+.changeTitle a{font-size: 13px;color: #666;float: left;;width: 65px;text-align: center;font-weight: 600;line-height: 30px;height: 30px;margin:0 9px;}
+.changeTitle a.on{background: #69BB65;color: #fff;}
+.searchProductBox{width: 300px;height: 30px;border:1px solid #ccc;}
+.searchProductBox>input[type='text']{border:none;outline: none;width: 260px;height: 30px;float: left;padding-left: 10px;vertical-align: middle;}
+.searchProductBox>i.fa{float: left;;width: 30px;height: 30px;text-align: center;line-height: 30px;color: #666;cursor: pointer;}
+.productTab{width: 100%;}
+.productTab td{padding:20px 0;}
+.productTab tbody>tr>td{border-bottom: 1px solid #ccc;}
+.productTab tbody>tr>td:nth-child(3),.productTab tbody>tr>td:nth-child(1),.hcy-table-img tr td:nth-child(5){clear: both;overflow: hidden;}
+.productTab tbody>tr>td>p.productPrice{font-size: 12px;color: #666;line-height: 25px;}
+.productTab .proImgBox,.productTab .proInfoBox{float: left;}
+.productTab .proImgBox>img{display: inline-block;width: 90px;height: 90px;}
+.productTab .proInfoBox{padding:15px 0 0 20px;}
+.productTab .proInfoBox>ul>li{line-height: 22px;color: #666;font-size: 12px;}
+.productTab tr td a.addCar,.productTab tr td a.clearSave,.hcy-table-img tr td a{float: left; width: 74px;height: 26px;text-align: center;line-height: 26px;color: #666;font-size: 12px;margin:0 5px;}
+.productTab tr td a.addCar{background: #FFCD34;color: #fff;}
+.productTab tr td a.clearSave,.hcy-table-img tr td a.removeSave{border:1px solid #666;}
+.hcy-table-img tr td a.lookNow{background: #62BD60;color: #fff;}
+.hcy-table-img{width: 100%;border-collapse: separate;border-spacing: 0;text-align: left;border-radius: 3px 3px 0 0;overflow: hidden;}
+.hcy-table-img>tbody>tr>td>img{display: inline-block;width: 120px;height: 120px;}
+.hcy-table-img tr td{padding:8px;border-bottom: 1px solid #ccc;}
+.hcy-table-img .companyText{width: 450px;color: #999;font-size: 12px;}
+.hcy-table-img .nums{padding-top: 5px;}
+.hcy-table-img .nums>span{padding-right: 20px;}
+.hcy-table-img .nums span{font-size: 12px;color: #999;}
+.hcy-table-img span.downLoadSpan{color:#63BC62;display:inline-block;margin-left:8px;border-bottom:1px solid #63BC62;}
+.hcy-table-img .classTit{font-size:14px;color:#666;padding-bottom:6px;}

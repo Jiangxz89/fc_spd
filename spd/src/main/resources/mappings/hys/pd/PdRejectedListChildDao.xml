@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdRejectedListChildDao">
+    
+	<sql id="pdRejectedListChildColumns">
+		a.id AS "id",
+		a.head_id AS "headId",
+		a.product_stock_id AS "productStockId",
+		a.rejected_count AS "rejectedCount",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="pdRejectedListChildJoins">
+	</sql>
+    
+	<select id="get" resultType="PdRejectedListChild">
+		SELECT 
+			<include refid="pdRejectedListChildColumns"/>
+		FROM pd_rejected_list_child a
+		<include refid="pdRejectedListChildJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdRejectedListChild">
+		SELECT 
+			<include refid="pdRejectedListChildColumns"/>
+		FROM pd_rejected_list_child a
+		<include refid="pdRejectedListChildJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="headId != null and headId != ''">
+				AND a.head_id = #{headId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdRejectedListChild">
+		SELECT 
+			<include refid="pdRejectedListChildColumns"/>
+		FROM pd_rejected_list_child a
+		<include refid="pdRejectedListChildJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_rejected_list_child(
+			id,
+			head_id,
+			product_stock_id,
+			rejected_count,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{headId},
+			#{productStockId},
+			#{rejectedCount},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_rejected_list_child SET 	
+			id = #{id},
+			head_id = #{headId},
+			product_stock_id = #{productStockId},
+			rejected_count = #{rejectedCount},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_rejected_list_child SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

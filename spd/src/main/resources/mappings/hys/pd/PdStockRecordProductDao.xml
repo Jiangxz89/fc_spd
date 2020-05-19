@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdStockRecordProductDao">
+    
+	<sql id="pdStockRecordProductColumns">
+		a.id AS "id",
+		a.record_id AS "recordId",
+		a.product_id AS "productId",
+		a.batch_no AS "batchNo",
+		a.product_num AS "productNum",
+		ifnull(a.in_price,0) AS "inPrice",
+		ifnull(a.out_price,0) AS "outPrice",
+		a.limit_date AS "limitDate",
+		a.number_package_id AS "numberPackageId",
+		a.high_low_supplies AS "highLowSupplies",
+		a.product_bar_code AS "productBarCode", 
+		a.stock_position AS "stockPosition", 
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.extend1 AS "extend1",
+		a.extend2 AS "extend2",
+		a.extend3 AS "extend3",
+		a.extend3 AS "extend3",
+		a.import_no AS "importNo",
+		b.name AS "productName",
+		b.number AS "number",
+		b.spec AS "spec",
+		b.version AS "version",
+		b.unit AS "unit",
+		b.vender_name AS "venderName",
+		b.registration AS "registration",
+		b.selling_price AS "sellingPrice",
+		b.is_urgent AS "isUrgent",
+	    b.surplus_pur_count AS "surplusPurCount"
+	</sql>
+	
+	<sql id="pdProductStockTotalColumns">				
+		t.stock_num AS "stockNum"
+	</sql>
+	<sql id="pdProductStockColumns">				
+		s.stock_num AS "stockNum",
+		s.valid_date AS "validDate",
+		s.product_name AS "productName"
+	</sql>
+
+	<!-- 查询显示优化start 2019年5月20日09:13:05 -->
+	<sql id="pdVenderColumnsShow">
+		h.`name` as "venderNameShow"
+	</sql>
+
+	<!-- 查询显示优化start 2019年5月20日09:13:05 -->
+	<sql id="pdVenderJoinsShow">
+		LEFT JOIN pd_vender h on b.vender_id = h.id
+	</sql>
+
+	<sql id="pdStockRecordJoins">
+		LEFT JOIN pd_stock_record r ON a.record_id = r.id
+	</sql>
+	<sql id="pdStockRecordProductJoins">
+		LEFT JOIN pd_product b on a.product_id = b.id
+	</sql>
+	<sql id="pdProductStockTotalJoins">
+		LEFT JOIN pd_product_stock_total t on t.product_id=a.product_id
+	</sql>
+	<sql id="pdProductStockJoins">
+		LEFT JOIN pd_product_stock s ON (s.product_bar_code = a.product_bar_code AND s.batch_no = a.batch_no AND s.product_id =a.product_id)
+	</sql>
+	    
+	<select id="get" resultType="PdStockRecordProduct">
+		SELECT 
+			<include refid="pdStockRecordProductColumns"/>
+		FROM pd_stock_record_product a
+		<include refid="pdStockRecordProductJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	<!-- 查出库产品信息 ，关联出库明细-->
+	<select id="findList" resultType="PdStockRecordProduct">
+		SELECT 
+			<include refid="pdStockRecordProductColumns"/>,
+			<include refid="pdProductStockColumns"/>
+		FROM pd_stock_record_product a
+		<include refid="pdStockRecordProductJoins"/>
+		<include refid="pdProductStockJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="recordId != null and recordId != ''">
+				AND a.record_id = #{recordId}
+			</if>
+			<if test="storeroomId != null and storeroomId != ''">
+				AND s.storeroom_id = #{storeroomId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdStockRecordProduct">
+		SELECT 
+			<include refid="pdStockRecordProductColumns"/>
+		FROM pd_stock_record_product a
+		<include refid="pdStockRecordProductJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_stock_record_product(
+			id,
+			record_id,
+			product_id,
+			batch_no,
+			product_num,
+			limit_date,
+			number_package_id,
+			high_low_supplies,
+			product_bar_code, 
+			stock_position,
+		    in_price,
+		    out_price,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			import_no,
+			extend1,
+			extend2,
+			extend3
+		) VALUES (
+			#{id},
+			#{recordId},
+			#{productId},
+			#{batchNo},
+			#{productNum},
+			#{limitDate},
+			#{numberPackageId},
+			#{highLowSupplies},
+			#{productBarCode}, 
+			#{stockPosition},
+			#{inPrice},
+			#{outPrice},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{importNo},
+			#{extend1},
+			#{extend2},
+			#{extend3}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_stock_record_product SET 	
+			record_id = #{recordId},
+			product_id = #{productId},
+			batch_no = #{batchNo},
+			product_num = #{productNum},
+			limit_date = #{limitDate},
+			number_package_id = #{numberPackageId},
+			high_low_supplies = #{highLowSupplies},
+			product_bar_code = #{productBarCode}, 
+			stock_position = #{stockPosition}, 
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			import_no = #{importNo},
+			extend1 = #{extend1},
+			extend2 = #{extend2},
+			extend3 = #{extend3}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_stock_record_product SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="deleteByRecordId">
+		DELETE FROM pd_stock_record_product WHERE record_id = #{recordId}
+	</delete>
+	
+	<insert id="saveGroupByRecordId">
+		INSERT INTO pd_stock_record_product(
+			id,
+			record_id,
+			product_id,
+			batch_no,
+			product_num,
+			limit_date,
+			number_package_id,
+			high_low_supplies,
+			product_bar_code, 
+			stock_position,
+		    in_price,
+		    out_price,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			import_no,
+			extend1,
+			extend2,
+			extend3
+		) VALUES <foreach collection="list" item="item" index="index" open="" close="" separator=",">
+		(
+			#{item.id},
+			#{item.recordId},
+			#{item.productId},
+			#{item.batchNo},
+			#{item.productNum},
+			#{item.limitDate},
+			#{item.numberPackageId},
+			#{item.highLowSupplies},
+			#{item.productBarCode}, 
+			#{item.stockPosition},
+			#{item.inPrice},
+		    #{item.outPrice},
+			#{item.createBy.id},
+			#{item.createDate},
+			#{item.updateBy.id},
+			#{item.updateDate},
+			#{item.remarks},
+			#{item.delFlag},
+			#{item.importNo},
+			#{item.extend1},
+			#{item.extend2},
+			#{item.extend3}
+		)</foreach>
+	</insert>
+	
+	<!-- 只查入库产品信息 -->
+	<select id="findPdList" resultType="PdStockRecordProduct">
+		SELECT 
+			<include refid="pdStockRecordProductColumns"/>,
+			<include refid="pdVenderColumnsShow"/>
+		FROM pd_stock_record_product a
+		<include refid="pdStockRecordProductJoins"/>		
+		<include refid="pdVenderJoinsShow"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="recordId != null and recordId != ''">
+				AND a.record_id = #{recordId}
+			</if>			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+		</choose>
+	</select>
+
+	<!-- 查询出入库明细 用于库存查询列出出入库明细以及出入库价格 add by jiangxz 20190918 -->
+	<select id="stockInAndOutRecordDetailQuery" resultType="PdStockRecordProduct">
+		select
+		c.name as productName,
+		c.number as number,
+		c.spec as spec,
+		c.version as version,
+		b.batch_no as batchNo,
+		b.limit_date as limitDate,
+		c.unit as unit,
+		c.vender_name as venderName,
+		c.registration as registration,
+		case when a.recode_type='1' then '出库' when a.recode_type='0' then '入库' end as recodeType,
+		b.product_num as productNum,
+		ifnull(b.in_price,0) as inPrice,
+		b.product_num * ifnull(b.in_price,0) as pdTotalPrice,
+		ifnull(b.out_price,0) as outPrice,
+		b.product_num * ifnull(b.out_price,0) as pdOutTotalPrice,
+		a.in_name as inName,
+		a.out_name as outName,
+		a.check_time as checkTime
+		from pd_stock_record a
+		left join pd_stock_record_product b on a.id=b.record_id
+		left join pd_product c on b.product_id = c.id
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} and a.record_state = '1'
+			<if test="productId != null and productId != ''">
+				AND b.product_id = #{productId}
+			</if>
+
+			<if test="storeroomId != null and storeroomId != ''">
+				and ((a.recode_type = '1' and a.out_id = #{storeroomId}) or (a.recode_type = '0' and a.in_id = #{storeroomId}))
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND b.batch_no = #{batchNo}
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND b.limit_date BETWEEN #{startDate} AND #{endDate}
+			</if>
+			<if test="venderName != null and venderName != ''">
+				AND c.vender_Id = #{venderName}
+			</if>
+		</where>
+		order by a.check_time desc
+	</select>
+
+</mapper>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdProductRuleDao">
+    
+	<sql id="pdProductRuleColumns">
+		a.id AS "id",
+		a.product_id AS "productId",
+		a.rule_id AS "ruleId"
+	</sql>
+
+	<sql id="pdEncodingRuleColumns">
+		 b.`name` as "ruleName",
+		 b.total_digit as "totalDigit"
+	</sql>
+
+	<sql id="pdProductRuleJoins">
+	</sql>
+
+	<sql id="pdEncodingRuleJoins">
+		  LEFT JOIN pd_encoding_rule b on a.rule_id = b.id
+	</sql>
+    
+	<select id="get" resultType="PdProductRule">
+		SELECT 
+			<include refid="pdProductRuleColumns"/>
+		FROM pd_product_rule a
+		<include refid="pdProductRuleJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdProductRule">
+		SELECT 
+			<include refid="pdProductRuleColumns"/>,
+			<include refid="pdEncodingRuleColumns"/>
+		FROM pd_product_rule a
+		<include refid="pdProductRuleJoins"/>
+		<include refid="pdEncodingRuleJoins"/>
+		<where>
+			1 = 1
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdProductRule">
+		SELECT 
+			<include refid="pdProductRuleColumns"/>
+		FROM pd_product_rule a
+		<include refid="pdProductRuleJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_product_rule(
+			id,
+			product_id,
+			rule_id
+		) VALUES (
+			#{id},
+			#{productId},
+			#{ruleId}
+		)
+	</insert>
+
+	<insert id="batchSave">
+		INSERT INTO pd_product_rule(
+			id,
+			product_id,
+			rule_id
+		) VALUES
+		<foreach collection="list" separator="," item="item">
+			(
+			#{item.id},
+			#{item.productId},
+			#{item.ruleId}
+			)
+		</foreach>
+
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_product_rule SET 	
+			product_id = #{productId},
+			rule_id = #{ruleId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM pd_product_rule
+		WHERE id = #{id}
+	</update>
+
+	<delete id="deleteByProductId">
+		DELETE FROM pd_product_rule WHERE product_id = #{productId}
+	</delete>
+
+</mapper>

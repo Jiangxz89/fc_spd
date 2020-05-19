@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.MedstoYkzkcDao">
+    
+	<sql id="medstoYkzkcColumns">
+		a.cd_idm AS "cdIdm",
+		a.ksdm AS "ksdm",
+		a.gg_idm AS "ggIdm",
+		a.lc_idm AS "lcIdm",
+		a.kcsl AS "kcsl",
+		a.lsje AS "lsje",
+		a.pfje AS "pfje",
+		a.jxje AS "jxje",
+		a.cfwz AS "cfwz",
+		a.kzbz AS "kzbz",
+		a.tybz AS "tybz",
+		a.tsbz AS "tsbz",
+		a.gzbz AS "gzbz",
+		a.memo AS "memo",
+		a.djsl AS "djsl",
+		a.czyh AS "czyh",
+		a.czrq AS "czrq",
+		a.gldj AS "gldj",
+		a.kzry AS "kzry",
+		a.del_flag AS "delFlag",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.create_date AS "createDate"
+	</sql>
+	
+	<sql id="medstoYkzkcJoins">
+	</sql>
+    
+	<select id="get" resultType="MedstoYkzkc">
+		SELECT 
+			<include refid="medstoYkzkcColumns"/>
+		FROM medsto_ykzkc a
+		<include refid="medstoYkzkcJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MedstoYkzkc">
+		SELECT 
+			<include refid="medstoYkzkcColumns"/>
+		FROM medsto_ykzkc a
+		<include refid="medstoYkzkcJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MedstoYkzkc">
+		SELECT 
+			<include refid="medstoYkzkcColumns"/>
+		FROM medsto_ykzkc a
+		<include refid="medstoYkzkcJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO medsto_ykzkc(
+			cd_idm,
+			ksdm,
+			gg_idm,
+			lc_idm,
+			kcsl,
+			lsje,
+			pfje,
+			jxje,
+			cfwz,
+			kzbz,
+			tybz,
+			tsbz,
+			gzbz,
+			memo,
+			djsl,
+			czyh,
+			czrq,
+			gldj,
+			kzry,
+			del_flag,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			create_date
+		) VALUES (
+			#{cdIdm},
+			#{ksdm},
+			#{ggIdm},
+			#{lcIdm},
+			#{kcsl},
+			#{lsje},
+			#{pfje},
+			#{jxje},
+			#{cfwz},
+			#{kzbz},
+			#{tybz},
+			#{tsbz},
+			#{gzbz},
+			#{memo},
+			#{djsl},
+			#{czyh},
+			#{czrq},
+			#{gldj},
+			#{kzry},
+			#{delFlag},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{remarks},
+			#{createDate}
+		)
+	</insert>
+	
+	<!-- 批量插入 -->
+	<insert id="batchInsert">
+		INSERT INTO medsto_ykzkc(
+			cd_idm,
+			ksdm,
+			gg_idm,
+			lc_idm,
+			kcsl,
+			lsje,
+			pfje,
+			jxje,
+			cfwz,
+			kzbz,
+			tybz,
+			tsbz,
+			gzbz,
+			memo,
+			djsl,
+			czyh,
+			czrq,
+			gldj,
+			kzry,
+			del_flag,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			create_date
+		) VALUES
+		<foreach collection="list" item="item" separator=",">
+		 (
+			#{item.cdIdm},
+			#{item.ksdm},
+			#{item.ggIdm},
+			#{item.lcIdm},
+			#{item.kcsl},
+			#{item.lsje},
+			#{item.pfje},
+			#{item.jxje},
+			#{item.cfwz},
+			#{item.kzbz},
+			#{item.tybz},
+			#{item.tsbz},
+			#{item.gzbz},
+			#{item.memo},
+			#{item.djsl},
+			#{item.czyh},
+			#{item.czrq},
+			#{item.gldj},
+			#{item.kzry},
+			#{item.delFlag},
+			#{item.createBy.id},
+			#{item.updateDate},
+			#{item.updateBy.id},
+			#{item.remarks},
+			#{item.createDate}
+		)
+		</foreach>
+	</insert>
+	
+	<update id="update">
+		UPDATE medsto_ykzkc SET 	
+			cd_idm = #{cdIdm},
+			ksdm = #{ksdm},
+			gg_idm = #{ggIdm},
+			lc_idm = #{lcIdm},
+			kcsl = #{kcsl},
+			lsje = #{lsje},
+			pfje = #{pfje},
+			jxje = #{jxje},
+			cfwz = #{cfwz},
+			kzbz = #{kzbz},
+			tybz = #{tybz},
+			tsbz = #{tsbz},
+			gzbz = #{gzbz},
+			memo = #{memo},
+			djsl = #{djsl},
+			czyh = #{czyh},
+			czrq = #{czrq},
+			gldj = #{gldj},
+			kzry = #{kzry},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE medsto_ykzkc SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="clearData">
+		DELETE FROM medsto_ykzkc
+	</delete>
+</mapper>

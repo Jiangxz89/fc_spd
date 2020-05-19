@@ -1,0 +1,56 @@
+.hcy-page{line-height: 56px;}
+.hcy-page a{font-size: 12px;color: #999;}
+.hcy-page span{padding:0 6px;color: #999;}
+.hcy-goodContent{position: relative;}
+.hcy-goodContent .goodImg{float: left;width: 400px;height: 480px;}
+.hcy-goodContent .goodList{float: left;padding-left: 40px;}
+.hcy-goodContent #BigShowImg{position: absolute;left: 440px;top:0;width: 390px;height: 390px;overflow: hidden;display: none;background: #fff;}
+.hcy-goodContent #BigShowImg img{position: absolute;left: 0;top:0; width: 800px;height: 800px;display: none;max-width:800px;}
+.hcy-goodContent #BigShowImg img:first-child{display: block;}
+.hcy-goodContent .goodImg .bigImgBox{width: 394px;height: 394px;background: #ccc;margin-bottom: 10px;position: relative;}
+.hcy-goodContent .goodImg .bigImgBox #bg{width:215px;height:215px;background: #F9EBA3;position: absolute;left: 0;top:0;opacity: .5;cursor: move;display: none;}
+.hcy-goodContent .goodImg .bigImgBox img{width: 394px;height: 394px;}
+.hcy-goodContent .goodImg .bigImgBox img:not(:first-child){display: none;}
+.hcy-goodContent .goodImg .smallImgBox{position: relative;}
+.hcy-goodContent .goodImg .smallImgBox .move{position: absolute;top: 12px;font-size: 30px;color: #666;}
+.hcy-goodContent .goodImg .smallImgBox #rightMove{right:8px;display: none;}
+.hcy-goodContent .goodImg .smallImgBox #leftMove{left:0;display: none;}
+
+.hcy-goodContent .goodImg .smallImgList{width: 394px;overflow: hidden;height: 69px;}
+.hcy-goodContent .goodImg .smallImgList li{float: left;width: 69px;height: 69px;background: #ccc;margin-right: 12px;}
+.hcy-goodContent .goodImg .smallImgList li img{width: 67px;height: 67px;border:1px solid #ccc;}
+.hcy-goodContent .goodImg .smallImgList li.onImg img{border:2px solid #62BD60;height: 64px;}
+.hcy-goodContent .goodImg .smallImgList li:last-child{margin-right: 0;}
+.goodList .goodTittle{font-size: 23px;color: #666;padding: 20px 0;font-weight: 400;}
+.goodList ul li{line-height: 30px;font-size: 12px;color: #666;}
+.goodList ul li.line{border-bottom: 1px solid #ccc;padding-bottom: 10px;margin-bottom: 10px;}
+.goodList ul li span.buySpan{color: #FF0000;font-size: 18px;}
+.goodList ul li .buyNumber{width: 60px;height: 26px;border:1px solid #ccc;padding:0 5px;border-radius: 2px;margin:0 10px;}
+.goodList ul li .addCar,.goodList ul li .buyNow{display: inline-block; width: 195px;height: 52px;text-align: center;line-height: 52px;color: #fff;font-size: 13px;margin-top: 20px;}
+.addCar{background: #FFCC33;margin-right: 34px;}
+.buyNow{background: #62BD60;}
+.goodtitItem{font-size: 14px;font-weight: 400;line-height: 40px;cursor: pointer; float:left;margin-left: 10px;color: #666;}
+.goodtitItem:nth-child(1){margin-left: 0;}
+.goodtitItem:nth-child(2){margin-left: 20px;}
+.goodtitItem.onGoodItem{color: #7DC07A;}
+.smallTit{font-size: 14px;color: #666;font-weight: 400;border-bottom: 1px solid  #ccc;padding-bottom: 20px;}
+.hcy-goodExplain{margin-top: 40px;}
+.hcy-goodExplain ul{padding-top: 20px;}
+.hcy-goodExplain ul li{line-height: 30px;color: #666;font-size: 12px;width: 1100px;}
+.hcy-goodExplain .goodBottomList .assessStar>ul>li{float:left;margin-right:50px;width:200px;}
+.hcy-goodExplain .goodBottomList .assessStar>ul>li>div{display:inline-block;}
+.hcy-goodExplain .goodBottomList ul li img.userImg{display: inline-block; width:50px;height: 50px;background: #ccc;border-radius: 50%;}
+.hcy-goodExplain .goodBottomList ul.ulEvaluate>li{border-bottom: 1px solid #ccc;padding:10px 0;}
+.hcy-goodExplain .goodBottomList ul.ulEvaluate{padding:0;}
+
+
+.hcy-lookList #loopWrap{position: relative;margin-top: 40px;width: 1100px;height:300px; overflow: hidden;}
+.hcy-lookList #loopMenu{width: 1100px;height:300px;}
+.hcy-lookList #loopUl{width: 3300px;height:300px; position: absolute;left: 0;top:0;}
+.hcy-lookList #l{position: absolute;left: 0;top:90px;cursor: pointer;}
+.hcy-lookList #r{position: absolute;right: 0;top:90px;cursor: pointer;}
+#loopUl li{width: 1100px;float: left;text-align:center;}
+#loopUl li>div{margin:0 15px;display: inline-block;text-align: left;}
+#loopUl li>div>a>img{border:1px solid #efefef;width:208px;height:155px;}
+#loopUl li>div>a{display:block; padding-top: 12px;color: #666;font-size: 12px;width: 208px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;margin: 0;}
+.hcy-lookList #loopUl li>div>a.addInCar{padding-top:0; display: block;width: 74px;height: 24px;text-align: center;line-height: 24px;color: #fff;background: #FFCC33;font-size: 12px;margin-top: 10px;}

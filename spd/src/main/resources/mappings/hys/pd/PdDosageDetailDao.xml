@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdDosageDetailDao">
+    
+	<sql id="pdDosageDetailColumns">
+		a.id AS "id",
+		a.dosage_no AS "dosageNo",
+		a.prod_id AS "prodId",
+		a.prod_no AS "prodNo",
+		a.prod_barcode AS "prodBarcode",
+		a.batch_no AS "batchNo",
+		a.expire_date AS "expireDate",
+		a.dosage_count AS "dosageCount",
+		a.stock_num AS "stockNum",
+		a.left_refund_num AS "leftRefundNum",
+		a.amount_money AS "amountMoney",
+		a.is_charge AS "isCharge",
+		a.remarks AS "remarks",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag",
+		a.charge_code AS "chargeCode",
+		c.name AS "pdProduct.name",
+		c.number AS "pdProduct.number",
+		c.spec AS "pdProduct.spec",
+		c.version AS "pdProduct.version",
+		c.unit AS "pdProduct.unit",
+		c.selling_price AS "pdProduct.sellingPrice",
+		c.is_charge AS "isCharges"
+	</sql>
+	
+	<sql id="pdDosageDetailJoins">
+		LEFT JOIN pd_product c ON a.prod_id = c.id
+	</sql>
+
+	<select id="get" resultType="PdDosageDetail">
+		SELECT 
+			<include refid="pdDosageDetailColumns"/>
+		FROM pd_dosage_detail a
+		<include refid="pdDosageDetailJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdDosageDetail">
+		SELECT 
+			<include refid="pdDosageDetailColumns"/>
+		FROM pd_dosage_detail a
+		<include refid="pdDosageDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="dosageNo != null and dosageNo != ''">
+				AND a.dosage_no = #{dosageNo}
+			</if>
+			<if test="prodId != null and prodId != ''">
+				AND a.prod_id = #{prodId}
+			</if>
+			<if test="prodNo != null and prodNo != ''">
+				AND a.prod_no = #{prodNo}
+			</if>
+			<if test="prodBarcode != null and prodBarcode != ''">
+				AND a.prod_barcode = #{prodBarcode}
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND a.batch_no = #{batchNo}
+			</if>
+			<if test="isCharge != null and isCharge != ''">
+				AND a.is_charge = #{isCharge}
+			</if>
+			<!--<if test="cancleCharge != null and cancleCharge != ''">
+				AND (a.is_charge is null or a.is_charge = '')
+			</if>-->
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdDosageDetail">
+		SELECT 
+			<include refid="pdDosageDetailColumns"/>
+		FROM pd_dosage_detail a
+		<include refid="pdDosageDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_dosage_detail(
+			id,
+			dosage_no,
+			prod_id,
+			prod_no,
+			prod_barcode,
+			batch_no,
+			expire_date,
+			dosage_count,
+			stock_num,
+			left_refund_num,
+			amount_money,
+			is_charge,
+			remarks,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			charge_code
+		) VALUES (
+			#{id},
+			#{dosageNo},
+			#{prodId},
+			#{prodNo},
+			#{prodBarcode},
+			#{batchNo},
+			#{expireDate},
+			#{dosageCount},
+			#{stockNum},
+			#{leftRefundNum},
+			#{amountMoney},
+			#{isCharge},
+			#{remarks},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag},
+			#{chargeCode}
+		)
+	</insert>
+	
+	<!-- 批量插入用量详情 -->
+	<insert id="batchInsert">
+		INSERT INTO pd_dosage_detail(
+			id,
+			dosage_no,
+			prod_id,
+			prod_no,
+			prod_barcode,
+			batch_no,
+			expire_date,
+			dosage_count,
+			stock_num,
+			left_refund_num,
+			amount_money,
+			is_charge,
+			remarks,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			charge_code
+		) VALUES 
+		<foreach collection="list" separator="," item="item">
+		(
+			#{item.id},
+			#{item.dosageNo},
+			#{item.prodId},
+			#{item.prodNo},
+			#{item.prodBarcode},
+			#{item.batchNo},
+			#{item.expireDate},
+			#{item.dosageCount},
+			#{item.stockNum},
+			#{item.leftRefundNum},
+			#{item.amountMoney},
+			#{item.isCharge},
+			#{item.remarks},
+			#{item.createBy.id},
+			#{item.createDate},
+			#{item.updateBy.id},
+			#{item.updateDate},
+			#{item.delFlag},
+			#{item.chargeCode}
+		)
+		</foreach>
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_dosage_detail SET 	
+			dosage_no = #{dosageNo},
+			prod_id = #{prodId},
+			prod_no = #{prodNo},
+			prod_barcode = #{prodBarcode},
+			batch_no = #{batchNo},
+			expire_date = #{expireDate},
+			dosage_count = #{dosageCount},
+			stock_num = #{stockNum},
+			left_refund_num = #{leftRefundNum},
+			amount_money = #{amountMoney},
+			is_charge = #{isCharge},
+			remarks = #{remarks},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			charge_code = #{chargeCode}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 批量更新收费状态 -->
+	<update id="updateIsCharge" parameterType="java.util.HashMap">
+		update pd_dosage_detail SET 
+			is_charge = #{isCharge}
+		WHERE id in (${ids})
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_dosage_detail SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 更新剩余可退数量 -->
+	<update id="updateLeftRefundNum" parameterType="java.util.List">
+	    UPDATE pd_dosage_detail SET 
+			left_refund_num =
+	    <foreach collection="list" item="item" index="index" 
+	        separator=" " open="case id" close="end">
+	        when #{item.dosageDetailId} then left_refund_num - #{item.rtCount}
+	    </foreach>
+	    where id in
+	    <foreach collection="list" index="index" item="item" 
+	        separator="," open="(" close=")">
+	        #{item.dosageDetailId,jdbcType=VARCHAR}
+	    </foreach>
+	</update>
+	
+	<!-- 查询可退回数大于0的数据 -->
+	<select id="findListByLeftRefundNum" resultType="PdDosageDetail">
+		SELECT 
+			<include refid="pdDosageDetailColumns"/>
+		FROM pd_dosage_detail a
+		<include refid="pdDosageDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+				AND a.left_refund_num > 0
+			<if test="dosageNo != null and dosageNo != ''">
+				AND a.dosage_no = #{dosageNo}
+			</if>
+			<if test="prodId != null and prodId != ''">
+				AND a.prod_id = #{prodId}
+			</if>
+			<if test="prodNo != null and prodNo != ''">
+				AND a.prod_no = #{prodNo}
+			</if>
+			<if test="prodBarcode != null and prodBarcode != ''">
+				AND a.prod_barcode = #{prodBarcode}
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND a.batch_no = #{batchNo}
+			</if>
+			<if test="isCharge != null and isCharge != ''">
+				AND a.is_charge = #{isCharge}
+			</if>
+			<if test="cancleCharge != null and cancleCharge != ''">
+				AND (a.is_charge is null or a.is_charge = '')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="findPdDosageDetailByIds" parameterType="java.util.HashMap" resultType="PdDosageDetail">
+		SELECT
+		<include refid="pdDosageDetailColumns"/>
+		FROM pd_dosage_detail a
+		<include refid="pdDosageDetailJoins"/>
+		<where>
+			a.del_flag = "0"
+			AND a.id in (${ids})
+			ORDER BY a.update_date DESC
+		</where>
+	</select>
+
+</mapper>

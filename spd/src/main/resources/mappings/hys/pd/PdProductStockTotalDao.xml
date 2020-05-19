@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdProductStockTotalDao">
+    
+	<sql id="pdProductStockTotalColumns">
+		a.id AS "id",
+		a.product_id AS "productId",		
+		a.stock_num AS "stockNum",
+		a.storeroom_id AS "storeroomId",		
+		IFNULL(a.limit_up,'') AS "limitUp",
+		IFNULL(a.limit_down,'') AS "limitDown",
+		a.expire AS "expire",
+		a.is_long AS "isLong",
+		a.supplier_id AS "supplierId",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"		
+	</sql>
+	
+	<sql id="pdProductStockTotalJoins">
+	</sql>
+	
+	<!-- 产品信息列 -->
+	<sql id="productColumns">
+		b.name AS "pdProduct.name",
+		b.number AS "pdProduct.number",
+		b.spec AS "pdProduct.spec",
+		b.unit AS "pdProduct.unit",
+		b.selling_price AS "pdProduct.sellingPrice",
+		b.charge_code AS "pdProduct.chargeCode",
+		b.vender_name AS "pdProduct.venderName",
+		<!-- excel -->
+		b.name AS "name",
+		b.number AS "number",
+		b.spec AS "spec",
+		b.unit AS "unit",
+		b.vender_name AS "venderName",
+		b.version AS "version",
+		b.registration AS "registration"
+	</sql>
+	<!-- 库房信息列 -->
+    <sql id="pdStoreroomColumns">
+    	s.storeroom_name AS "pdStoreroom.storeroomName"
+    </sql>
+    <!-- 连接库房表 -->
+    <sql id="pdStoreroomJoins">
+    	LEFT JOIN pd_storeroom s ON a.storeroom_id=s.id
+    </sql>
+	<!-- 连接产品表 -->
+	<sql id="pdProductJoins">
+		LEFT JOIN pd_product b ON a.product_id = b.id
+	</sql>
+    
+	<select id="get" resultType="pdProductStockTotal">
+		SELECT 
+			<include refid="pdProductStockTotalColumns"/>
+		FROM pd_product_stock_total a
+		<include refid="pdProductStockTotalJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getByProductBarCode" resultType="pdProductStockTotal">
+		SELECT 
+			<include refid="pdProductStockTotalColumns"/>,
+			<include refid="productColumns"/>
+		FROM pd_product_stock_total a
+		<include refid="pdProductStockTotalJoins"/>
+		<include refid="pdProductJoins"/>
+		WHERE a.product_bar_code = #{productBarCode}
+		<if test="storeroomId != null and storeroomId != ''">
+			AND a.storeroom_id = #{storeroomId}
+		</if>
+	</select>
+	
+	<select id="findList" resultType="pdProductStockTotal">
+		SELECT 
+			<include refid="pdProductStockTotalColumns"/>
+		FROM pd_product_stock_total a
+		<include refid="pdProductStockTotalJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} AND a.stock_num > 0
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.storeroom_id = #{storeroomId}
+			</if>
+			${sqlMap.dsf}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+		</choose>
+	</select>
+	
+	<select id="findListForQuery" resultType="pdProductStockTotal">
+		SELECT 
+			<include refid="pdProductStockTotalColumns"/>,
+			<include refid="productColumns"/>			
+		FROM pd_product_stock_total a
+		<include refid="pdProductStockTotalJoins"/>
+		<include refid="pdProductJoins"/>		
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} AND a.stock_num > 0
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>
+			<if test="pdProduct!=null and pdProduct.name != null and pdProduct.name != ''">
+				AND b.name like CONCAT('%', #{pdProduct.name}, '%')
+			</if>
+			<if test="pdProduct!=null and pdProduct.number != null and pdProduct.number != ''">
+				AND b.number like CONCAT('%', #{pdProduct.number}, '%')
+			</if>
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.storeroom_id = #{storeroomId}
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND (DATE_FORMAT(a.valid_date,'%Y-%m-%d') between #{startDate} and #{endDate})
+			</if>
+			<if test="pdProduct!=null and pdProduct.venderId != null and pdProduct.venderId != ''">
+				AND v.id = #{pdProduct.venderId}
+			</if>			
+			<if test="pdProduct!=null and pdProduct.venderName != null and pdProduct.venderName != ''">
+				AND b.vender_name = #{pdProduct.venderName}
+			</if>
+			<if test="categoryStr != null and categoryStr != ''">
+				AND b.category_id in <foreach  item="category" collection="categoryList" index="index"  open="(" separator="," close=")">#{category}</foreach>
+			</if>
+			<if test="groupStr != null and groupStr != ''">
+				AND b.group_id in <foreach  item="group" collection="groupList" index="index"  open="(" separator="," close=")">#{group}</foreach>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.expire DESC ,a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="pdProductStockTotal">
+		SELECT 
+			<include refid="pdProductStockTotalColumns"/>
+		FROM pd_product_stock_total a
+		<include refid="pdProductStockTotalJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findForUpdate" resultType="pdProductStockTotal">
+		SELECT 
+			<include refid="pdProductStockTotalColumns"/>
+		FROM pd_product_stock_total a
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.storeroom_id = #{storeroomId}
+			</if>
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>
+		</where>
+		FOR UPDATE
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_product_stock_total(
+			id,
+			product_id,
+			stock_num,
+			storeroom_id,			
+			limit_up,
+			limit_down,
+			expire,	
+			is_long,
+			supplier_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend3
+		) VALUES (
+			#{id},
+			#{productId},			
+			#{stockNum},
+			#{storeroomId},
+			#{limitUp},
+			#{limitDown},
+			#{expire},
+			0,
+			#{supplierId},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{extend3}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_product_stock_total SET 	
+			product_id = #{productId},			
+			stock_num = #{stockNum},
+			storeroom_id = #{storeroomId},
+			limit_up = #{limitUp},
+		    limit_down = #{limitDown},
+		    expire = #{expire},
+		    near_flag = #{nearFlag},
+		    over_flag = #{overFlag},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			extend3 = #{extend3}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_product_stock_total SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateStockNum">
+		UPDATE pd_product_stock_total SET 
+			stock_num = #{stockNum}
+		WHERE id= #{id}
+	</update>
+	
+	<select id="getByBatchNo" resultType="pdProductStockTotal">
+		SELECT 
+			<include refid="pdProductStockTotalColumns"/>
+		FROM pd_product_stock_total a
+		<include refid="pdProductStockTotalJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>			
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.storeroom_id = #{storeroomId}
+			</if>
+		</where>
+		limit 1
+	</select>
+	
+	<update id="addStock">
+		UPDATE pd_product_stock_total SET 
+			stock_num = stock_num+#{stockNum}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="minusStock">
+		UPDATE pd_product_stock_total SET 
+			stock_num = stock_num-#{stockNum}
+		WHERE id = #{id}
+	</update>	
+	
+	<select id="findPdCount" resultType="java.util.Map">
+		SELECT
+			SUM(stock_num) 'pdCount',
+			(SELECT COUNT(id) FROM pd_product_stock_total WHERE expire='1' AND stock_num > 0
+			<if test="storeroomId != null and storeroomId != ''">
+				AND storeroom_id = #{storeroomId}
+			</if>
+			) as "gCount",
+			(SELECT COUNT(id) FROM pd_product_stock_total WHERE expire='0' AND stock_num > 0
+			<if test="storeroomId != null and storeroomId != ''">
+				AND storeroom_id = #{storeroomId}
+			</if>
+			) as "jCount"
+		FROM pd_product_stock_total	
+		WHERE del_flag=0 AND stock_num > 0
+		<if test="storeroomId != null and storeroomId != ''">
+			AND storeroom_id = #{storeroomId}
+		</if>
+	</select>
+	
+	<update id="updateProductStock">
+		UPDATE pd_product_stock_total SET 
+		<if test="limitUp!=null and limitUp!='' ">
+			limit_up = #{limitUp}
+		</if>
+		<if test="limitDown!=null and limitDown!='' ">
+			limit_down = #{limitDown}
+		</if>
+		<if test="expire!=null and expire!='' ">
+			expire = #{expire}
+		</if>
+		<if test="isLong!=null and isLong!='' ">
+			is_long = #{isLong}
+		</if>
+		WHERE product_id = #{productId}	
+		<if test="storeroomId != null and storeroomId != ''">
+			AND storeroom_id = #{storeroomId}
+		</if>	
+	</update>
+	
+	<update id="updateForDosagert">
+		UPDATE pd_product_stock_total SET
+		<if test="stockNum!=null and stockNum!='' ">
+			stock_num = #{stockNum}
+		</if>
+		WHERE product_id = #{productId} 
+		AND storeroom_id = #{storeroomId}
+	</update>	
+	
+	
+	<select id="findListTask" resultType="pdProductStockTotal">
+		SELECT 
+			<include refid="pdProductStockTotalColumns"/>,
+			<include refid="productColumns"/>			
+		FROM pd_product_stock_total a
+		<include refid="pdProductStockTotalJoins"/>
+		<include refid="pdProductJoins"/>		
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.expire DESC ,a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+</mapper>

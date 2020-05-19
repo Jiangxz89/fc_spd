@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.MedstoYpcgmxDao">
+    
+	<sql id="medstoYpcgmxColumns">
+		a.xh AS "xh",
+		a.cgxh AS "cgxh",
+		a.gg_idm AS "ggIdm",
+		a.cd_idm AS "cdIdm",
+		a.ypmc AS "ypmc",
+		a.ypgg AS "ypgg",
+		a.ypdm AS "ypdm",
+		a.ykdw AS "ykdw",
+		a.ykxs AS "ykxs",
+		a.ypfj AS "ypfj",
+		a.ylsj AS "ylsj",
+		a.kcsl AS "kcsl",
+		a.cgsl AS "cgsl",
+		a.ghdw_mc AS "ghdwMc",
+		a.ghdw_id AS "ghdwId",
+		a.ypjj AS "ypjj",
+		a.memo AS "memo",
+		a.ckjj AS "ckjj",
+		a.cgbz AS "cgbz",
+		a.qldh AS "qldh",
+		a.shks AS "shks",
+		a.rksl AS "rksl",
+		a.cksl AS "cksl",
+		a.cfwz AS "cfwz",
+		a.lrxh AS "lrxh",
+		a.del_flag AS "delFlag",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.create_date AS "createDate"
+	</sql>
+	
+	<sql id="medstoYpcgmxJoins">
+	</sql>
+    
+	<select id="get" resultType="MedstoYpcgmx">
+		SELECT 
+			<include refid="medstoYpcgmxColumns"/>
+		FROM medsto_ypcgmx a
+		<include refid="medstoYpcgmxJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MedstoYpcgmx">
+		SELECT 
+			<include refid="medstoYpcgmxColumns"/>
+		FROM medsto_ypcgmx a
+		<include refid="medstoYpcgmxJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="cgxh != null and cgxh != ''">
+				AND a.cgxh = #{cgxh}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MedstoYpcgmx">
+		SELECT 
+			<include refid="medstoYpcgmxColumns"/>
+		FROM medsto_ypcgmx a
+		<include refid="medstoYpcgmxJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO medsto_ypcgmx(
+			xh,
+			cgxh,
+			gg_idm,
+			cd_idm,
+			ypmc,
+			ypgg,
+			ypdm,
+			ykdw,
+			ykxs,
+			ypfj,
+			ylsj,
+			kcsl,
+			cgsl,
+			ghdw_mc,
+			ghdw_id,
+			ypjj,
+			memo,
+			ckjj,
+			cgbz,
+			qldh,
+			shks,
+			rksl,
+			cksl,
+			cfwz,
+			lrxh,
+			del_flag,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			create_date
+		) VALUES (
+			#{xh},
+			#{cgxh},
+			#{ggIdm},
+			#{cdIdm},
+			#{ypmc},
+			#{ypgg},
+			#{ypdm},
+			#{ykdw},
+			#{ykxs},
+			#{ypfj},
+			#{ylsj},
+			#{kcsl},
+			#{cgsl},
+			#{ghdwMc},
+			#{ghdwId},
+			#{ypjj},
+			#{memo},
+			#{ckjj},
+			#{cgbz},
+			#{qldh},
+			#{shks},
+			#{rksl},
+			#{cksl},
+			#{cfwz},
+			#{lrxh},
+			#{delFlag},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{remarks},
+			#{createDate}
+		)
+	</insert>
+	
+	<insert id="batchInsert">
+		INSERT INTO medsto_ypcgmx(
+			xh,
+			cgxh,
+			gg_idm,
+			cd_idm,
+			ypmc,
+			ypgg,
+			ypdm,
+			ykdw,
+			ykxs,
+			ypfj,
+			ylsj,
+			kcsl,
+			cgsl,
+			ghdw_mc,
+			ghdw_id,
+			ypjj,
+			memo,
+			ckjj,
+			cgbz,
+			qldh,
+			shks,
+			rksl,
+			cksl,
+			cfwz,
+			lrxh,
+			del_flag,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			create_date
+		) VALUES
+		<foreach collection="list" item="item" separator=",">
+		(
+			#{item.xh},
+			#{item.cgxh},
+			#{item.ggIdm},
+			#{item.cdIdm},
+			#{item.ypmc},
+			#{item.ypgg},
+			#{item.ypdm},
+			#{item.ykdw},
+			#{item.ykxs},
+			#{item.ypfj},
+			#{item.ylsj},
+			#{item.kcsl},
+			#{item.cgsl},
+			#{item.ghdwMc},
+			#{item.ghdwId},
+			#{item.ypjj},
+			#{item.memo},
+			#{item.ckjj},
+			#{item.cgbz},
+			#{item.qldh},
+			#{item.shks},
+			#{item.rksl},
+			#{item.cksl},
+			#{item.cfwz},
+			#{item.lrxh},
+			#{item.delFlag},
+			#{item.createBy.id},
+			#{item.updateDate},
+			#{item.updateBy.id},
+			#{item.remarks},
+			#{item.createDate}
+		)
+		</foreach> 
+	</insert>
+	
+	<update id="update">
+		UPDATE medsto_ypcgmx SET 	
+			xh = #{xh},
+			cgxh = #{cgxh},
+			gg_idm = #{ggIdm},
+			cd_idm = #{cdIdm},
+			ypmc = #{ypmc},
+			ypgg = #{ypgg},
+			ypdm = #{ypdm},
+			ykdw = #{ykdw},
+			ykxs = #{ykxs},
+			ypfj = #{ypfj},
+			ylsj = #{ylsj},
+			kcsl = #{kcsl},
+			cgsl = #{cgsl},
+			ghdw_mc = #{ghdwMc},
+			ghdw_id = #{ghdwId},
+			ypjj = #{ypjj},
+			memo = #{memo},
+			ckjj = #{ckjj},
+			cgbz = #{cgbz},
+			qldh = #{qldh},
+			shks = #{shks},
+			rksl = #{rksl},
+			cksl = #{cksl},
+			cfwz = #{cfwz},
+			lrxh = #{lrxh},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE medsto_ypcgmx SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

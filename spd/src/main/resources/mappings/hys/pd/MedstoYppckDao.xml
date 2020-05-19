@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.MedstoYppckDao">
+    
+	<sql id="medstoYppckColumns">
+		a.xh AS "xh",
+		a.cd_idm AS "cdIdm",
+		a.ksdm AS "ksdm",
+		a.ph AS "ph",
+		a.ypjj AS "ypjj",
+		a.pcsl AS "pcsl",
+		a.kcsl AS "kcsl",
+		a.rkrq AS "rkrq",
+		a.sxrq AS "sxrq",
+		a.jlzt AS "jlzt",
+		a.memo AS "memo",
+		a.djsl AS "djsl",
+		a.jxje AS "jxje",
+		a.scrq AS "scrq",
+		a.kzbz AS "kzbz",
+		a.ylsj AS "ylsj",
+		a.ghdwdm AS "ghdwdm",
+		a.ghdwmc AS "ghdwmc",
+		a.isxtzdsc AS "isxtzdsc",
+		a.del_flag AS "delFlag",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.create_date AS "createDate"
+	</sql>
+	
+	<sql id="medstoYppckJoins">
+	</sql>
+    
+	<select id="get" resultType="MedstoYppck">
+		SELECT 
+			<include refid="medstoYppckColumns"/>
+		FROM medsto_yppck a
+		<include refid="medstoYppckJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MedstoYppck">
+		SELECT 
+			<include refid="medstoYppckColumns"/>
+		FROM medsto_yppck a
+		<include refid="medstoYppckJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MedstoYppck">
+		SELECT 
+			<include refid="medstoYppckColumns"/>
+		FROM medsto_yppck a
+		<include refid="medstoYppckJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO medsto_yppck(
+			xh,
+			cd_idm,
+			ksdm,
+			ph,
+			ypjj,
+			pcsl,
+			kcsl,
+			rkrq,
+			sxrq,
+			jlzt,
+			memo,
+			djsl,
+			jxje,
+			scrq,
+			kzbz,
+			ylsj,
+			ghdwdm,
+			ghdwmc,
+			isxtzdsc,
+			del_flag,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			create_date
+		) VALUES (
+			#{xh},
+			#{cdIdm},
+			#{ksdm},
+			#{ph},
+			#{ypjj},
+			#{pcsl},
+			#{kcsl},
+			#{rkrq},
+			#{sxrq},
+			#{jlzt},
+			#{memo},
+			#{djsl},
+			#{jxje},
+			#{scrq},
+			#{kzbz},
+			#{ylsj},
+			#{ghdwdm},
+			#{ghdwmc},
+			#{isxtzdsc},
+			#{delFlag},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{remarks},
+			#{createDate}
+		)
+	</insert>
+	
+	<!-- 批量插入 -->
+	<insert id="batchInsert">
+		INSERT INTO medsto_yppck(
+			xh,
+			cd_idm,
+			ksdm,
+			ph,
+			ypjj,
+			pcsl,
+			kcsl,
+			rkrq,
+			sxrq,
+			jlzt,
+			memo,
+			djsl,
+			jxje,
+			scrq,
+			kzbz,
+			ylsj,
+			ghdwdm,
+			ghdwmc,
+			isxtzdsc,
+			del_flag,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			create_date
+		) VALUES
+		<foreach collection="list" item="item" separator=",">
+		 (
+			#{item.xh},
+			#{item.cdIdm},
+			#{item.ksdm},
+			#{item.ph},
+			#{item.ypjj},
+			#{item.pcsl},
+			#{item.kcsl},
+			#{item.rkrq},
+			#{item.sxrq},
+			#{item.jlzt},
+			#{item.memo},
+			#{item.djsl},
+			#{item.jxje},
+			#{item.scrq},
+			#{item.kzbz},
+			#{item.ylsj},
+			#{item.ghdwdm},
+			#{item.ghdwmc},
+			#{item.isxtzdsc},
+			#{item.delFlag},
+			#{item.createBy.id},
+			#{item.updateDate},
+			#{item.updateBy.id},
+			#{item.remarks},
+			#{item.createDate}
+		)
+		</foreach>
+	</insert>
+	
+	<update id="update">
+		UPDATE medsto_yppck SET 	
+			xh = #{xh},
+			cd_idm = #{cdIdm},
+			ksdm = #{ksdm},
+			ph = #{ph},
+			ypjj = #{ypjj},
+			pcsl = #{pcsl},
+			kcsl = #{kcsl},
+			rkrq = #{rkrq},
+			sxrq = #{sxrq},
+			jlzt = #{jlzt},
+			memo = #{memo},
+			djsl = #{djsl},
+			jxje = #{jxje},
+			scrq = #{scrq},
+			kzbz = #{kzbz},
+			ylsj = #{ylsj},
+			ghdwdm = #{ghdwdm},
+			ghdwmc = #{ghdwmc},
+			isxtzdsc = #{isxtzdsc},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE medsto_yppck SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="clearData">
+		DELETE FROM medsto_yppck
+	</delete>
+	
+</mapper>

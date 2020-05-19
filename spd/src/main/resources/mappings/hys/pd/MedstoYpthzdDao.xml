@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.MedstoYpthzdDao">
+    
+	<sql id="medstoYpthzdColumns">
+		a.xh AS "xh",
+		a.ny AS "ny",
+		a.djh AS "djh",
+		a.lrrq AS "lrrq",
+		a.ksdm AS "ksdm",
+		a.czyh AS "czyh",
+		a.jzczyh AS "jzczyh",
+		a.jzrq AS "jzrq",
+		a.ghdwdm AS "ghdwdm",
+		a.ghdwmc AS "ghdwmc",
+		a.ypje_pf AS "ypjePf",
+		a.ypje_ls AS "ypjeLs",
+		a.thje AS "thje",
+		a.jzbz AS "jzbz",
+		a.jlzt AS "jlzt",
+		a.fph AS "fph",
+		a.fprq AS "fprq",
+		a.memo AS "memo",
+		a.thfs AS "thfs",
+		a.fkxh AS "fkxh",
+		a.jxje AS "jxje",
+		a.gzbz AS "gzbz",
+		a.dpbz AS "dpbz",
+		a.dprq AS "dprq",
+		a.dpczyh AS "dpczyh",
+		a.ysczyh AS "ysczyh",
+		a.remark AS "remark",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="medstoYpthzdJoins">
+	</sql>
+    
+	<select id="get" resultType="MedstoYpthzd">
+		SELECT 
+			<include refid="medstoYpthzdColumns"/>
+		FROM medsto_ypthzd a
+		<include refid="medstoYpthzdJoins"/>
+		WHERE a.xh = #{id}
+	</select>
+	
+	<select id="findList" resultType="MedstoYpthzd">
+		SELECT 
+			<include refid="medstoYpthzdColumns"/>
+		FROM medsto_ypthzd a
+		<include refid="medstoYpthzdJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="xh != null and xh != ''">
+				AND a.xh = #{xh}
+			</if>
+			<if test="djh != null and djh != ''">
+				AND a.djh = #{djh}
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND a.jzrq between #{startDate} and #{endDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MedstoYpthzd">
+		SELECT 
+			<include refid="medstoYpthzdColumns"/>
+		FROM medsto_ypthzd a
+		<include refid="medstoYpthzdJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO medsto_ypthzd(
+			xh,
+			ny,
+			djh,
+			lrrq,
+			ksdm,
+			czyh,
+			jzczyh,
+			jzrq,
+			ghdwdm,
+			ghdwmc,
+			ypje_pf,
+			ypje_ls,
+			thje,
+			jzbz,
+			jlzt,
+			fph,
+			fprq,
+			memo,
+			thfs,
+			fkxh,
+			jxje,
+			gzbz,
+			dpbz,
+			dprq,
+			dpczyh,
+			ysczyh,
+			remark,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{xh},
+			#{ny},
+			#{djh},
+			#{lrrq},
+			#{ksdm},
+			#{czyh},
+			#{jzczyh},
+			#{jzrq},
+			#{ghdwdm},
+			#{ghdwmc},
+			#{ypjePf},
+			#{ypjeLs},
+			#{thje},
+			#{jzbz},
+			#{jlzt},
+			#{fph},
+			#{fprq},
+			#{memo},
+			#{thfs},
+			#{fkxh},
+			#{jxje},
+			#{gzbz},
+			#{dpbz},
+			#{dprq},
+			#{dpczyh},
+			#{ysczyh},
+			#{remark},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<!-- 批量插入 -->
+	<insert id="batchInsert">
+		INSERT INTO medsto_ypthzd(
+			xh,
+			ny,
+			djh,
+			lrrq,
+			ksdm,
+			czyh,
+			jzczyh,
+			jzrq,
+			ghdwdm,
+			ghdwmc,
+			ypje_pf,
+			ypje_ls,
+			thje,
+			jzbz,
+			jlzt,
+			fph,
+			fprq,
+			memo,
+			thfs,
+			fkxh,
+			jxje,
+			gzbz,
+			dpbz,
+			dprq,
+			dpczyh,
+			ysczyh,
+			remark,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES
+		<foreach collection="list" item="item" separator=",">
+		 (
+			#{item.xh},
+			#{item.ny},
+			#{item.djh},
+			#{item.lrrq},
+			#{item.ksdm},
+			#{item.czyh},
+			#{item.jzczyh},
+			#{item.jzrq},
+			#{item.ghdwdm},
+			#{item.ghdwmc},
+			#{item.ypjePf},
+			#{item.ypjeLs},
+			#{item.thje},
+			#{item.jzbz},
+			#{item.jlzt},
+			#{item.fph},
+			#{item.fprq},
+			#{item.memo},
+			#{item.thfs},
+			#{item.fkxh},
+			#{item.jxje},
+			#{item.gzbz},
+			#{item.dpbz},
+			#{item.dprq},
+			#{item.dpczyh},
+			#{item.ysczyh},
+			#{item.remark},
+			#{item.createBy.id},
+			#{item.createDate},
+			#{item.updateBy.id},
+			#{item.updateDate},
+			#{item.delFlag}
+		)
+		</foreach>
+	</insert>
+	
+	<update id="update">
+		UPDATE medsto_ypthzd SET 	
+			xh = #{xh},
+			ny = #{ny},
+			djh = #{djh},
+			lrrq = #{lrrq},
+			ksdm = #{ksdm},
+			czyh = #{czyh},
+			jzczyh = #{jzczyh},
+			jzrq = #{jzrq},
+			ghdwdm = #{ghdwdm},
+			ghdwmc = #{ghdwmc},
+			ypje_pf = #{ypjePf},
+			ypje_ls = #{ypjeLs},
+			thje = #{thje},
+			jzbz = #{jzbz},
+			jlzt = #{jlzt},
+			fph = #{fph},
+			fprq = #{fprq},
+			memo = #{memo},
+			thfs = #{thfs},
+			fkxh = #{fkxh},
+			jxje = #{jxje},
+			gzbz = #{gzbz},
+			dpbz = #{dpbz},
+			dprq = #{dprq},
+			dpczyh = #{dpczyh},
+			ysczyh = #{ysczyh},
+			remark = #{remark},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE medsto_ypthzd SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

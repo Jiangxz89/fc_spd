@@ -1,0 +1,40 @@
+.baseInfo,.priceStock,.goodaClassify,.bach{padding:10px 10px 0;}
+.baseInfo .baseInfoList,.priceStock .baseInfoList,.goodaClassify .baseInfoList,.bach .baseInfoList{line-height: 50px;}
+.baseInfo .baseInfoList>label,.priceStock .baseInfoList>label,.goodaClassify .baseInfoList>label,.bach .baseInfoList>label{vertical-align: middle; display:inline-block;width: 140px;height: 30px;line-height: 30px;margin-left:30px;}
+.baseInfo .baseInfoList>input,.priceStock .baseInfoList>input,.goodaClassify .baseInfoList>input,.bach .baseInfoList>input{width: 20%;height: 30px;border:1px solid #ccc;display: inline-block;border-radius:2px;}
+.baseInfo .baseInfoList select,.goodaClassify .baseInfoList select{width:20%;height: 30px;border:1px solid #ccc;display: inline-block;border-radius:2px;vertical-align: middle;}
+.baseInfo .baseInfoList>label>input[type='radio'],.goodaClassify .baseInfoList>label>input[type='radio']{margin:0 5px 0 10px;vertical-align: middle;}
+.warn{color: red;font-size: 13px;vertical-align: middle;padding:0 10px;}
+.subBtn{text-align:center;width:100%;height: 80px;line-height: 80px;}
+.baseInfo .baseInfoList>label.error{margin-left:5px;width:100px;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

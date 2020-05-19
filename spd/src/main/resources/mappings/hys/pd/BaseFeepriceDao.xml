@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.BaseFeepriceDao">
+    
+	<sql id="baseFeepriceColumns">
+		a.stockid AS "stockid",
+		a.hospitalid AS "hospitalid",
+		a.hospitalname AS "hospitalname",
+		a.feeid AS "feeid",
+		a.cuscode AS "cuscode",
+		a.feenumber AS "feenumber",
+		a.price AS "price",
+		a.isble AS "isble",
+		a.outpack AS "outpack",
+		a.inpack AS "inpack",
+		a.isstop AS "isstop",
+		a.sicode AS "sicode",
+		a.nhcode AS "nhcode",
+		a.modstaff AS "modstaff",
+		a.modstaffname AS "modstaffname",
+		a.moddate AS "moddate",
+		a.audstate AS "audstate",
+		a.invclass AS "invclass",
+		a.invclassname AS "invclassname",
+		a.auditstatus AS "auditstatus",
+		a.auditor AS "auditor",
+		a.auditorname AS "auditorname",
+		a.audittime AS "audittime",
+		a.one_level AS "oneLevel",
+		a.two_level AS "twoLevel",
+		a.three_level AS "threeLevel",
+		a.hosfeename AS "hosfeename"
+	</sql>
+	
+	<sql id="baseFeepriceJoins">
+	</sql>
+    
+	<select id="get" resultType="BaseFeeprice">
+		SELECT 
+			<include refid="baseFeepriceColumns"/>
+		FROM base_feeprice a
+		<include refid="baseFeepriceJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BaseFeeprice">
+		SELECT 
+			<include refid="baseFeepriceColumns"/>
+		FROM base_feeprice a
+		<include refid="baseFeepriceJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BaseFeeprice">
+		SELECT 
+			<include refid="baseFeepriceColumns"/>
+		FROM base_feeprice a
+		<include refid="baseFeepriceJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO base_feeprice(
+			stockid,
+			hospitalid,
+			hospitalname,
+			feeid,
+			cuscode,
+			feenumber,
+			price,
+			isble,
+			outpack,
+			inpack,
+			isstop,
+			sicode,
+			nhcode,
+			modstaff,
+			modstaffname,
+			moddate,
+			audstate,
+			invclass,
+			invclassname,
+			auditstatus,
+			auditor,
+			auditorname,
+			audittime,
+			one_level,
+			two_level,
+			three_level,
+			hosfeename
+		) VALUES (
+			#{stockid},
+			#{hospitalid},
+			#{hospitalname},
+			#{feeid},
+			#{cuscode},
+			#{feenumber},
+			#{price},
+			#{isble},
+			#{outpack},
+			#{inpack},
+			#{isstop},
+			#{sicode},
+			#{nhcode},
+			#{modstaff},
+			#{modstaffname},
+			#{moddate},
+			#{audstate},
+			#{invclass},
+			#{invclassname},
+			#{auditstatus},
+			#{auditor},
+			#{auditorname},
+			#{audittime},
+			#{oneLevel},
+			#{twoLevel},
+			#{threeLevel},
+			#{hosfeename}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE base_feeprice SET 	
+			stockid = #{stockid},
+			hospitalid = #{hospitalid},
+			hospitalname = #{hospitalname},
+			feeid = #{feeid},
+			cuscode = #{cuscode},
+			feenumber = #{feenumber},
+			price = #{price},
+			isble = #{isble},
+			outpack = #{outpack},
+			inpack = #{inpack},
+			isstop = #{isstop},
+			sicode = #{sicode},
+			nhcode = #{nhcode},
+			modstaff = #{modstaff},
+			modstaffname = #{modstaffname},
+			moddate = #{moddate},
+			audstate = #{audstate},
+			invclass = #{invclass},
+			invclassname = #{invclassname},
+			auditstatus = #{auditstatus},
+			auditor = #{auditor},
+			auditorname = #{auditorname},
+			audittime = #{audittime},
+			one_level = #{oneLevel},
+			two_level = #{twoLevel},
+			three_level = #{threeLevel},
+			hosfeename = #{hosfeename}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM base_feeprice
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

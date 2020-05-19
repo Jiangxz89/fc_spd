@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.BaseMatpriceDao">
+    
+	<sql id="baseMatpriceColumns">
+		a.stockid AS "stockid",
+		a.hospitalid AS "hospitalid",
+		a.hospitalname AS "hospitalname",
+		a.matid AS "matid",
+		a.cuscode AS "cuscode",
+		a.facid AS "facid",
+		a.facname AS "facname",
+		a.number AS "number",
+		a.inprice AS "inprice",
+		a.sellprice AS "sellprice",
+		a.maxstock AS "maxstock",
+		a.minstock AS "minstock",
+		a.position AS "position",
+		a.isble AS "isble",
+		a.isuse AS "isuse",
+		a.isstop AS "isstop",
+		a.sicode AS "sicode",
+		a.modstaff AS "modstaff",
+		a.modstaffname AS "modstaffname",
+		a.moddate AS "moddate",
+		a.nhcode AS "nhcode",
+		a.audstate AS "audstate",
+		a.invclass AS "invclass",
+		a.invclassname AS "invclassname",
+		a.auditstatus AS "auditstatus",
+		a.auditor AS "auditor",
+		a.auditorname AS "auditorname",
+		a.audittime AS "audittime"
+	</sql>
+	
+	<sql id="baseMatpriceJoins">
+	</sql>
+    
+	<select id="get" resultType="BaseMatprice">
+		SELECT 
+			<include refid="baseMatpriceColumns"/>
+		FROM base_matprice a
+		<include refid="baseMatpriceJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BaseMatprice">
+		SELECT 
+			<include refid="baseMatpriceColumns"/>
+		FROM base_matprice a
+		<include refid="baseMatpriceJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BaseMatprice">
+		SELECT 
+			<include refid="baseMatpriceColumns"/>
+		FROM base_matprice a
+		<include refid="baseMatpriceJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO base_matprice(
+			stockid,
+			hospitalid,
+			hospitalname,
+			matid,
+			cuscode,
+			facid,
+			facname,
+			number,
+			inprice,
+			sellprice,
+			maxstock,
+			minstock,
+			position,
+			isble,
+			isuse,
+			isstop,
+			sicode,
+			modstaff,
+			modstaffname,
+			moddate,
+			nhcode,
+			audstate,
+			invclass,
+			invclassname,
+			auditstatus,
+			auditor,
+			auditorname,
+			audittime
+		) VALUES (
+			#{stockid},
+			#{hospitalid},
+			#{hospitalname},
+			#{matid},
+			#{cuscode},
+			#{facid},
+			#{facname},
+			#{number},
+			#{inprice},
+			#{sellprice},
+			#{maxstock},
+			#{minstock},
+			#{position},
+			#{isble},
+			#{isuse},
+			#{isstop},
+			#{sicode},
+			#{modstaff},
+			#{modstaffname},
+			#{moddate},
+			#{nhcode},
+			#{audstate},
+			#{invclass},
+			#{invclassname},
+			#{auditstatus},
+			#{auditor},
+			#{auditorname},
+			#{audittime}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE base_matprice SET 	
+			stockid = #{stockid},
+			hospitalid = #{hospitalid},
+			hospitalname = #{hospitalname},
+			matid = #{matid},
+			cuscode = #{cuscode},
+			facid = #{facid},
+			facname = #{facname},
+			number = #{number},
+			inprice = #{inprice},
+			sellprice = #{sellprice},
+			maxstock = #{maxstock},
+			minstock = #{minstock},
+			position = #{position},
+			isble = #{isble},
+			isuse = #{isuse},
+			isstop = #{isstop},
+			sicode = #{sicode},
+			modstaff = #{modstaff},
+			modstaffname = #{modstaffname},
+			moddate = #{moddate},
+			nhcode = #{nhcode},
+			audstate = #{audstate},
+			invclass = #{invclass},
+			invclassname = #{invclassname},
+			auditstatus = #{auditstatus},
+			auditor = #{auditor},
+			auditorname = #{auditorname},
+			audittime = #{audittime}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM base_matprice
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

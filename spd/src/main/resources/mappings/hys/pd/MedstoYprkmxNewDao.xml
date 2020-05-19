@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.MedstoYprkmxNewDao">
+    
+	<sql id="medstoYprkmxNewColumns">
+		a.xh AS "xh",
+		a.zd_xh AS "zdXh",
+		a.fph AS "fph",
+		a.kprq AS "kprq",
+		a.dprq AS "dprq",
+		a.czdm AS "czdm",
+		a.cd_idm AS "cdIdm",
+		a.gg_idm AS "ggIdm",
+		a.drug_name AS "drugName",
+		a.drug_spec AS "drugSpec",
+		a.ypdm AS "ypdm",
+		a.pcxh AS "pcxh",
+		a.expiry AS "expiry",
+		a.ph AS "ph",
+		a.ykxs AS "ykxs",
+		a.ypdw AS "ypdw",
+		a.dwxs AS "dwxs",
+		a.rksl AS "rksl",
+		a.czsl AS "czsl",
+		a.ypkl AS "ypkl",
+		a.ypjj AS "ypjj",
+		a.ypfj AS "ypfj",
+		a.ylsj AS "ylsj",
+		a.jjje AS "jjje",
+		a.jxce AS "jxce",
+		a.xgxh AS "xgxh",
+		a.dpbz AS "dpbz",
+		a.mrzbj AS "mrzbj",
+		a.zbqh AS "zbqh",
+		a.zbdw AS "zbdw",
+		a.ypmrkl AS "ypmrkl",
+		a.scrq AS "scrq"
+	</sql>
+	
+	<sql id="medstoYprkmxNewJoins">
+	</sql>
+    
+	<select id="get" resultType="MedstoYprkmxNew">
+		SELECT 
+			<include refid="medstoYprkmxNewColumns"/>
+		FROM medsto_yprkmx_new a
+		<include refid="medstoYprkmxNewJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MedstoYprkmxNew">
+		SELECT 
+			<include refid="medstoYprkmxNewColumns"/>
+		FROM medsto_yprkmx_new a
+		<include refid="medstoYprkmxNewJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MedstoYprkmxNew">
+		SELECT 
+			<include refid="medstoYprkmxNewColumns"/>
+		FROM medsto_yprkmx_new a
+		<include refid="medstoYprkmxNewJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO medsto_yprkmx_new(
+			xh,
+			zd_xh,
+			fph,
+			kprq,
+			dprq,
+			czdm,
+			cd_idm,
+			gg_idm,
+			drug_name,
+			drug_spec,
+			ypdm,
+			pcxh,
+			expiry,
+			ph,
+			ykxs,
+			ypdw,
+			dwxs,
+			rksl,
+			czsl,
+			ypkl,
+			ypjj,
+			ypfj,
+			ylsj,
+			jjje,
+			jxce,
+			xgxh,
+			dpbz,
+			mrzbj,
+			zbqh,
+			zbdw,
+			ypmrkl,
+			scrq
+		) VALUES (
+			#{xh},
+			#{zdXh},
+			#{fph},
+			#{kprq},
+			#{dprq},
+			#{czdm},
+			#{cdIdm},
+			#{ggIdm},
+			#{drugName},
+			#{drugSpec},
+			#{ypdm},
+			#{pcxh},
+			#{expiry},
+			#{ph},
+			#{ykxs},
+			#{ypdw},
+			#{dwxs},
+			#{rksl},
+			#{czsl},
+			#{ypkl},
+			#{ypjj},
+			#{ypfj},
+			#{ylsj},
+			#{jjje},
+			#{jxce},
+			#{xgxh},
+			#{dpbz},
+			#{mrzbj},
+			#{zbqh},
+			#{zbdw},
+			#{ypmrkl},
+			#{scrq}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE medsto_yprkmx_new SET 	
+			xh = #{xh},
+			zd_xh = #{zdXh},
+			fph = #{fph},
+			kprq = #{kprq},
+			dprq = #{dprq},
+			czdm = #{czdm},
+			cd_idm = #{cdIdm},
+			gg_idm = #{ggIdm},
+			drug_name = #{drugName},
+			drug_spec = #{drugSpec},
+			ypdm = #{ypdm},
+			pcxh = #{pcxh},
+			expiry = #{expiry},
+			ph = #{ph},
+			ykxs = #{ykxs},
+			ypdw = #{ypdw},
+			dwxs = #{dwxs},
+			rksl = #{rksl},
+			czsl = #{czsl},
+			ypkl = #{ypkl},
+			ypjj = #{ypjj},
+			ypfj = #{ypfj},
+			ylsj = #{ylsj},
+			jjje = #{jjje},
+			jxce = #{jxce},
+			xgxh = #{xgxh},
+			dpbz = #{dpbz},
+			mrzbj = #{mrzbj},
+			zbqh = #{zbqh},
+			zbdw = #{zbdw},
+			ypmrkl = #{ypmrkl},
+			scrq = #{scrq}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM medsto_yprkmx_new
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

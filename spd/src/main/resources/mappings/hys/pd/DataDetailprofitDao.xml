@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.DataDetailprofitDao">
+    
+	<sql id="dataDetailprofitColumns">
+		a.id AS "id",
+		a.masterid AS "masterid",
+		a.stockid AS "stockid",
+		a.medname AS "medname",
+		a.unit AS "unit",
+		a.spec AS "spec",
+		a.inprice AS "inprice",
+		a.sellprice AS "sellprice",
+		a.batch AS "batch",
+		a.expidate AS "expidate",
+		a.type AS "type",
+		a.qty AS "qty",
+		a.reason AS "reason",
+		a.remarks AS "remarks",
+		a.batchno AS "batchno"
+	</sql>
+	
+	<sql id="dataDetailprofitJoins">
+	</sql>
+    
+	<select id="get" resultType="DataDetailprofit">
+		SELECT 
+			<include refid="dataDetailprofitColumns"/>
+		FROM data_detailprofit a
+		<include refid="dataDetailprofitJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DataDetailprofit">
+		SELECT 
+			<include refid="dataDetailprofitColumns"/>
+		FROM data_detailprofit a
+		<include refid="dataDetailprofitJoins"/>
+		<where>
+			1 = 1
+			<if test="masterid != null and masterid != ''">
+				AND a.masterid = #{masterid}
+			</if>
+			<if test="medname != null and medname != ''">
+				AND a.medname LIKE concat('%',#{medname},'%')
+			</if>
+			<if test="batch != null and batch != ''">
+				AND a.batch LIKE concat('%',#{batch},'%')
+			</if>
+			<if test="batchno != null and batchno != ''">
+				AND a.batchno LIKE concat('%',#{batchno},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DataDetailprofit">
+		SELECT 
+			<include refid="dataDetailprofitColumns"/>
+		FROM data_detailprofit a
+		<include refid="dataDetailprofitJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO data_detailprofit(
+			id,
+			masterid,
+			stockid,
+			medname,
+			unit,
+			spec,
+			inprice,
+			sellprice,
+			batch,
+			expidate,
+			type,
+			qty,
+			reason,
+			remarks,
+			batchno
+		) VALUES (
+			#{id},
+			#{masterid},
+			#{stockid},
+			#{medname},
+			#{unit},
+			#{spec},
+			#{inprice},
+			#{sellprice},
+			#{batch},
+			#{expidate},
+			#{type},
+			#{qty},
+			#{reason},
+			#{remarks},
+			#{batchno}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE data_detailprofit SET 	
+			masterid = #{masterid},
+			stockid = #{stockid},
+			medname = #{medname},
+			unit = #{unit},
+			spec = #{spec},
+			inprice = #{inprice},
+			sellprice = #{sellprice},
+			batch = #{batch},
+			expidate = #{expidate},
+			type = #{type},
+			qty = #{qty},
+			reason = #{reason},
+			remarks = #{remarks},
+			batchno = #{batchno}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM data_detailprofit
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

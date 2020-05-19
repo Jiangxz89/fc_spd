@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdDrugSupplierDao">
+    
+	<sql id="pdDrugSupplierColumns">
+		a.ypdm AS "ypdm",
+		a.ghdw_id AS "ghdwId",
+		a.ghdw_mc AS "ghdwMc",
+		a.type AS "type"
+	</sql>
+	
+	<sql id="pdDrugSupplierJoins">
+	</sql>
+    
+	<select id="get" resultType="PdDrugSupplier">
+		SELECT 
+			<include refid="pdDrugSupplierColumns"/>
+		FROM pd_drug_supplier a
+		<include refid="pdDrugSupplierJoins"/>
+		WHERE a.ypdm = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdDrugSupplier">
+		SELECT 
+			<include refid="pdDrugSupplierColumns"/>
+		FROM pd_drug_supplier a
+		<include refid="pdDrugSupplierJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdDrugSupplier">
+		SELECT 
+			<include refid="pdDrugSupplierColumns"/>
+		FROM pd_drug_supplier a
+		<include refid="pdDrugSupplierJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_drug_supplier(
+			ypdm,
+			ghdw_id,
+			ghdw_mc,
+			type
+		) VALUES (
+			#{ypdm},
+			#{ghdwId},
+			#{ghdwMc},
+			#{type}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_drug_supplier SET 	
+			ghdw_id = #{ghdwId},
+			ghdw_mc = #{ghdwMc},
+			type = #{type}
+		WHERE ypdm = #{ypdm}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM pd_drug_supplier
+		WHERE ypdm = #{id}
+	</update>
+	
+	<select id="getOne" parameterType="java.lang.String" resultType="PdDrugSupplier">
+		SELECT 
+			<include refid="pdDrugSupplierColumns"/>
+		FROM pd_drug_supplier a
+		<include refid="pdDrugSupplierJoins"/>
+		WHERE a.ypdm = #{ypdm} and a.type = #{type}
+	</select>
+	
+	<!-- 批量删除产品供应商表 -->
+	<delete id="batchDelete" parameterType="java.util.Map">
+		DELETE FROM pd_drug_supplier where type =  #{type}
+		AND ypdm IN 
+		<foreach collection="ids" separator="," item="item" open="(" close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<!-- 批量插入产品供应商表 -->
+	<insert id="batchSave">
+		INSERT INTO pd_drug_supplier(
+			ypdm,
+			ghdw_id,
+			ghdw_mc,
+			type
+		)  VALUES 
+		<foreach collection="list" separator="," item="item">
+			(
+			#{item.ypdm},
+			#{item.ghdwId},
+			#{item.ghdwMc},
+			#{item.type}
+		)
+		</foreach>
+	</insert>
+	
+</mapper>

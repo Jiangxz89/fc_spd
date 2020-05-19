@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.DataMatpriceadjdetailDao">
+    
+	<sql id="dataMatpriceadjdetailColumns">
+		a.priceadjid AS "priceadjid",
+		a.chamedid AS "chamedid",
+		a.stockid AS "stockid",
+		a.medname AS "medname",
+		a.qty AS "qty",
+		a.unit AS "unit",
+		a.oldbprice AS "oldbprice",
+		a.newbprice AS "newbprice",
+		a.oldsprice AS "oldsprice",
+		a.newsprice AS "newsprice",
+		a.batch AS "batch",
+		a.batchno AS "batchno"
+	</sql>
+	
+	<sql id="dataMatpriceadjdetailJoins">
+	</sql>
+    
+	<select id="get" resultType="DataMatpriceadjdetail">
+		SELECT 
+			<include refid="dataMatpriceadjdetailColumns"/>
+		FROM data_matpriceadjdetail a
+		<include refid="dataMatpriceadjdetailJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DataMatpriceadjdetail">
+		SELECT 
+			<include refid="dataMatpriceadjdetailColumns"/>
+		FROM data_matpriceadjdetail a
+		<include refid="dataMatpriceadjdetailJoins"/>
+		<where>
+			1 = 1
+			<if test="chamedid != null and chamedid != ''">
+				AND a.chamedid = #{chamedid}
+			</if>
+			<if test="medname != null and medname != ''">
+				AND a.medname LIKE concat('%',#{medname},'%')
+			</if>
+			<if test="batch != null and batch != ''">
+				AND a.batch LIKE concat('%',#{batch},'%')
+			</if>
+			<if test="batchno != null and batchno != ''">
+				AND a.batchno LIKE concat('%',#{batchno},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DataMatpriceadjdetail">
+		SELECT 
+			<include refid="dataMatpriceadjdetailColumns"/>
+		FROM data_matpriceadjdetail a
+		<include refid="dataMatpriceadjdetailJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO data_matpriceadjdetail(
+			priceadjid,
+			chamedid,
+			stockid,
+			medname,
+			qty,
+			unit,
+			oldbprice,
+			newbprice,
+			oldsprice,
+			newsprice,
+			batch,
+			batchno
+		) VALUES (
+			#{priceadjid},
+			#{chamedid},
+			#{stockid},
+			#{medname},
+			#{qty},
+			#{unit},
+			#{oldbprice},
+			#{newbprice},
+			#{oldsprice},
+			#{newsprice},
+			#{batch},
+			#{batchno}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE data_matpriceadjdetail SET 	
+			priceadjid = #{priceadjid},
+			chamedid = #{chamedid},
+			stockid = #{stockid},
+			medname = #{medname},
+			qty = #{qty},
+			unit = #{unit},
+			oldbprice = #{oldbprice},
+			newbprice = #{newbprice},
+			oldsprice = #{oldsprice},
+			newsprice = #{newsprice},
+			batch = #{batch},
+			batchno = #{batchno}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM data_matpriceadjdetail
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

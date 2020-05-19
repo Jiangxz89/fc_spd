@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdSupplierDao">
+    
+	<sql id="pdSupplierColumns">
+		a.id AS "id",
+		a.supplier_name AS "supplierName",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.extend1 AS "extend1",
+		a.extend2 AS "extend2",
+		a.extend3 AS "extend3",
+		a.card_name1 AS "cardName1",
+		a.card_code1 AS "cardCode1",
+		a.validity_term1 AS "validityTerm1",
+		a.img_url1 AS "imgUrl1",
+		a.card_name2 AS "cardName2",
+		a.card_code2 AS "cardCode2",
+		a.validity_term2 AS "validityTerm2",
+		a.img_url2 AS "imgUrl2",
+		a.card_name3 AS "cardName3",
+		a.card_code3 AS "cardCode3",
+		a.validity_term3 AS "validityTerm3",
+		a.img_url3 AS "imgUrl3",
+		a.card_name4 AS "cardName4",
+		a.card_code4 AS "cardCode4",
+		a.validity_term4 AS "validityTerm4",
+		a.img_url4 AS "imgUrl4",
+		a.card_name5 AS "cardName5",
+		a.card_code5 AS "cardCode5",
+		a.validity_term5 AS "validityTerm5",
+		a.img_url5 AS "imgUrl5",
+		a.card_name6 AS "cardName6",
+		a.card_code6 AS "cardCode6",
+		a.validity_term6 AS "validityTerm6",
+		a.img_url6 AS "imgUrl6",
+		a.card_name7 AS "cardName7",
+		a.card_code7 AS "cardCode7",
+		a.validity_term7 AS "validityTerm7",
+		a.img_url7 AS "imgUrl7",
+		a.card_name8 AS "cardName8",
+		a.card_code8 AS "cardCode8",
+		a.validity_term8 AS "validityTerm8",
+		a.img_url8 AS "imgUrl8",
+		a.card_name9 AS "cardName9",
+		a.card_code9 AS "cardCode9",
+		a.validity_term9 AS "validityTerm9",
+		a.img_url9 AS "imgUrl9",
+		a.card_name10 AS "cardName10",
+		a.card_code10 AS "cardCode10",
+		a.validity_term10 AS "validityTerm10",
+		a.img_url10 AS "imgUrl10",
+		a.card_name11 AS "cardName11",
+		a.card_code11 AS "cardCode11",
+		a.validity_term11 AS "validityTerm11",
+		a.img_url11 AS "imgUrl11",
+		a.card_name12 AS "cardName12",
+		a.card_code12 AS "cardCode12",
+		a.validity_term12 AS "validityTerm12",
+		a.img_url12 AS "imgUrl12",
+		a.pinyin AS "pinyin",
+		a.avl_type AS "avlType"
+	</sql>
+	
+	<sql id="stockColumn">
+		DATE_FORMAT(b.valid_date,'%Y-%m-%d') AS "validDate"
+	</sql>
+	
+	<sql id="pdSupplierJoins">
+	</sql>
+    
+	<select id="get" resultType="PdSupplier">
+		SELECT 
+			<include refid="pdSupplierColumns"/>
+		FROM pd_supplier a
+		<include refid="pdSupplierJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdSupplier">
+		SELECT 
+			<include refid="pdSupplierColumns"/>
+		FROM pd_supplier a
+		<include refid="pdSupplierJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="supplierName != null and supplierName != ''">
+				AND a.supplier_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{supplierName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{supplierName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{supplierName},'%')</if>
+			</if>
+			<if test="avlType != null and avlType != ''">
+				AND a.avlType=#{avlType}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.avl_type DESC,a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdSupplier">
+		SELECT 
+			<include refid="pdSupplierColumns"/>
+		FROM pd_supplier a
+		<include refid="pdSupplierJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_supplier(
+			id,
+			supplier_name,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3,
+			card_name1,
+			card_code1,
+			validity_term1,
+			img_url1,
+			card_name2,
+			card_code2,
+			validity_term2,
+			img_url2,
+			card_name3,
+			card_code3,
+			validity_term3,
+			img_url3,
+			card_name4,
+			card_code4,
+			validity_term4,
+			img_url4,
+			card_name5,
+			card_code5,
+			validity_term5,
+			img_url5,
+			card_name6,
+			card_code6,
+			validity_term6,
+			img_url6,
+			card_name7,
+			card_code7,
+			validity_term7,
+			img_url7,
+			card_name8,
+			card_code8,
+			validity_term8,
+			img_url8,
+			card_name9,
+			card_code9,
+			validity_term9,
+			img_url9,
+			card_name10,
+			card_code10,
+			validity_term10,
+			img_url10,
+			card_name11,
+			card_code11,
+			validity_term11,
+			img_url11,
+			card_name12,
+			card_code12,
+			validity_term12,
+			img_url12,
+			pinyin
+		) VALUES (
+			#{id},
+			#{supplierName},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{extend1},
+			#{extend2},
+			#{extend3},
+			#{cardName1},
+			#{cardCode1},
+			#{validityTerm1},
+			#{imgUrl1},
+			#{cardName2},
+			#{cardCode2},
+			#{validityTerm2},
+			#{imgUrl2},
+			#{cardName3},
+			#{cardCode3},
+			#{validityTerm3},
+			#{imgUrl3},
+			#{cardName4},
+			#{cardCode4},
+			#{validityTerm4},
+			#{imgUrl4},
+			#{cardName5},
+			#{cardCode5},
+			#{validityTerm5},
+			#{imgUrl5},
+			#{cardName6},
+			#{cardCode6},
+			#{validityTerm6},
+			#{imgUrl6},
+			#{cardName7},
+			#{cardCode7},
+			#{validityTerm7},
+			#{imgUrl7},
+			#{cardName8},
+			#{cardCode8},
+			#{validityTerm8},
+			#{imgUrl8},
+			#{cardName9},
+			#{cardCode9},
+			#{validityTerm9},
+			#{imgUrl9},
+			#{cardName10},
+			#{cardCode10},
+			#{validityTerm10},
+			#{imgUrl10},
+			#{cardName11},
+			#{cardCode11},
+			#{validityTerm11},
+			#{imgUrl11},
+			#{cardName12},
+			#{cardCode12},
+			#{validityTerm12},
+			#{imgUrl12},
+			#{pinyin}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_supplier SET 	
+			supplier_name = #{supplierName},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			extend1 = #{extend1},
+			extend2 = #{extend2},
+			extend3 = #{extend3},
+			card_name1 = #{cardName1},
+			card_code1 = #{cardCode1},
+			validity_term1 = #{validityTerm1},
+			img_url1 = #{imgUrl1},
+			card_name2 = #{cardName2},
+			card_code2 = #{cardCode2},
+			validity_term2 = #{validityTerm2},
+			img_url2 = #{imgUrl2},
+			card_name3 = #{cardName3},
+			card_code3 = #{cardCode3},
+			validity_term3 = #{validityTerm3},
+			img_url3 = #{imgUrl3},
+			card_name4 = #{cardName4},
+			card_code4 = #{cardCode4},
+			validity_term4 = #{validityTerm4},
+			img_url4 = #{imgUrl4},
+			card_name5 = #{cardName5},
+			card_code5 = #{cardCode5},
+			validity_term5 = #{validityTerm5},
+			img_url5 = #{imgUrl5},
+			card_name6 = #{cardName6},
+			card_code6 = #{cardCode6},
+			validity_term6 = #{validityTerm6},
+			img_url6 = #{imgUrl6},
+			card_name7 = #{cardName7},
+			card_code7 = #{cardCode7},
+			validity_term7 = #{validityTerm7},
+			img_url7 = #{imgUrl7},
+			card_name8 = #{cardName8},
+			card_code8 = #{cardCode8},
+			validity_term8 = #{validityTerm8},
+			img_url8 = #{imgUrl8},
+			card_name9 = #{cardName9},
+			card_code9 = #{cardCode9},
+			validity_term9 = #{validityTerm9},
+			img_url9 = #{imgUrl9},
+			card_name10 = #{cardName10},
+			card_code10 = #{cardCode10},
+			validity_term10 = #{validityTerm10},
+			img_url10 = #{imgUrl10},
+			card_name11 = #{cardName11},
+			card_code11 = #{cardCode11},
+			validity_term11 = #{validityTerm11},
+			img_url11 = #{imgUrl11},
+			card_name12 = #{cardName12},
+			card_code12 = #{cardCode12},
+			validity_term12 = #{validityTerm12},
+			img_url12 = #{imgUrl12},
+			pinyin = #{pinyin},
+			avl_type = #{avlType}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_supplier SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="batchDelete">
+		UPDATE pd_supplier SET 
+			del_flag = '1',
+			update_date = NOW()
+		WHERE id in (
+		<foreach collection="list" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+	</update>
+	
+		<!-- 根据名臣校验供应商是否已存在 -->
+	<select id="verify" resultType="PdSupplier">
+		SELECT 
+			<include refid="pdSupplierColumns"/>
+		FROM pd_supplier a
+		<include refid="pdSupplierJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			and a.supplier_name = #{supplierName}
+			<if test="id != null and id != ''">
+				AND a.id != #{id}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 校验供应商是否存在 -->
+	<select id="findByName" resultType="PdSupplier">
+		SELECT 
+			<include refid="pdSupplierColumns"/>
+		FROM pd_supplier a
+		<include refid="pdSupplierJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			and a.supplier_name = #{supplierName}
+			<if test="id != null and id != ''">
+				AND a.id != #{id}
+			</if>
+		</where>
+	</select>
+
+	<!--提供select2 查询的方法 -->
+	<select id="findSelectList" resultType="pdSupplier">
+		SELECT
+		<include refid="pdSupplierColumns"/>
+		FROM pd_supplier a
+		<include refid="pdSupplierJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="supplierName != null and supplierName != ''">
+				AND a.supplier_name LIKE concat('%',#{supplierName},'%') || a.pinyin LIKE concat('%',#{supplierName},'%')
+			</if>
+			group by a.supplier_name
+		</where>
+	</select>
+	
+</mapper>

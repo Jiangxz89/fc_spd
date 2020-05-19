@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sys.dao.auth.Oauth2ClientDao">
+    
+	<sql id="oauth2ClientColumns">
+		a.id AS "id",
+		a.client_name AS "clientName",
+		a.client_id AS "clientId",
+		a.client_secret AS "clientSecret",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.login_type AS "loginType",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="oauth2ClientJoins">
+	</sql>
+    
+	<select id="get" resultType="Oauth2Client">
+		SELECT 
+			<include refid="oauth2ClientColumns"/>
+		FROM oauth2_client a
+		<include refid="oauth2ClientJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Oauth2Client">
+		SELECT 
+			<include refid="oauth2ClientColumns"/>
+		FROM oauth2_client a
+		<include refid="oauth2ClientJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Oauth2Client">
+		SELECT 
+			<include refid="oauth2ClientColumns"/>
+		FROM oauth2_client a
+		<include refid="oauth2ClientJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findByClientId" resultType="Oauth2Client">
+		SELECT 
+			<include refid="oauth2ClientColumns"/>
+		FROM oauth2_client a
+		<include refid="oauth2ClientJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="clientId != null and clientId != ''">
+		 	and a.client_id like CONCAT('%',#{clientId},'%')	
+			</if>
+		</where>		
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO oauth2_client(
+			id,
+			client_name,
+			client_id,
+			client_secret,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			login_type,
+			del_flag
+		) VALUES (
+			#{id},
+			#{clientName},
+			#{clientId},
+			#{clientSecret},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{loginType},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE oauth2_client SET 	
+			client_name = #{clientName},
+			client_id = #{clientId},
+			client_secret = #{clientSecret},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			login_type = #{loginType}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE oauth2_client SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

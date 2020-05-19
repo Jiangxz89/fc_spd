@@ -1,0 +1,65 @@
+.submit-order.hcy-takeGood .take-list ul li>a{box-sizing:border-box;}
+.hcy-shopping{margin-top: 30px;padding-bottom: 10px;}
+.hcy-shopping .hcy-shopping-step{line-height: 40px;border-bottom: 1px solid #ccc;}
+.hcy-shopping .hcy-shopping-step h3{font-size: 15px;color: #666666;font-weight: 400;}
+.hcy-shopping .hcy-shopping-step a{color: #ccc;font-size: 13px; }
+.hcy-shopping .hcy-shopping-step .buy-number{display: inline-block;width: 20px;height: 20px;border-radius: 50%;background: #ccc;font-size: 12px;color: #fff;text-align: center;line-height: 20px;}
+.hcy-shopping .hcy-shopping-step .nextSpan{color: #cdcdcd;padding: 0 5px;font-size: 14px;vertical-align: middle;}
+.hcy-shopping .hcy-shopping-step a.now{color: #62BD60;}
+.hcy-shopping .hcy-shopping-step .buy-number.onNumber{background:#62BD60;}
+.hcy-shopping .hcy-shopping-step .nextSpan.onNextSpan{color:#62BD60;}
+.hcy-takeGood{margin-top: 20px;}
+.hcy-takeGood .takeGood-top{padding-bottom: 5px;border-bottom: 1px solid #ccc;}
+.hcy-takeGood .takeGoodTit,.hcy-leaveMessage .takeGoodTit{font-size: 13px;color: #666;font-weight: 400;height: 30px;line-height: 30px;padding-left: 10px;}
+.hcy-takeGood .take-list ul{margin:20px 0 0 0;}
+.hcy-takeGood .take-list ul li{line-height: 30px;padding-left: 10px;margin:6px 0;}
+.hcy-takeGood .take-list ul li input[type='radio']{vertical-align:middle;}
+.hcy-takeGood .take-list ul li span{font-size: 12px;color: #666;margin-left: 10px;float: left;}
+.hcy-takeGood .take-list ul li span.spanCounty,.hcy-takeGood .take-list ul li span.spanCity{margin-left: 0;}
+.hcy-takeGood .take-list ul li span.placeSpan:hover{color: #63BC62;cursor: pointer;}
+.hcy-takeGood .take-list ul li span.spanBill:hover{color: #63BC62;cursor: pointer;}
+.hcy-takeGood .take-list ul li a{padding-left: 10px;}
+.hcy-takeGood .take-list ul li span.default-place,.default-bill{color: #00CDFC;cursor:pointer;display: none;}
+.hcy-takeGood .take-list ul li span.default-bill{color: #00CDFC;cursor:pointer;display: none;}
+.hcy-takeGood .take-list ul li.showMore,.hideMore{text-align: center;line-height: 50px;color: #666;cursor: pointer;}
+.hcy-payType .payTitle,.hcy-sendGood .payTitle{font-size: 13px;color: #666;font-weight: 400;border-bottom: 1px solid #ccc;line-height: 40px;padding-left:10px;}
+.hcy-payType ul{clear: both;overflow: hidden;margin:20px 0 0 0;}
+.hcy-payType ul li img{margin:0 5px;}
+.hcy-payType ul li{float: left;padding-right: 30px;line-height: 30px;}
+.hcy-sendGood{margin-top: 50px;}
+.hcy-shop-table tbody tr td img{display: inline-block;width: 55px;height: 55px;background: #666666;margin:0 15px 0 35px;}
+.hcy-shop-table tbody tr td:nth-child(1){padding-left: 0;}
+#leaveArea{width: 100%;height: 130px;border:1px solid #ccc;border-radius: 2px;margin-top:15px;padding:10px;}
+.hcy-receptInfo{padding-bottom: 10px;}
+.hcy-receptInfo .receptInfo-top,.hcy-receptInfo .receptInfo-bottom{text-align: right;line-height: 30px;color: #666;border-bottom: 1px solid #ccc;padding-bottom: 10px;}
+.submit-order{width: 132px;height: 42px;border: none;outline: none;background: #62BD60;color: #fff;font-size: 13px;cursor: pointer;margin:24px 0; }
+.hcy-takeGood .take-list ul li a.checkUser{font-size: 12px;float: left;width:auto;height: 23px;text-align: center;line-height: 23px;padding:0 10px;;margin-right:10px;margin-top: 3px;}
+.hcy-takeGood .take-list ul li a.checkUser:hover,.hcy-takeGood .take-list ul li a.checkUser:focus{color:#666;text-decoration:none;}
+.hcy-takeGood .take-list ul li a.checkUser.oncheck{width: auto; border:1px solid #62BC62;background: url(../image/check.jpg) no-repeat right 10px;padding-right:11px;}
+.hcy-takeGood .take-list ul li a.ticketUser{width:auto;height:23px;float: left; text-align: center;line-height: 23px;margin-right: 10px;padding:0 10px;;}
+.hcy-takeGood .take-list ul li a.ticketUser.onTicket{width: auto;border:1px solid #62BC62;background: url(../image/check.jpg) no-repeat right 9px;padding-right:9px;}
+.hcy-takeGood .take-list ul li .ticketName{float: left; width: 130px;height: 23px;text-align: center;line-height: 23px;}
+.hcy-takeGood .take-list ul li .ticketName.spacil{border:1px solid #FF3334;color: #FF3334;}
+.hcy-takeGood .take-list ul li .ticketName.common{border:1px solid #0198FF;color: #0198FF;}
+.ticketTitle{display: inline-block;margin-left: 60px;}
+.ticketTitle>.selTicket{padding:5px 10px;border:1px solid #ccc;margin-right: 20px;}
+.ticketTitle>.selTicket.onselTicket{background: #62BD60;color: #fff;}
+.ticketBox .ticketWarn,.placeBox .ticketWarn{color: red;padding-left: 8px;}
+.ticketBox ul,.placeBox ul{padding:10px 15px;}
+.ticketBox ul li,.placeBox ul li{line-height: 35px;}
+.ticketBox ul li label,.placeBox ul li label{display: inline-block;width: 100px;}
+.ticketBox ul li input[type='text'],.placeBox ul li input[type='text']{width:200px;height: 28px;border: 1px solid #ccc;margin-left: 20px;}
+.placeBox ul li select{width:61px;height:30px;margin-right: 5px;border:1px solid #ccc;}
+.placeBox ul li input[type='text']{margin-left: 0px;}
+#newBillBox{display: none;}
+#newBillBox .newBillList{padding:10px 20px;height: 290px;background: #fff;}
+#newBillBox .newBillList>li{line-height: 40px;}
+#newBillBox .newBillList>li:not(.commonLi){visibility: hidden;}
+#newBillBox .newBillList>li:last-child{border-bottom: 0;}
+#newBillBox .newBillList>li>div{display: inline-block;}
+#newBillBox .newBillList>li .billTypeTit{display: inline-block;width: 90px;height: 25px;text-align: center;line-height: 25px;border:1px solid #ccc;color: #666;font-size: 12px;margin:0 15px;cursor: pointer;}
+#newBillBox .newBillList>li .billTypeTit.active{background: #63BD63;color: #fff;border:none;}
+#newBillBox .newBillList>li>label{display: inline-block;width: 94px;height: 27px;line-height: 27px;font-size: 12px;color: #666;}
+#newBillBox .newBillList>li>input[type='text']{width:200px;height: 25px;border:1px solid #ccc;vertical-align: middle;}
+#newBillBox .newBillList>li>label>.mustIcon{color: red;padding-right: 4px;}
+.layui-layer{box-shadow: none;!important}

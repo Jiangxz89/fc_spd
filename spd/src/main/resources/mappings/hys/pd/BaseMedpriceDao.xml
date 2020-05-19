@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.BaseMedpriceDao">
+    
+	<sql id="baseMedpriceColumns">
+		a.stockid AS "stockid",
+		a.hospitalid AS "hospitalid",
+		a.hospitalname AS "hospitalname",
+		a.medid AS "medid",
+		a.cuscode AS "cuscode",
+		a.sicode AS "sicode",
+		a.facid AS "facid",
+		a.facname AS "facname",
+		a.number AS "number",
+		a.inprice AS "inprice",
+		a.sellprice AS "sellprice",
+		a.usgid AS "usgid",
+		a.usgname AS "usgname",
+		a.fcyid AS "fcyid",
+		a.fcyname AS "fcyname",
+		a.taboo AS "taboo",
+		a.maxstock AS "maxstock",
+		a.minstock AS "minstock",
+		a.position AS "position",
+		a.userange AS "userange",
+		a.isstop AS "isstop",
+		a.modstaff AS "modstaff",
+		a.modstaffname AS "modstaffname",
+		a.moddate AS "moddate",
+		a.split AS "split",
+		a.injection AS "injection",
+		a.hospitalized AS "hospitalized",
+		a.freestrike AS "freestrike",
+		a.outpatient AS "outpatient",
+		a.label AS "label",
+		a.detail AS "detail",
+		a.explain AS "explain",
+		a.limit AS "limit",
+		a.limited AS "limited",
+		a.prompt AS "prompt",
+		a.mzstop AS "mzstop",
+		a.zystop AS "zystop",
+		a.skinmethod AS "skinmethod",
+		a.competence AS "competence",
+		a.nhcode AS "nhcode",
+		a.audstate AS "audstate",
+		a.invclass AS "invclass",
+		a.auditstatus AS "auditstatus",
+		a.auditor AS "auditor",
+		a.auditorname AS "auditorname",
+		a.audittime AS "audittime",
+		a.adviceprintclass AS "adviceprintclass",
+		a.directions AS "directions",
+		a.dirupdatetime AS "dirupdatetime"
+	</sql>
+	
+	<sql id="baseMedpriceJoins">
+	</sql>
+    
+	<select id="get" resultType="BaseMedprice">
+		SELECT 
+			<include refid="baseMedpriceColumns"/>
+		FROM base_medprice a
+		<include refid="baseMedpriceJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BaseMedprice">
+		SELECT 
+			<include refid="baseMedpriceColumns"/>
+		FROM base_medprice a
+		<include refid="baseMedpriceJoins"/>
+		<where>
+			1 = 1
+			<if test="facname != null and facname != ''">
+				AND a.facname LIKE concat('%',#{facname},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BaseMedprice">
+		SELECT 
+			<include refid="baseMedpriceColumns"/>
+		FROM base_medprice a
+		<include refid="baseMedpriceJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO base_medprice(
+			stockid,
+			hospitalid,
+			hospitalname,
+			medid,
+			cuscode,
+			sicode,
+			facid,
+			facname,
+			number,
+			inprice,
+			sellprice,
+			usgid,
+			usgname,
+			fcyid,
+			fcyname,
+			taboo,
+			maxstock,
+			minstock,
+			position,
+			userange,
+			isstop,
+			modstaff,
+			modstaffname,
+			moddate,
+			split,
+			injection,
+			hospitalized,
+			freestrike,
+			outpatient,
+			label,
+			detail,
+			explain,
+			limit,
+			limited,
+			prompt,
+			mzstop,
+			zystop,
+			skinmethod,
+			competence,
+			nhcode,
+			audstate,
+			invclass,
+			auditstatus,
+			auditor,
+			auditorname,
+			audittime,
+			adviceprintclass,
+			directions,
+			dirupdatetime
+		) VALUES (
+			#{stockid},
+			#{hospitalid},
+			#{hospitalname},
+			#{medid},
+			#{cuscode},
+			#{sicode},
+			#{facid},
+			#{facname},
+			#{number},
+			#{inprice},
+			#{sellprice},
+			#{usgid},
+			#{usgname},
+			#{fcyid},
+			#{fcyname},
+			#{taboo},
+			#{maxstock},
+			#{minstock},
+			#{position},
+			#{userange},
+			#{isstop},
+			#{modstaff},
+			#{modstaffname},
+			#{moddate},
+			#{split},
+			#{injection},
+			#{hospitalized},
+			#{freestrike},
+			#{outpatient},
+			#{label},
+			#{detail},
+			#{explain},
+			#{limit},
+			#{limited},
+			#{prompt},
+			#{mzstop},
+			#{zystop},
+			#{skinmethod},
+			#{competence},
+			#{nhcode},
+			#{audstate},
+			#{invclass},
+			#{auditstatus},
+			#{auditor},
+			#{auditorname},
+			#{audittime},
+			#{adviceprintclass},
+			#{directions},
+			#{dirupdatetime}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE base_medprice SET 	
+			stockid = #{stockid},
+			hospitalid = #{hospitalid},
+			hospitalname = #{hospitalname},
+			medid = #{medid},
+			cuscode = #{cuscode},
+			sicode = #{sicode},
+			facid = #{facid},
+			facname = #{facname},
+			number = #{number},
+			inprice = #{inprice},
+			sellprice = #{sellprice},
+			usgid = #{usgid},
+			usgname = #{usgname},
+			fcyid = #{fcyid},
+			fcyname = #{fcyname},
+			taboo = #{taboo},
+			maxstock = #{maxstock},
+			minstock = #{minstock},
+			position = #{position},
+			userange = #{userange},
+			isstop = #{isstop},
+			modstaff = #{modstaff},
+			modstaffname = #{modstaffname},
+			moddate = #{moddate},
+			split = #{split},
+			injection = #{injection},
+			hospitalized = #{hospitalized},
+			freestrike = #{freestrike},
+			outpatient = #{outpatient},
+			label = #{label},
+			detail = #{detail},
+			explain = #{explain},
+			limit = #{limit},
+			limited = #{limited},
+			prompt = #{prompt},
+			mzstop = #{mzstop},
+			zystop = #{zystop},
+			skinmethod = #{skinmethod},
+			competence = #{competence},
+			nhcode = #{nhcode},
+			audstate = #{audstate},
+			invclass = #{invclass},
+			auditstatus = #{auditstatus},
+			auditor = #{auditor},
+			auditorname = #{auditorname},
+			audittime = #{audittime},
+			adviceprintclass = #{adviceprintclass},
+			directions = #{directions},
+			dirupdatetime = #{dirupdatetime}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM base_medprice
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

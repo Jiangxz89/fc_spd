@@ -1,0 +1,97 @@
+html {
+  font-size: 20px !important;
+  font-family: Microsoft YaHei;
+}
+html,
+body,
+#wrap {
+  width: 100%;
+  height: 100%;
+}
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+}
+#wrap {
+  width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+/*----------主体样式--------------*/
+.container {
+  width: 100%;
+  -webkit-box-flex: 1;
+  overflow-y: scroll;
+}
+.container .swipe_list {
+  width: 100%;
+}
+.container .swipe_list .swipe_title {
+  width: 100%;
+  height: 2.4rem;
+  line-height: 2.4rem;
+  font-size: 0.8rem;
+  border-bottom: 1px solid #ccc;
+  padding-left: 0.5rem;
+}
+.container .swipe_list .swipe_title span {
+  float: right;
+  height: 2.4rem;
+  width: 2.4rem;
+  line-height: 2.4rem;
+  text-align: center;
+  font-size: 0.8rem;
+}
+.container .swipe_list .swipe_title .on {
+  -webkit-transform: rotate(90deg);
+}
+.container .swipe_list .swipe_Box {
+  padding: 0.5rem;
+}
+.container .swipe_list li {
+  width: 100%;
+  background: #fff;
+}
+.container .swipe_list li p {
+  line-height: 1.8rem;
+  font-size: 0.65rem;
+  clear: both;
+  border-bottom: 1px solid #ccc;
+}
+.container .swipe_list li p span {
+  font-size: 0.65rem;
+}
+.container .swipe_list li .check_box_symptom div,
+.container .swipe_list li .eating_habits div,
+.container .swipe_list li .drink_style div {
+  padding: 0.8rem;
+  float: left;
+  font-size: 0.65rem;
+}
+.container .swipe_list li .check_box_symptom div input,
+.container .swipe_list li .eating_habits div input,
+.container .swipe_list li .drink_style div input {
+  padding-right: 0 0.3rem;
+}
+.container .swipe_list li .teethBoxCh_form span {
+  font-size: 0.7rem;
+}
+.container .swipe_list li .sick_box h3 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.5rem 0;
+}
+.container .swipe_list li .sick_box .sick_p span {
+  font-size: 0.65rem;
+}
+.container .swipe_list li .sick_box .sick_p input {
+  width: 0.8rem;
+  height: 0.8rem;
+  vertical-align: center;
+}
+.container .swipe_list li .sick_box .sick_p .other_word {
+  width: 70%;
+  height: 1rem;
+}

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdPatienDao">
+
+	<sql id="pdPatienColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.pinyin AS "pinyin",
+		a.id_number AS "idNumber",
+		a.inhospital_no AS "inhospitalNo",
+		a.operation_doctor AS "operationDoctor",
+		a.operation_department AS "operationDepartment",
+		a.inhospital_doctor AS "inhospitalDoctor",
+		a.inhospital_department AS "inhospitalDepartment",
+		a.prescriber_doctor AS "prescriberDoctor",
+		a.package_id AS "packageId",
+		a.price AS "price",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.create_date AS "createDate",
+		b.storeroom_name AS "operationDepartmentName",
+		c.storeroom_name AS "inhospitalDepartmentName"
+	</sql>
+	
+	<sql id="pdPatienJoins">
+        left join pd_storeroom b on a.operation_department = b.id
+        left join pd_storeroom c on a.inhospital_department = c.id
+	</sql>
+    
+	<select id="get" resultType="PdPatien">
+		SELECT 
+			<include refid="pdPatienColumns"/>
+		FROM pd_patien a
+		<include refid="pdPatienJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdPatien">
+		SELECT 
+			<include refid="pdPatienColumns"/>
+		FROM pd_patien a
+		<include refid="pdPatienJoins"/>
+		<where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND (a.name LIKE concat('%',#{name},'%') or a.pinyin LIKE出库单 concat('%',#{name},'%'))
+			</if>
+            <if test="idNumber != null and idNumber != ''">
+                AND a.id_number LIKE concat('%',#{idNumber},'%')
+            </if>
+            <if test="inhospitalNo != null and inhospitalNo != ''">
+                AND a.inhospital_no LIKE concat('%',#{inhospitalNo},'%')
+            </if>
+		</where>
+		ORDER BY a.create_date desc
+	</select>
+	
+	<select id="findAllList" resultType="PdPatien">
+		SELECT 
+			<include refid="pdPatienColumns"/>
+		FROM pd_patien a
+		<include refid="pdPatienJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_patien(
+			id,
+			name,
+		    pinyin,
+			id_number,
+			inhospital_no,
+			operation_doctor,
+			operation_department,
+			inhospital_doctor,
+			inhospital_department,
+			prescriber_doctor,
+			package_id,
+			price,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{name},
+			#{pinyin},
+			#{idNumber},
+			#{inhospitalNo},
+			#{operationDoctor},
+			#{operationDepartment},
+			#{inhospitalDoctor},
+			#{inhospitalDepartment},
+			#{prescriberDoctor},
+			#{packageId},
+			#{price},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_patien SET 	
+			name = #{name},
+			pinyin = #{pinyin},
+			id_number = #{idNumber},
+			inhospital_no = #{inhospitalNo},
+			operation_doctor = #{operationDoctor},
+			operation_department = #{operationDepartment},
+			inhospital_doctor = #{inhospitalDoctor},
+			inhospital_department = #{inhospitalDepartment},
+			prescriber_doctor = #{prescriberDoctor},
+			package_id = #{packageId},
+			price = #{price},
+			remarks = #{remarks},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_patien SET
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

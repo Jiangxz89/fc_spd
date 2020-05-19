@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://cxf.apache.org/jaxws
+        http://cxf.apache.org/schemas/jaxws.xsd">
+
+
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+
+        <!--其中id是自己定义的，implementor是接口实现类，address就是访问的地址 -->
+        <!-- 相当于Endpoint.publish("http://localhost:8080/service", newHelloServiceImp()); -->
+    <jaxws:endpoint id="purchaseOrderService" implementor="com.thinkgem.hys.ws.service.impl.PurchaseOrderServiceImpl" address="/sendPurchaseOrderToSpd" />
+
+    <!--  Cxf WebService 客户端示例 -->
+    <!--<jaxws:client id="demoClient" serviceClass="com.comp.web.webservice.DemoWebservice" address="http://localhost:8080/App/services/demo?wsdl" />-->
+</beans>

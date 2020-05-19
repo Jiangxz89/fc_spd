@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdAllocationRecordDao">
+    
+	<sql id="pdAllocationRecordColumns">
+		a.id AS "id",
+		a.allocation_code AS "allocationCode",
+		a.allocation_date AS "allocationDate",
+		a.record_people AS "recordPeople",
+		a.out_id AS "outId",
+		a.out_name AS "outName",
+		a.in_id AS "inId",
+		a.in_name AS "inName",
+		a.batch_no AS "batchNo",
+		a.product_bar_code AS "productBarCode",
+		a.allocation_num AS "allocationNum",
+		a.price_amount AS "priceAmount",
+		a.record_state AS "recordState",
+		a.check_people AS "checkPeople",
+		a.check_date AS "checkDate",
+		a.reject_reason AS "rejectReason",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.extend1 AS "extend1",
+		a.extend2 AS "extend2",
+		a.extend3 AS "extend3"
+	</sql>
+	
+	<sql id="pdAllocationRecordJoins">
+	</sql>
+    
+	<select id="get" resultType="PdAllocationRecord">
+		SELECT 
+			<include refid="pdAllocationRecordColumns"/>
+		FROM pd_allocation_record a
+		<include refid="pdAllocationRecordJoins"/>
+		WHERE a.id = #{id} or a.allocation_code = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdAllocationRecord">
+		SELECT 
+			<include refid="pdAllocationRecordColumns"/>
+		FROM pd_allocation_record a
+		<include refid="pdAllocationRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="allocationCode != null and allocationCode != ''">
+				AND a.allocation_code LIKE concat('%',#{allocationCode},'%')
+			</if>
+			<if test="allocationDate != null and allocationDate != ''">
+				AND a.allocation_date = #{allocationDate}
+			</if>
+			<if test="startDate != null and startDate != '' ">
+				AND a.allocation_date &gt;= #{startDate}
+			</if>
+			<if test="endDate != null and endDate != ''">
+				AND a.allocation_date &lt;= #{endDate}
+			</if>
+			<if test="recordState != null and recordState != ''">
+				AND a.record_state = #{recordState}
+			</if>
+			<if test="outId != null and outId != ''">
+				AND a.out_id = #{outId}
+			</if>
+			<if test="inId != null and inId != ''">
+				AND a.in_id = #{inId}
+			</if>
+			<if test="recordPeople != null and recordPeople != ''">
+				AND a.record_people = #{recordPeople}
+			</if>
+			<if test="recordStates != null and recordStates != ''">
+				AND a.record_state in <foreach  item="state" collection="stateList" index="index"  open="(" separator="," close=")">#{state}</foreach>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdAllocationRecord">
+		SELECT 
+			<include refid="pdAllocationRecordColumns"/>
+		FROM pd_allocation_record a
+		<include refid="pdAllocationRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_allocation_record(
+			id,
+			allocation_code,
+			allocation_date,
+			record_people,
+			out_id,
+			out_name,
+			in_id,
+			in_name,
+			batch_no,
+			product_bar_code,
+			allocation_num,
+			price_amount,
+			record_state,
+			check_people,
+			check_date,
+			reject_reason,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3
+		) VALUES (
+			#{id},
+			#{allocationCode},
+			#{allocationDate},
+			#{recordPeople},
+			#{outId},
+			#{outName},
+			#{inId},
+			#{inName},
+			#{batchNo},
+			#{productBarCode},
+			#{allocationNum},
+			#{priceAmount},
+			#{recordState},
+			#{checkPeople},
+			#{checkDate},
+			#{rejectReason},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{extend1},
+			#{extend2},
+			#{extend3}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_allocation_record SET 	
+			allocation_code = #{allocationCode},
+			allocation_date = #{allocationDate},
+			record_people = #{recordPeople},
+			out_id = #{outId},
+			out_Name = #{outName},
+			in_id = #{inId},
+			in_Name = #{inName},
+			batch_no = #{batchNo},
+			product_bar_code = #{productBarCode},
+			allocation_num = #{allocationNum},
+			price_amount = #{priceAmount},
+			record_state = #{recordState},
+			check_people = #{checkPeople},
+			check_date = #{checkDate},
+			reject_reason = #{rejectReason},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			extend1 = #{extend1},
+			extend2 = #{extend2},
+			extend3 = #{extend3}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_allocation_record SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+		
+	<update id="updateAllocationState">
+		UPDATE pd_allocation_record SET 
+			record_state = #{recordState},
+			update_date = now()
+		WHERE allocation_code = #{allocationCode}		
+	</update>
+</mapper>

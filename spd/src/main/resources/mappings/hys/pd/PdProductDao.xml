@@ -1,0 +1,986 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdProductDao">
+
+    <sql id="pdProductColumns">
+		a.id AS "id",
+		a.number AS "number",
+		a.name AS "name",
+		a.spm AS "spm",
+		ifnull(a.other_name,'') AS "otherName",
+		ifnull(a.other_spm,'') AS "otherSpm",
+		a.spec AS "spec",
+		a.version AS "version",
+		a.unit AS "unit",
+		a.power AS "power",
+		a.type AS "type",
+		a.category_id AS "categoryId",
+		a.category_name AS "categoryName",
+		a.group_id AS "groupId",
+		a.group_name AS "groupName",
+		a.vender_id AS "venderId",
+		a.vender_name AS "venderName",
+		a.brand_id AS "brandId",
+		a.brand_name AS "brandName",
+		a.pru_price AS "pruPrice",
+		a.selling_price AS "sellingPrice",
+		a.charge_code AS "chargeCode",
+		a.registration AS "registration",
+		a.description AS "description",
+		a.img_auth_number AS "imgAuthNumber",
+		a.img_auth_date AS "imgAuthDate",
+		a.img_auth_site AS "imgAuthSite",
+		a.img_register_number1 AS "imgRegisterNumber1",
+		a.img_register_date1 AS "imgRegisterDate1",
+		a.img_register_site1 AS "imgRegisterSite1",
+		a.img_register_number2 AS "imgRegisterNumber2",
+		a.img_register_date2 AS "imgRegisterDate2",
+		a.img_register_site2 AS "imgRegisterSite2",
+		a.img_register_number3 AS "imgRegisterNumber3",
+		a.img_register_date3 AS "imgRegisterDate3",
+		a.img_register_site3 AS "imgRegisterSite3",
+		a.img_license_number1 AS "imgLicenseNumber1",
+		a.img_license_date1 AS "imgLicenseDate1",
+		a.img_license_site1 AS "imgLicenseSite1",
+		a.img_license_number2 AS "imgLicenseNumber2",
+		a.img_license_date2 AS "imgLicenseDate2",
+		a.img_license_site2 AS "imgLicenseSite2",
+		a.img_license_number3 AS "imgLicenseNumber3",
+		a.img_license_date3 AS "imgLicenseDate3",
+		a.img_license_site3 AS "imgLicenseSite3",
+		a.img_license_number4 AS "imgLicenseNumber4",
+		a.img_license_date4 AS "imgLicenseDate4",
+		a.img_license_site4 AS "imgLicenseSite4",
+		a.img_product1 AS "imgProduct1",
+		a.img_product2 AS "imgProduct2",
+		a.img_product3 AS "imgProduct3",
+		a.is_urgent AS "isUrgent",
+		a.urgent_pur_count AS "urgentPurCount",
+		a.surplus_pur_count AS "surplusPurCount",
+		a.encoding_rule AS encodingRule,
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.syn_flag AS "synFlag",
+		a.is_charge AS "isCharge",
+		a.tp_prod_id AS "tpProdId"
+	</sql>
+
+    <!-- 耗材分类 -->
+    <sql id="pdCategoryColumns">
+		c.`name` as "categoryName"
+	</sql>
+    <!-- 耗材组别 -->
+    <sql id="pdGroupColumns">
+		g.`name` as "groupName"
+	</sql>
+
+    <!-- 供应商 -->
+    <sql id="pdSupplierColumnsShow">
+		gy.`supplier_name` as "supplierNameShow"
+	</sql>
+
+
+    <sql id="pdProductJoins">
+    </sql>
+    <sql id="stockColumn">
+        IFNULL(b.stock_num,'0') AS "stockNum",
+        <!-- b.product_bar_code AS "barCode",
+        b.batch_no AS "batchNo", -->
+        DATE_FORMAT(b.valid_date,'%Y-%m-%d') AS "validDate"
+    </sql>
+
+    <!-- 产品关联供应商字段 -->
+    <sql id="pdDrugSupplierColumn">
+		ds.ghdw_id as "supplierId"
+	</sql>
+
+    <!--编码规则字段 -->
+    <sql id="pdEncodingRuleColumns">
+		per.name as "encodingRuleName"
+	</sql>
+
+    <sql id="selfStockColumn">
+		IFNULL(s.stock_num,'0') AS "selfStockNum"
+	</sql>
+    <!-- 查询该产品所在当前人仓库中的库存 -->
+    <sql id="storeroomStockSql">
+        LEFT JOIN (
+        select t.* from pd_product_stock_total t
+        <where>
+            t.del_flag = '0'
+            <choose>
+                <when test="storeroomId != null and storeroomId != ''">
+                    and t.storeroom_id = #{storeroomId}
+                </when>
+                <otherwise>
+                    and (t.storeroom_id is null or t.storeroom_id = '')
+                </otherwise>
+            </choose>
+        </where>
+        )b
+        ON a.id = b.product_id
+    </sql>
+
+    <!-- 耗材分类 -->
+    <sql id="pdCategoryJoins">
+		LEFT JOIN pd_category c on a.category_id = c.id
+	</sql>
+
+    <!-- 耗材组别 -->
+    <sql id="pdGroupJoins">
+		LEFT JOIN pd_group g on a.group_id = g.id
+	</sql>
+
+    <!-- 供应商字段 -->
+    <sql id="pdSupplierJoinsShow">
+		LEFT JOIN pd_supplier gy on ds.ghdw_id = gy.id
+	</sql>
+
+    <!-- 查询显示优化start 2019年5月20日09:13:05 -->
+    <sql id="pdCategoryColumnsShow">
+		c.`name` as "categoryNameShow"
+	</sql>
+    <sql id="pdGroupColumnsShow">
+		g.`name` as "groupNameShow"
+	</sql>
+    <sql id="pdVenderColumnsShow">
+		h.`name` as "venderNameShow"
+	</sql>
+    <sql id="pdCategoryJoinsShow">
+		LEFT JOIN pd_category c on a.category_id = c.id
+	</sql>
+    <sql id="pdGroupJoinsShow">
+		LEFT JOIN pd_group g on a.group_id = g.id
+	</sql>
+    <sql id="pdVenderJoinsShow">
+		LEFT JOIN pd_vender h on a.vender_id = h.id
+	</sql>
+    <!-- 查询显示优化end 2019年5月20日09:09:14 -->
+
+    <!-- 产品关联的供应商表 -->
+    <sql id="pdDrugSupplierSql">
+		LEFT JOIN pd_drug_supplier ds on a.id = ds.ypdm
+	</sql>
+
+    <!-- 编码规则表 -->
+    <sql id="pdEncodingRuleJoins">
+		LEFT JOIN pd_encoding_rule per on a.encoding_rule = per.id
+	</sql>
+
+    <sql id="selfStoreroomStockSql">
+        LEFT JOIN (
+        select st.* from pd_product_stock_total st
+        <where>
+            st.del_flag = '0'
+            <choose>
+                <when test="selfStoreroomId != null and selfStoreroomId != ''">
+                    and st.storeroom_id = #{selfStoreroomId}
+                </when>
+                <otherwise>
+                    and (st.storeroom_id is null or st.storeroom_id = '')
+                </otherwise>
+            </choose>
+        </where>
+        )s
+        ON a.id = s.product_id
+    </sql>
+
+    <select id="get" resultType="PdProduct">
+        SELECT
+        <include refid="pdProductColumns"/>
+        FROM pd_product a
+        <include refid="pdProductJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <!-- 获取分类及组别名称等信息 -->
+    <select id="getOne" resultType="PdProduct">
+        SELECT
+        <include refid="pdProductColumns"/>,
+        <include refid="pdCategoryColumns"/>,
+        <include refid="pdGroupColumns"/>,
+        <include refid="pdEncodingRuleColumns"/>
+        FROM pd_product a
+        <include refid="pdProductJoins"/>
+        <include refid="pdCategoryJoins"/>
+        <include refid="pdGroupJoins"/>
+        <include refid="pdEncodingRuleJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="getProduct" resultType="PdProduct">
+        SELECT
+        <include refid="pdProductColumns"/>,
+        <include refid="stockColumn"/>,
+        <include refid="selfStockColumn"/>
+        FROM pd_product a
+        <include refid="pdProductJoins"/>
+        <include refid="storeroomStockSql"/>
+        <include refid="selfStoreroomStockSql"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="PdProduct">
+        SELECT
+        <include refid="pdProductColumns"/>,
+        <include refid="stockColumn"/>,
+        <include refid="selfStockColumn"/>,
+        <include refid="pdDrugSupplierColumn"/>,
+        <include refid="pdSupplierColumnsShow"/>,
+        <include refid="pdVenderColumnsShow"/>
+        FROM pd_product a
+        <include refid="pdProductJoins"/>
+        <include refid="storeroomStockSql"/>
+        <include refid="selfStoreroomStockSql"/>
+        <include refid="pdDrugSupplierSql"/>
+        <include refid="pdSupplierJoinsShow"/>
+        <include refid="pdVenderJoinsShow"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="id != null and id != ''">
+                AND a.id = #{id}
+            </if>
+            <if test="venderId != null and venderId != ''">
+                AND a.vender_id = #{venderId}
+            </if>
+            <if test="venderName != null and venderName != ''">
+                AND a.vender_name LIKE concat('%',#{venderName},'%')
+            </if>
+            <if test="number != null and number != ''">
+                AND a.number like concat('%',#{number},'%')
+            </if>
+            <if test="categoryId != null and categoryId != ''">
+                AND a.category_id = #{categoryId}
+            </if>
+            <if test="categoryName != null and categoryName != ''">
+                AND a.category_name = #{categoryName}
+            </if>
+            <if test="groupName != null and groupName != ''">
+                AND a.group_name = #{groupName}
+            </if>
+            <if test="groupId != null and groupId != ''">
+                AND a.group_id = #{groupId}
+            </if>
+            <if test="spec != null and spec != ''">
+                AND a.spec like concat('%',#{spec},'%')
+            </if>
+            <if test="version != null and version != ''">
+                AND a.version like concat('%',#{version},'%')
+            </if>
+            <if test="power != null and power != ''">
+                AND a.power = #{power}
+            </if>
+            <if test="supplierId != null and supplierId != ''">
+                AND ds.ghdw_id = #{supplierId}
+            </if>
+            <if test="chargeCode == 'a0'">
+                AND a.charge_code IS NULL
+            </if>
+            <if test="isUrgent != null and isUrgent != ''">
+                AND is_urgent = #{isUrgent}
+            </if>
+            <if test="registration != null and registration != ''">
+                AND a.registration like concat('%',#{registration},'%')
+            </if>
+
+            <if test="name != null and name != ''">
+                AND a.name LIKE concat('%',#{name},'%')
+            </if>
+            <if test="isLimitDown != null and isLimitDown == 'true' ">
+                AND a.id in (select DISTINCT st.product_id from pd_product_stock_total st where st.stock_num &lt;= st.limit_down)
+            </if>
+            ${sqlMap.dsf}
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <select id="findUnsynchronizedList" resultType="com.thinkgem.hys.pd.entity.bo.PdProductBO">
+        SELECT
+        a.id AS "id",
+        a.number AS "number",
+        a.name AS "name",
+        a.spm AS "spm",
+        ifnull(a.other_name,'') AS "otherName",
+        ifnull(a.other_spm,'') AS "otherSpm",
+        a.spec AS "spec",
+        a.version AS "version",
+        a.unit AS "unit",
+        a.power AS "power",
+        a.type AS "type",
+        a.category_id AS "categoryId",
+        a.category_name AS "categoryName",
+        a.group_id AS "groupId",
+        a.group_name AS "groupName",
+        a.vender_id AS "venderId",
+        a.vender_name AS "venderName",
+        a.brand_id AS "brandId",
+        a.brand_name AS "brandName",
+        a.pru_price AS "pruPrice",
+        a.selling_price AS "sellingPrice",
+        a.charge_code AS "chargeCode",
+        a.registration AS "registration",
+        a.description AS "description",
+        a.img_auth_number AS "imgAuthNumber",
+        a.img_auth_date AS "imgAuthDate",
+        a.img_auth_site AS "imgAuthSite",
+        a.img_register_number1 AS "imgRegisterNumber1",
+        a.img_register_date1 AS "imgRegisterDate1",
+        a.img_register_site1 AS "imgRegisterSite1",
+        a.img_register_number2 AS "imgRegisterNumber2",
+        a.img_register_date2 AS "imgRegisterDate2",
+        a.img_register_site2 AS "imgRegisterSite2",
+        a.img_register_number3 AS "imgRegisterNumber3",
+        a.img_register_date3 AS "imgRegisterDate3",
+        a.img_register_site3 AS "imgRegisterSite3",
+        a.img_license_number1 AS "imgLicenseNumber1",
+        a.img_license_date1 AS "imgLicenseDate1",
+        a.img_license_site1 AS "imgLicenseSite1",
+        a.img_license_number2 AS "imgLicenseNumber2",
+        a.img_license_date2 AS "imgLicenseDate2",
+        a.img_license_site2 AS "imgLicenseSite2",
+        a.img_license_number3 AS "imgLicenseNumber3",
+        a.img_license_date3 AS "imgLicenseDate3",
+        a.img_license_site3 AS "imgLicenseSite3",
+        a.img_license_number4 AS "imgLicenseNumber4",
+        a.img_license_date4 AS "imgLicenseDate4",
+        a.img_license_site4 AS "imgLicenseSite4",
+        a.img_product1 AS "imgProduct1",
+        a.img_product2 AS "imgProduct2",
+        a.img_product3 AS "imgProduct3",
+        a.is_urgent AS "isUrgent",
+        a.urgent_pur_count AS "urgentPurCount",
+        a.surplus_pur_count AS "surplusPurCount",
+        a.create_by AS "createBy",
+        a.create_date AS "createDate",
+        a.update_by AS "updateBy",
+        a.update_date AS "updateDate",
+        a.remarks AS "remarks",
+        a.del_flag AS "delFlag",
+        a.syn_flag AS "synFlag",
+        a.is_charge AS "isCharge",
+        a.tp_prod_id AS "tpProdId"
+        FROM pd_product a
+        <where>
+            1=1
+            and (a.syn_flag &lt;&gt; 1 or a.syn_flag is null)
+        </where>
+    </select>
+
+    <select id="basicFindList" resultType="PdProduct">
+        SELECT
+        <include refid="pdProductColumns"/>,
+        <include refid="pdDrugSupplierColumn"/>,
+        <include refid="pdCategoryColumnsShow"/>,
+        <include refid="pdGroupColumnsShow"/>,
+        <include refid="pdVenderColumnsShow"/>,
+        <include refid="pdSupplierColumnsShow"/>
+        FROM pd_product a
+        <include refid="pdProductJoins"/>
+        <include refid="pdDrugSupplierSql"/>
+        <include refid="pdCategoryJoinsShow"/>
+        <include refid="pdGroupJoinsShow"/>
+        <include refid="pdVenderJoinsShow"/>
+        <include refid="pdSupplierJoinsShow"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="venderId != null and venderId != ''">
+                AND a.vender_id = #{venderId}
+            </if>
+            <if test="venderName != null and venderName != ''">
+                AND a.vender_name LIKE #{venderName}
+            </if>
+            <if test="number != null and number != ''">
+                AND a.number = #{number}
+            </if>
+            <if test="categoryName != null and categoryName != ''">
+                AND a.category_name = #{categoryName}
+            </if>
+            <if test="categoryId != null and categoryId != ''">
+                AND a.category_id = #{categoryId}
+            </if>
+            <if test="groupName != null and groupName != ''">
+                AND a.group_name = #{groupName}
+            </if>
+            <if test="groupId != null and groupId != ''">
+                AND a.group_id = #{groupId}
+            </if>
+            <if test="version != null and version != ''">
+                AND a.version like concat('%',#{version},'%')
+            </if>
+            <if test="spec != null and spec != ''">
+                AND a.spec like concat('%',#{spec},'%')
+            </if>
+            <if test="supplierId != null and supplierId != ''">
+                AND ds.ghdw_id = #{supplierId}
+            </if>
+            <if test="power != null and power != ''">
+                AND a.power = #{power}
+            </if>
+            <if test="chargeCode == 'a0'">
+                AND a.charge_code IS NULL or a.charge_code =''
+            </if>
+            <if test="isUrgent != null and isUrgent != ''">
+                AND is_urgent = #{isUrgent}
+            </if>
+            <if test="name != null and name != ''">
+                AND (a.name LIKE concat('%',#{name},'%') or a.spm LIKE concat('%',#{name},'%'))
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 解决产品列表编号查询bug -->
+    <select id="basicFindListOne" resultType="PdProduct">
+        SELECT
+        <include refid="pdProductColumns"/>,
+        <include refid="pdDrugSupplierColumn"/>,
+        <include refid="pdCategoryColumnsShow"/>,
+        <include refid="pdGroupColumnsShow"/>,
+        <include refid="pdVenderColumnsShow"/>,
+        <include refid="pdSupplierColumnsShow"/>
+        FROM pd_product a
+        <include refid="pdProductJoins"/>
+        <include refid="pdDrugSupplierSql"/>
+        <include refid="pdCategoryJoinsShow"/>
+        <include refid="pdGroupJoinsShow"/>
+        <include refid="pdVenderJoinsShow"/>
+        <include refid="pdSupplierJoinsShow"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="venderId != null and venderId != ''">
+                AND a.vender_id = #{venderId}
+            </if>
+            <if test="venderName != null and venderName != ''">
+                AND a.vender_name LIKE #{venderName}
+            </if>
+            <if test="number != null and number != ''">
+                AND a.number LIKE concat('%',#{number},'%')
+            </if>
+            <if test="categoryName != null and categoryName != ''">
+                AND a.category_name = #{categoryName}
+            </if>
+            <if test="categoryId != null and categoryId != ''">
+                AND a.category_id = #{categoryId}
+            </if>
+            <if test="groupName != null and groupName != ''">
+                AND a.group_name = #{groupName}
+            </if>
+            <if test="groupId != null and groupId != ''">
+                AND a.group_id = #{groupId}
+            </if>
+            <if test="version != null and version != ''">
+                AND a.version like concat('%',#{version},'%')
+            </if>
+            <if test="spec != null and spec != ''">
+                AND a.spec like concat('%',#{spec},'%')
+            </if>
+            <if test="supplierId != null and supplierId != ''">
+                AND ds.ghdw_id = #{supplierId}
+            </if>
+            <if test="power != null and power != ''">
+                AND a.power = #{power}
+            </if>
+            <if test="chargeCode == 'a0'">
+                AND a.charge_code IS NULL or a.charge_code =''
+            </if>
+            <if test="isUrgent != null and isUrgent != ''">
+                AND is_urgent = #{isUrgent}
+            </if>
+            <if test="name != null and name != ''">
+                AND (a.name LIKE concat('%',#{name},'%') or a.spm LIKE concat('%',#{name},'%'))
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findAllList" resultType="PdProduct">
+        SELECT
+        <include refid="pdProductColumns"/>
+        FROM pd_product a
+        <include refid="pdProductJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="insert">
+		INSERT INTO pd_product(
+			id,
+			number,
+			name,
+			spm,
+			other_name,
+			other_spm,
+			spec,
+			version,
+			unit,
+			power,
+			type,
+			category_id,
+			category_name,
+			group_id,
+			group_name,
+			vender_id,
+			vender_name,
+			brand_id,
+			brand_name,
+			pru_price,
+			selling_price,
+			charge_code,
+			registration,
+			description,
+			img_auth_number,
+			img_auth_date,
+			img_auth_site,
+			img_register_number1,
+			img_register_date1,
+			img_register_site1,
+			img_register_number2,
+			img_register_date2,
+			img_register_site2,
+			img_register_number3,
+			img_register_date3,
+			img_register_site3,
+			img_license_number1,
+			img_license_date1,
+			img_license_site1,
+			img_license_number2,
+			img_license_date2,
+			img_license_site2,
+			img_license_number3,
+			img_license_date3,
+			img_license_site3,
+			img_license_number4,
+			img_license_date4,
+			img_license_site4,
+			img_product1,
+			img_product2,
+			img_product3,
+			is_urgent,
+			urgent_pur_count,
+			surplus_pur_count,
+			encoding_rule,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			syn_flag,
+			is_charge,
+			tp_prod_id
+		) VALUES (
+			#{id},
+			#{number},
+			#{name},
+			#{spm},
+			#{otherName},
+			#{otherSpm},
+			#{spec},
+			#{version},
+			#{unit},
+			#{power},
+			#{type},
+			#{categoryId},
+			#{categoryName},
+			#{groupId},
+			#{groupName},
+			#{venderId},
+			#{venderName},
+			#{brandId},
+			#{brandName},
+			#{pruPrice},
+			#{sellingPrice},
+			#{chargeCode},
+			#{registration},
+			#{description},
+			#{imgAuthNumber},
+			#{imgAuthDate},
+			#{imgAuthSite},
+			#{imgRegisterNumber1},
+			#{imgRegisterDate1},
+			#{imgRegisterSite1},
+			#{imgRegisterNumber2},
+			#{imgRegisterDate2},
+			#{imgRegisterSite2},
+			#{imgRegisterNumber3},
+			#{imgRegisterDate3},
+			#{imgRegisterSite3},
+			#{imgLicenseNumber1},
+			#{imgLicenseDate1},
+			#{imgLicenseSite1},
+			#{imgLicenseNumber2},
+			#{imgLicenseDate2},
+			#{imgLicenseSite2},
+			#{imgLicenseNumber3},
+			#{imgLicenseDate3},
+			#{imgLicenseSite3},
+			#{imgLicenseNumber4},
+			#{imgLicenseDate4},
+			#{imgLicenseSite4},
+			#{imgProduct1},
+			#{imgProduct2},
+			#{imgProduct3},
+			#{isUrgent},
+			#{urgentPurCount},
+			#{surplusPurCount},
+			#{encodingRule},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{synFlag},
+			#{isCharge},
+			#{tpProdId}
+		)
+	</insert>
+
+    <insert id="importSave">
+        INSERT INTO pd_product(
+        id,
+        number,
+        name,
+        spm,
+        other_name,
+        other_spm,
+        spec,
+        version,
+        unit,
+        power,
+        type,
+        category_id,
+        category_name,
+        group_id,
+        group_name,
+        vender_id,
+        vender_name,
+        brand_id,
+        brand_name,
+        pru_price,
+        selling_price,
+        charge_code,
+        registration,
+        description,
+        img_auth_number,
+        img_auth_date,
+        img_auth_site,
+        img_register_number1,
+        img_register_date1,
+        img_register_site1,
+        img_register_number2,
+        img_register_date2,
+        img_register_site2,
+        img_register_number3,
+        img_register_date3,
+        img_register_site3,
+        img_license_number1,
+        img_license_date1,
+        img_license_site1,
+        img_license_number2,
+        img_license_date2,
+        img_license_site2,
+        img_license_number3,
+        img_license_date3,
+        img_license_site3,
+        img_license_number4,
+        img_license_date4,
+        img_license_site4,
+        img_product1,
+        img_product2,
+        img_product3,
+        is_urgent,
+        urgent_pur_count,
+        surplus_pur_count,
+        encoding_rule,
+        create_by,
+        create_date,
+        update_by,
+        update_date,
+        remarks,
+        del_flag,
+        syn_flag,
+        is_charge,
+        tp_prod_id
+        ) VALUES
+        <foreach collection="list" separator="," item="item">
+            (
+            #{item.id},
+            #{item.number},
+            #{item.name},
+            #{item.spm},
+            #{item.otherName},
+            #{item.otherSpm},
+            #{item.spec},
+            #{item.version},
+            #{item.unit},
+            #{item.power},
+            #{item.type},
+            #{item.categoryId},
+            #{item.categoryName},
+            #{item.groupId},
+            #{item.groupName},
+            #{item.venderId},
+            #{item.venderName},
+            #{item.brandId},
+            #{item.brandName},
+            #{item.pruPrice},
+            #{item.sellingPrice},
+            #{item.chargeCode},
+            #{item.registration},
+            #{item.description},
+            #{item.imgAuthNumber},
+            #{item.imgAuthDate},
+            #{item.imgAuthSite},
+            #{item.imgRegisterNumber1},
+            #{item.imgRegisterDate1},
+            #{item.imgRegisterSite1},
+            #{item.imgRegisterNumber2},
+            #{item.imgRegisterDate2},
+            #{item.imgRegisterSite2},
+            #{item.imgRegisterNumber3},
+            #{item.imgRegisterDate3},
+            #{item.imgRegisterSite3},
+            #{item.imgLicenseNumber1},
+            #{item.imgLicenseDate1},
+            #{item.imgLicenseSite1},
+            #{item.imgLicenseNumber2},
+            #{item.imgLicenseDate2},
+            #{item.imgLicenseSite2},
+            #{item.imgLicenseNumber3},
+            #{item.imgLicenseDate3},
+            #{item.imgLicenseSite3},
+            #{item.imgLicenseNumber4},
+            #{item.imgLicenseDate4},
+            #{item.imgLicenseSite4},
+            #{item.imgProduct1},
+            #{item.imgProduct2},
+            #{item.imgProduct3},
+            #{item.isUrgent},
+            #{item.urgentPurCount},
+            #{item.surplusPurCount},
+            #{item.encodingRule},
+            #{item.createBy.id},
+            #{item.createDate},
+            #{item.updateBy.id},
+            #{item.updateDate},
+            #{item.remarks},
+            #{item.delFlag},
+            #{synFlag},
+            #{isCharge},
+            #{tpProdId}
+            )
+        </foreach>
+
+    </insert>
+
+    <update id="update">
+		UPDATE pd_product SET
+			id = #{id},
+			number = #{number},
+			name = #{name},
+			spm = #{spm},
+			other_name = #{otherName},
+			other_spm = #{otherSpm},
+			spec = #{spec},
+			version = #{version},
+			unit = #{unit},
+			power = #{power},
+			type = #{type},
+			category_id = #{categoryId},
+			category_name = #{categoryName},
+			group_id = #{groupId},
+			group_name = #{groupName},
+			vender_id = #{venderId},
+			vender_name = #{venderName},
+			brand_id = #{brandId},
+			brand_name = #{brandName},
+			pru_price = #{pruPrice},
+			selling_price = #{sellingPrice},
+			charge_code = #{chargeCode},
+			registration = #{registration},
+			description = #{description},
+			img_auth_number = #{imgAuthNumber},
+			img_auth_date = #{imgAuthDate},
+			img_auth_site = #{imgAuthSite},
+			img_register_number1 = #{imgRegisterNumber1},
+			img_register_date1 = #{imgRegisterDate1},
+			img_register_site1 = #{imgRegisterSite1},
+			img_register_number2 = #{imgRegisterNumber2},
+			img_register_date2 = #{imgRegisterDate2},
+			img_register_site2 = #{imgRegisterSite2},
+			img_register_number3 = #{imgRegisterNumber3},
+			img_register_date3 = #{imgRegisterDate3},
+			img_register_site3 = #{imgRegisterSite3},
+			img_license_number1 = #{imgLicenseNumber1},
+			img_license_date1 = #{imgLicenseDate1},
+			img_license_site1 = #{imgLicenseSite1},
+			img_license_number2 = #{imgLicenseNumber2},
+			img_license_date2 = #{imgLicenseDate2},
+			img_license_site2 = #{imgLicenseSite2},
+			img_license_number3 = #{imgLicenseNumber3},
+			img_license_date3 = #{imgLicenseDate3},
+			img_license_site3 = #{imgLicenseSite3},
+			img_license_number4 = #{imgLicenseNumber4},
+			img_license_date4 = #{imgLicenseDate4},
+			img_license_site4 = #{imgLicenseSite4},
+			img_product1 = #{imgProduct1},
+			img_product2 = #{imgProduct2},
+			img_product3 = #{imgProduct3},
+			urgent_pur_count = #{urgentPurCount},
+			surplus_pur_count = #{surplusPurCount},
+			encoding_rule = #{encodingRule},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			syn_flag = #{synFlag},
+			is_charge = #{isCharge},
+			tp_prod_id=#{tpProdId}
+		WHERE id = #{id}
+	</update>
+
+    <update id="delete">
+		UPDATE pd_product SET
+			syn_flag = 0,
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+    <update id="updateChargeCode">
+		UPDATE pd_product SET
+			syn_flag = 0,
+			charge_code = #{chargeCode}
+		WHERE id = #{id}
+	</update>
+
+    <update id="updateSynFlag" parameterType="com.thinkgem.hys.pd.entity.bo.PdProductBO">
+		UPDATE pd_product SET
+			syn_flag = #{synFlag}
+		WHERE id = #{id}
+	</update>
+
+    <select id="getProductByPackageId" resultType="PdProduct">
+        SELECT
+        <include refid="pdProductColumns"/>
+        FROM pd_product a
+        <include refid="pdProductJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findAllNumber" resultType="PdProduct">
+        SELECT
+        a.number AS "number"
+        FROM pd_product a
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+        </where>
+    </select>
+
+    <!-- 根据编号查询产品信息 -->
+    <select id="findByNumber" resultType="PdProduct">
+        SELECT
+        <include refid="pdProductColumns"/>
+        FROM pd_product a
+        <include refid="pdProductJoins"/>
+        <where>
+            a.del_flag = "0"
+            AND a.number = #{number}
+        </where>
+    </select>
+
+    <update id="minusSurplusPurCount">
+		UPDATE pd_product SET
+			surplus_pur_count = #{surplusPurCount}
+		WHERE id = #{id}
+	</update>
+
+    <!-- 生产厂家、分类、组别校验 -->
+    <select id="checkCorrelation" resultType="PdProduct">
+        SELECT
+        <include refid="pdProductColumns"/>
+        FROM pd_product a
+        <include refid="pdProductJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="categoryId != null and categoryId != ''">
+                AND a.category_id = #{categoryId}
+            </if>
+            <if test="groupId != null and groupId != ''">
+                AND a.group_id = #{groupId}
+            </if>
+            <if test="venderId != null and venderId != ''">
+                AND a.vender_id = #{venderId}
+            </if>
+        </where>
+    </select>
+
+
+    <!--提供select2 查询的方法 -->
+    <select id="findSelectList" resultType="PdProduct">
+        SELECT
+        <include refid="pdProductColumns"/>
+        FROM pd_product a
+        <include refid="pdProductJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="name != null and name != ''">
+                AND (
+                a.name LIKE concat('%',#{name},'%')
+                || a.spm LIKE concat('%',#{name},'%')
+                || a.other_name LIKE concat('%',#{name},'%')
+                || a.other_spm LIKE concat('%',#{name},'%')
+                )
+            </if>
+            group by a.name
+        </where>
+    </select>
+
+    <select id="check" resultType="PdProduct">
+        SELECT
+        <include refid="pdProductColumns"/>
+        FROM pd_product a
+        <include refid="pdProductJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="number != null and number != ''">
+                AND a.number =  #{number}
+            </if>
+        </where>
+    </select>
+
+</mapper>

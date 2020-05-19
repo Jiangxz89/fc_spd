@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.DataMasterprofitDao">
+    
+	<sql id="dataMasterprofitColumns">
+		a.masterid AS "masterid",
+		a.hospitalid AS "hospitalid",
+		a.hospitalname AS "hospitalname",
+		a.deptid AS "deptid",
+		a.deptname AS "deptname",
+		a.billkd AS "billkd",
+		a.billdate AS "billdate",
+		a.billno AS "billno",
+		a.billstf AS "billstf",
+		a.billstfname AS "billstfname",
+		a.state AS "state",
+		a.audstf AS "audstf",
+		a.audstfname AS "audstfname",
+		a.audtime AS "audtime",
+		a.mataccpid AS "mataccpid",
+		a.housepid AS "housepid",
+		a.dspt AS "dspt"
+	</sql>
+	
+	<sql id="dataMasterprofitJoins">
+	</sql>
+    
+	<select id="get" resultType="DataMasterprofit">
+		SELECT 
+			<include refid="dataMasterprofitColumns"/>
+		FROM data_masterprofit a
+		<include refid="dataMasterprofitJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DataMasterprofit">
+		SELECT 
+			<include refid="dataMasterprofitColumns"/>
+		FROM data_masterprofit a
+		<include refid="dataMasterprofitJoins"/>
+		<where>
+			1 = 1
+			<if test="billno != null and billno != ''">
+				AND a.billno LIKE concat('%',#{billno},'%')
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND a.billdate BETWEEN #{startDate} AND #{endDate}
+			</if>
+			<if test="billkd != null and billkd != ''">
+				AND a.billkd = #{billkd}
+			</if>
+			<if test="state != null and state != ''">
+				AND a.state = #{state}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DataMasterprofit">
+		SELECT 
+			<include refid="dataMasterprofitColumns"/>
+		FROM data_masterprofit a
+		<include refid="dataMasterprofitJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO data_masterprofit(
+			masterid,
+			hospitalid,
+			hospitalname,
+			deptid,
+			deptname,
+			billkd,
+			billdate,
+			billno,
+			billstf,
+			billstfname,
+			state,
+			audstf,
+			audstfname,
+			audtime,
+			mataccpid,
+			housepid,
+			dspt
+		) VALUES (
+			#{masterid},
+			#{hospitalid},
+			#{hospitalname},
+			#{deptid},
+			#{deptname},
+			#{billkd},
+			#{billdate},
+			#{billno},
+			#{billstf},
+			#{billstfname},
+			#{state},
+			#{audstf},
+			#{audstfname},
+			#{audtime},
+			#{mataccpid},
+			#{housepid},
+			#{dspt}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE data_masterprofit SET 	
+			masterid = #{masterid},
+			hospitalid = #{hospitalid},
+			hospitalname = #{hospitalname},
+			deptid = #{deptid},
+			deptname = #{deptname},
+			billkd = #{billkd},
+			billdate = #{billdate},
+			billno = #{billno},
+			billstf = #{billstf},
+			billstfname = #{billstfname},
+			state = #{state},
+			audstf = #{audstf},
+			audstfname = #{audstfname},
+			audtime = #{audtime},
+			mataccpid = #{mataccpid},
+			housepid = #{housepid},
+			dspt = #{dspt}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM data_masterprofit
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

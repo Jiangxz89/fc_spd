@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdProductStockDao">
+    
+	<sql id="pdProductStockColumns">
+		a.id AS "id",
+		a.product_id AS "productId",
+		a.product_no AS "productNo",
+		a.batch_no AS "batchNo",
+		a.product_bar_code AS "productBarCode",
+		a.stock_num AS "stockNum",
+		a.storeroom_id AS "storeroomId",
+		a.produce_date AS "produceDate",
+		a.valid_date AS "validDate",
+		IFNULL(a.pd_state,'') AS "pdState",
+		a.is_long AS "isLong",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.extend1 AS "extend1",
+		a.extend2 AS "extend2",
+		a.extend3 AS "extend3",
+		a.supplier_id AS "supplierId",
+		a.product_name AS "productName"
+	</sql>
+	
+	<sql id="pdProductStockJoins">
+	</sql>
+	
+	<!-- 产品信息列 -->
+	<sql id="productColumns">
+		b.name AS "pdProduct.name",
+		b.number AS "pdProduct.number",
+		b.spec AS "pdProduct.spec",
+		b.unit AS "pdProduct.unit",
+		b.type AS "pdProduct.type",
+		ifnull(b.selling_price,0) AS "pdProduct.sellingPrice",
+		b.charge_code AS "pdProduct.chargeCode",
+		b.vender_name AS "pdProduct.venderName",
+		b.registration AS "pdProduct.registration",
+		b.version AS "pdProduct.version",
+		b.is_charge AS "pdProduct.isCharge",
+		<!-- excel -->
+		b.name AS "name",
+		b.number AS "number",
+		b.spec AS "spec",
+		b.unit AS "unit",
+		b.vender_name AS "venderName",
+		b.version AS "version",
+		b.registration AS "registration",
+		ifnull(b.selling_price,0) AS "sellingPrice",
+		ifnull(b.pru_price,0) AS "inPrice"
+	</sql>
+	<!-- 库房信息列 -->
+    <sql id="pdStoreroomColumns">
+    	s.storeroom_name AS "pdStoreroom.storeroomName"
+    </sql>
+	<!-- 供应商信息列 -->
+	<sql id="supplierColumns">
+    	ifnull(sup.supplier_name,'') AS "supplierName",
+    	sup.id AS "supplierId"
+    </sql>
+
+
+    <!-- 连接库房表 -->
+    <sql id="pdStoreroomJoins">
+    	LEFT JOIN pd_storeroom s ON a.storeroom_id=s.id
+    </sql>
+	<!-- 连接产品表 -->
+	<sql id="pdProductJoins">
+		LEFT JOIN pd_product b ON a.product_id = b.id
+	</sql>
+	<!-- 连接供应商表 add by jiangxz 20190925-->
+	<sql id="pdSupplierJoins">
+		LEFT JOIN pd_supplier sup ON a.supplier_id = sup.id
+	</sql>
+
+	<select id="get" resultType="PdProductStock">
+		SELECT
+		<include refid="pdProductStockColumns"/>,
+		<include refid="productColumns"/>
+		FROM pd_product_stock a
+		<include refid="pdProductStockJoins"/>
+		<include refid="pdProductJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	
+	<!-- 无id查询 -->
+	<select id="searchOneStock" resultType="PdProductStock">
+		SELECT 
+			<include refid="pdProductStockColumns"/>
+		FROM pd_product_stock a
+		<include refid="pdProductStockJoins"/>
+		WHERE 1 = 1
+		<if test="productBarCode != null and productBarCode != ''">
+			AND a.product_bar_code = #{productBarCode}
+		</if>
+		<if test="batchNo != null and batchNo != ''">
+			AND a.batch_no = #{batchNo}
+		</if>
+		<if test="productId != null and productId != ''">
+			AND a.product_id = #{productId}
+		</if>
+		<if test="productNo != null and productNo != ''">
+			AND a.product_no = #{productNo}
+		</if>
+		<if test="storeroomId != null and storeroomId != ''">
+			AND a.storeroom_id = #{storeroomId}
+		</if>
+	</select>
+	
+	<select id="getByProductBarCode" resultType="PdProductStock">
+		SELECT 
+			<include refid="pdProductStockColumns"/>,
+			<include refid="productColumns"/>
+		FROM pd_product_stock a
+		<include refid="pdProductStockJoins"/>
+		<include refid="pdProductJoins"/>
+		WHERE a.product_bar_code = #{productBarCode} AND a.stock_num > 0
+		<if test="storeroomId != null and storeroomId != ''">
+			AND a.storeroom_id = #{storeroomId}
+		</if>
+		<if test="productNo != null and productNo != ''">
+			AND a.product_no = #{productNo}
+		</if>
+	</select>
+
+	<!-- 2019年7月4日15:25:47 修改出库扫码取消条码 -->
+	<select id="getByProductBarCodeNew" resultType="PdProductStock">
+		SELECT
+		<include refid="pdProductStockColumns"/>,
+		<include refid="productColumns"/>,
+		<include refid="supplierColumns"/>
+		FROM pd_product_stock a
+		<include refid="pdProductStockJoins"/>
+		<include refid="pdProductJoins"/>
+		<include refid="pdSupplierJoins"/>
+		WHERE a.stock_num > 0
+		<if test="storeroomId != null and storeroomId != ''">
+			AND a.storeroom_id = #{storeroomId}
+		</if>
+		<if test="productNo != null and productNo != ''">
+			AND a.product_no = #{productNo}
+		</if>
+		<if test="batchNo != null and batchNo != ''">
+			AND a.batch_no = #{batchNo}
+		</if>
+		<if test="productBarCode != null and productBarCode != ''">
+			AND a.product_bar_code = #{productBarCode}
+		</if>
+		<if test="productName != null and productName != ''">
+			AND (b.name LIKE concat('%',#{productName},'%') or b.spm LIKE concat('%',#{productName},'%'))
+		</if>
+		<if test="version != null and version != ''">
+			AND b.version LIKE concat('%',#{version},'%')
+		</if>
+		<if test="spec != null and spec != ''">
+			AND b.spec LIKE concat('%',#{spec},'%')
+		</if>
+	</select>
+	
+	<!-- 耗材出库根据产品信息查询产品 -->
+	<select id="getProductInfoByOther" resultType="PdProductStock">
+		SELECT 
+			<include refid="pdProductStockColumns"/>,
+			<include refid="productColumns"/>
+		FROM pd_product_stock a
+		<include refid="pdProductStockJoins"/>
+		<include refid="pdProductJoins"/>
+		WHERE  a.stock_num > 0
+		<if test="storeroomId != null and storeroomId != ''">
+			AND a.storeroom_id = #{storeroomId}
+		</if>
+		<if test="productName != null and productName != ''">
+			AND a.product_name = #{productName}
+		</if>
+		<if test="version != null and version != ''">
+			AND b.version = #{version}
+		</if>
+		<if test="spec != null and spec != ''">
+			AND b.spec = #{spec}
+		</if>
+		<if test="batchNo != null and batchNo != ''">
+			AND a.batch_no = #{batchNo}
+		</if>
+	</select>
+	
+	<select id="findList" resultType="PdProductStock">
+		SELECT 
+			<include refid="pdProductStockColumns"/>
+		FROM pd_product_stock a
+		<include refid="pdProductStockJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} AND a.stock_num > 0			
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>
+			<if test="productName != null and productName != ''">
+				AND a.product_name = #{productName}
+			</if>
+			<if test="productNo != null and productNo != ''">
+				AND a.product_no = #{productNo}
+			</if>
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.storeroom_id = #{storeroomId}
+			</if>
+			<if test="productBarCode != null and productBarCode != ''">
+				AND a.product_bar_code = #{productBarCode}
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND a.batch_no = #{batchNo}
+			</if>
+			<if test="validDateMore != null and validDateMore != ''">
+				AND a.validDate instr(#{validDateMore},a.valid_date)>0
+			</if>
+			<!-- 数据范围过滤 -->
+			${sqlMap.dsf}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<!-- <otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise> -->
+		</choose>
+	</select>
+	
+	<!-- 模糊查询（带产品信息） -->
+	<select id="findListAndProduct" resultType="PdProductStock">
+		SELECT 
+			<include refid="pdProductStockColumns"/>,
+			<include refid="productColumns"/>
+		FROM pd_product_stock a
+		<include refid="pdProductStockJoins"/>
+		<include refid="pdProductJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} AND a.stock_num > 0			
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>
+			<if test="productName != null and productName != ''">
+				AND a.product_name LIKE concat('%',#{productName},'%')
+			</if>
+			<if test="productNo != null and productNo != ''">
+				AND a.product_no = #{productNo}
+			</if>
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.storeroom_id = #{storeroomId}
+			</if>
+			<if test="productBarCode != null and productBarCode != ''">
+				AND a.product_bar_code = #{productBarCode}
+			</if>
+			<if test="spec != null and spec != ''">
+				AND b.spec = #{spec}
+			</if>
+			<if test="version != null and version != ''">
+				AND b.version = #{version}
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND a.batch_no = #{batchNo}
+			</if>
+			<if test="validDateMore != null and validDateMore != ''">
+				AND a.valid_date BETWEEN #{validDateBegin} AND #{validDateEnd}
+			</if>
+			<!-- 数据范围过滤 -->
+			${sqlMap.dsf}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<!-- <otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise> -->
+		</choose>
+	</select>
+	
+	
+	<select id="getOneStock" resultType="PdProductStock">
+		SELECT 
+			<include refid="pdProductStockColumns"/>
+		FROM pd_product_stock a
+		<include refid="pdProductStockJoins"/>
+		WHERE a.product_bar_code = #{productBarCode}
+		<if test="storeroomId != null and storeroomId != ''">
+			AND a.storeroom_id = #{storeroomId}
+		</if>
+		<if test="productNo != null and productNo != ''">
+			AND a.product_no = #{productNo}
+		</if>
+		<if test="batchNo != null and batchNo != ''">
+			AND a.batch_no = #{batchNo}
+		</if>
+	</select>
+	
+	<select id="findListForQuery" resultType="PdProductStock">
+		SELECT 
+			<include refid="pdProductStockColumns"/>,
+			<include refid="productColumns"/>,
+			<include refid="pdStoreroomColumns"/>,
+			s.storeroom_name AS "storeroomName"
+		FROM pd_product_stock a
+		<include refid="pdProductStockJoins"/>
+		<include refid="pdProductJoins"/>
+		<include refid="pdStoreroomJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} AND a.stock_num > 0
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>
+			<if test="pdProduct!=null and pdProduct.name != null and pdProduct.name != ''">
+				AND b.name like CONCAT('%', #{pdProduct.name}, '%')
+			</if>
+			<if test="pdProduct!=null and pdProduct.number != null and pdProduct.number != ''">
+				AND b.number = #{pdProduct.number}
+			</if>
+			<if test="pdProduct!=null and pdProduct.spec != null and pdProduct.spec != ''">
+				AND b.spec = #{pdProduct.spec}
+			</if>
+			<if test="pdProduct!=null and pdProduct.version != null and pdProduct.version != ''">
+				AND b.version = #{pdProduct.version}
+			</if>
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.storeroom_id = #{storeroomId}
+			</if>
+			<!-- <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND (DATE_FORMAT(a.valid_date,'%Y-%m-%d') between #{startDate} and #{endDate})
+			</if> -->
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND a.valid_date BETWEEN #{startDate} AND #{endDate}
+			</if>
+			<if test="pdProduct!=null and pdProduct.venderId != null and pdProduct.venderId != ''">
+				AND v.id = #{pdProduct.venderId}
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND a.batch_no = #{batchNo}
+			</if>
+			<if test="productBarCode != null and productBarCode != ''">
+				AND a.product_bar_code = #{productBarCode}
+			</if>
+			<if test="validDate != null and validDate != ''">
+				AND a.valid_date = #{validDate}
+			</if>
+			<if test="pdProduct!=null and pdProduct.venderName != null and pdProduct.venderName != ''">
+				AND b.vender_Id = #{pdProduct.venderName}
+			</if>
+			<!-- 数据范围过滤 -->
+			${sqlMap.dsf}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.pd_state DESC ,a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdProductStock">
+		SELECT 
+			<include refid="pdProductStockColumns"/>
+		FROM pd_product_stock a
+		<include refid="pdProductStockJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findForUpdate" resultType="PdProductStock">
+		SELECT 
+			<include refid="pdProductStockColumns"/>
+		FROM pd_product_stock a
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.storeroom_id = #{storeroomId}
+			</if>
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>
+			<if test="productNo !=null and productNo != ''">
+				AND a.product_no = #{productNo}
+			</if>
+			<if test="productBarCode != null and productBarCode != ''">
+				AND a.product_bar_code = #{productBarCode}
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND a.batch_no = #{batchNo}
+			</if>
+		</where>
+		FOR UPDATE
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_product_stock(
+			id,
+			product_id,
+			product_no,
+			batch_no,
+			product_bar_code,
+			stock_num,
+			storeroom_id,
+			produce_date,
+			valid_date,
+			pd_state,
+			is_long,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3,
+			supplier_id,
+			product_name
+		) VALUES (
+			#{id},
+			#{productId},
+			#{productNo},
+			#{batchNo},
+			#{productBarCode},
+			#{stockNum},
+			#{storeroomId},
+			#{produceDate},
+			#{validDate},
+			#{pdState},
+			0,
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{extend1},
+			#{extend2},
+			#{extend3},
+			#{supplierId},
+			#{productName}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_product_stock SET 	
+			product_id = #{productId},
+			product_no = #{productNo},
+			batch_no = #{batchNo},
+			product_bar_code = #{productBarCode},
+			stock_num = #{stockNum},
+			storeroom_id = #{storeroomId},
+			produce_date = #{produceDate},
+			valid_date = #{validDate},
+			pd_state=#{pdState},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			extend1 = #{extend1},
+			extend2 = #{extend2},
+			extend3 = #{extend3}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_product_stock SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateStockNum">
+		UPDATE pd_product_stock SET 
+			stock_num = #{stockNum}
+		WHERE id= #{id}
+	</update>
+	
+	<select id="getByBatchNo" resultType="PdProductStock">
+		SELECT 
+			<include refid="pdProductStockColumns"/>
+		FROM pd_product_stock a
+		<include refid="pdProductStockJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND a.batch_no = #{batchNo}
+			</if>
+			<if test="productBarCode != null and productBarCode != ''">
+				AND a.product_bar_code = #{productBarCode}
+			</if>
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.storeroom_id = #{storeroomId}
+			</if>
+		</where>
+		limit 1
+	</select>
+	
+	<update id="addStock">
+		UPDATE pd_product_stock SET 
+			stock_num = stock_num+#{stockNum}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="minusStock">
+		UPDATE pd_product_stock SET 
+			stock_num = stock_num-#{stockNum}
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findPdCount" resultType="java.util.Map">
+		SELECT
+		SUM(stock_num) 'pdCount',
+		(SELECT COUNT(id) FROM pd_product_stock WHERE pd_state='1' and stock_num > 0
+		<if test="storeroomId != null and storeroomId != ''">
+			AND storeroom_id = #{storeroomId}
+		</if>
+		<if test="productId != null and productId != ''">
+			AND product_id = #{productId}
+		</if>
+		) as "gCount",
+		(SELECT COUNT(id) FROM pd_product_stock WHERE pd_state='0' and stock_num > 0
+		<if test="storeroomId != null and storeroomId != ''">
+			AND storeroom_id = #{storeroomId}
+		</if>
+		<if test="productId != null and productId != ''">
+			AND product_id = #{productId}
+		</if>
+		) as "jCount"
+		FROM pd_product_stock
+		WHERE del_flag=0 and stock_num > 0
+		<if test="storeroomId != null and storeroomId != ''">
+			AND storeroom_id = #{storeroomId}
+		</if>
+		<if test="productId != null and productId != ''">
+			AND product_id = #{productId}
+		</if>
+	</select>
+	
+	<!-- 物流产品 -->
+	<select id="getByOriginalProduct" resultType="PdProductStock">
+		SELECT DISTINCT
+			<include refid="pdProductStockColumns"/>,
+			<include refid="productColumns"/>
+		FROM pd_product_stock a
+		<include refid="pdProductStockJoins"/>
+		<include refid="pdProductJoins"/>
+		LEFT JOIN pd_storeroom m ON a.storeroom_id = m.id
+		LEFT JOIN pd_dosage_detail p ON a.product_id = p.prod_id AND a.product_no = p.prod_no AND a.product_bar_code = p.prod_barcode AND a.batch_no = p.batch_no
+		LEFT JOIN pd_dosage s ON p.dosage_no = s.dosage_no
+		<where> 
+			1 = 1
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.storeroom_id = #{storeroomId}
+			</if>
+			<if test="productNo != null and productNo != ''">
+				AND a.product_no LIKE CONCAT('%', #{productNo}, '%')
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND a.batch_no = #{batchNo}
+			</if>
+			<if test="version != null and version != ''">
+				AND b.version = #{version}
+			</if>
+			<if test="spec != null and spec != ''">
+				AND b.spec = #{spec}
+			</if>
+			<if test="name != null and name != ''">
+				AND b.name LIKE CONCAT('%', #{name}, '%')
+			</if>
+			<if test="inHospitalNo != null and inHospitalNo != ''">
+				AND s.in_hospital_no LIKE CONCAT('%', #{inHospitalNo}, '%')
+			</if>
+		</where>
+	</select>
+	<update id="updatePdState">
+		UPDATE pd_product_stock SET 
+			pd_state=#{pdState},
+			update_date = now()
+		WHERE id = #{id}
+	</update>
+</mapper>

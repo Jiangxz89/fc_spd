@@ -1,0 +1,487 @@
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+}
+a {
+  text-decoration: none;
+  color: #000;
+}
+html,
+body,
+#wrap {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+html {
+  font-size: 20px;
+}
+input {
+  border: none;
+  outline: none;
+}
+.back_sub {
+  position: fixed;
+  z-index: 66666;
+  right: 0.5rem;
+  top: 0.5rem;
+  font-size: 0.8rem;
+  background: #00CFA5;
+  color: #fff;
+  padding: 0.3rem;
+  border-radius: 5px;
+}
+/*-------------头部样式--------------*/
+.header,
+.top-title {
+  width: 100%;
+  height: 2.4rem;
+  line-height: 2.4rem;
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+  z-index: 0;
+  position: relative;
+}
+.header #header-title,
+.top-title #header-title {
+  font-size: 0.8rem;
+}
+.header #back,
+.top-title #back {
+  position: absolute;
+  left: 0.5rem;
+  top: 0;
+}
+.header .sub,
+.top-title .sub {
+  position: absolute;
+  right: 0.8rem;
+  top: 0.8rem;
+  background: #fff;
+  font-size: 0.75rem;
+}
+/*-------------提交样式--------------*/
+.btn_box {
+  width: 100%;
+  text-align: center;
+  margin-top: 1.5rem;
+}
+.btn_box #btn_submit {
+  display: inline-block;
+  background: #00CFA5;
+  font-size: 0.7rem;
+  width: 3rem;
+  height: 2rem;
+  text-align: center;
+  line-height: 2rem;
+  color: #fff;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+}
+/*-------------导航样式--------------*/
+.nav-list {
+  width: 100%;
+  height: 100%;
+  padding: 0 0.7rem;
+}
+.nav-list .nav-box {
+  width: 100%;
+  height: 2rem;
+  font-size: 16px;
+  color: #fff;
+  background: #00acc1;
+  line-height: 2rem;
+  margin-bottom: 0.5rem;
+  padding-left: 0.8rem;
+}
+.nav-list .nav-box:nth-child(1) {
+  margin-top: 2rem;
+}
+.nav-list h3 {
+  width: 82%;
+  float: left;
+  font-size: 0.8rem;
+}
+.nav-list span {
+  float: right;
+  padding-right: 0.5rem;
+}
+/*-------------主体样式--------------*/
+.container {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.container .swipe {
+  width: 100%;
+  font-size: 15px;
+  display: -webkit-box;
+}
+.container .swipe h3 {
+  padding: 0.5rem 0;
+  font-size: 0.6rem;
+}
+.container .swipe .style-list {
+  padding: 0 0.5rem 0 0.5rem;
+  line-height: 1.5rem;
+  font-size: 0.6rem;
+}
+.container .swipe .style-list input {
+  vertical-align: text-bottom;
+  margin-left: 0.8rem;
+  margin-right: 0.25rem;
+  font-size: 0.6rem;
+}
+.container .swipe .style-list .symptoms span {
+  display: inline-block;
+  padding: 0.3rem;
+}
+.container .swipe .style-list .symptoms input {
+  margin: 0;
+}
+.container .swipe #style_list .empty_check,
+.container .swipe #style_list .symptoms {
+  font-size: 0.65rem;
+}
+.container .swipe #style_list .empty_check input,
+.container .swipe #style_list .symptoms input {
+  width: 0.65rem;
+  height: 0.65rem;
+}
+.container .swipe .content-item {
+  width: 100%;
+  height: 2.6rem;
+  display: -webkit-box;
+  font-size: 0.6rem;
+  margin-top: 0.7rem;
+}
+.container .swipe .content-item .con-left,
+.container .swipe .content-item .con-right {
+  width: 45%;
+  height: 1.2rem;
+  font-size: 15px;
+}
+.container .swipe .content-item .con-left p,
+.container .swipe .content-item .con-right p {
+  padding-bottom: 0.5rem;
+  font-size: 0.6rem;
+}
+.container .swipe .content-item .con-left input,
+.container .swipe .content-item .con-right input {
+  width: 20%;
+  margin-left: 40%;
+  font-size: 0.6rem;
+}
+.container .swipe .content-item .con-left .con-box,
+.container .swipe .content-item .con-right .con-box {
+  height: 1.5rem;
+  line-height: 1.5rem;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  font-size: 0.65rem;
+}
+.container .swipe .content-item .con-left {
+  margin-right: 5%;
+}
+.container .swipe .content-item .con-left input {
+  width: 44%;
+}
+.container .swipe .old-item {
+  width: 100%;
+  padding: 0 0.5rem;
+}
+.container .swipe .old-item .old-box {
+  width: 100%;
+  height: 1.4rem;
+  line-height: 1.4rem;
+  margin: 0.8rem 0;
+  border-bottom: 1px solid #ccc;
+  font-size: 0.6rem;
+}
+.container .swipe .old-item .old-box select {
+  border: none;
+  outline: none;
+  margin-left: 3rem;
+  font-size: 0.6rem;
+}
+.container .swipe li {
+  width: 100%;
+  -webkit-transform: translatex(100%);
+  padding: 0 0.5rem;
+}
+.container .swipe li:nth-child(5) {
+  padding: 0;
+}
+.container .swipe .sports-box {
+  width: 100%;
+  height: 1.3rem;
+  line-height: 1.3rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #ccc;
+  font-size: 0.65rem;
+}
+.container .swipe .sports-box span {
+  font-size: 0.65rem;
+}
+.container .swipe .sports-box input {
+  width: 0.65rem;
+  height: 0.65rem;
+  vertical-align: middle;
+}
+.container .swipe .sports-box .inp-mit {
+  float: right;
+}
+.container .swipe .sports-box .inp-mit input {
+  width: 26%;
+  padding-left: 15%;
+  margin-left: 28%;
+  font-size: 0.6rem;
+  height: 1.3rem;
+}
+.container .swipe .sick-title {
+  padding: 2rem 0;
+}
+.container .swipe .sick-history-box {
+  width: 100%;
+  font-size: 0.6rem;
+}
+.container .swipe .sick-history-box input {
+  width: 15%;
+  border-bottom: 1px solid #ccc;
+  font-size: 0.6rem;
+}
+.container .swipe .sick-item {
+  padding: 0.5rem;
+  font-size: 0.6rem;
+}
+.container .swipe .sick-item #sick-sel {
+  font-size: 0.6rem;
+}
+.container .swipe .viscera-title {
+  padding: 1.5rem 0;
+}
+.container .swipe .body-item {
+  width: 100%;
+  display: -webkit-box;
+  font-size: 0.6rem;
+}
+.container .swipe .body-item .body-left,
+.container .swipe .body-item .body-right {
+  width: 45%;
+  font-size: 0.6rem;
+}
+.container .swipe .body-item .body-left p,
+.container .swipe .body-item .body-right p {
+  padding: 0.5rem 0;
+}
+.container .swipe .body-item .body-left input,
+.container .swipe .body-item .body-right input {
+  width: 65%;
+  padding-left: 15%;
+  font-size: 0.6rem;
+}
+.container .swipe .body-item .body-left .inp-body,
+.container .swipe .body-item .body-right .inp-body {
+  height: 1.5rem;
+  line-height: 1.5rem;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+.container .swipe .body-item .body-left .inp-body select,
+.container .swipe .body-item .body-right .inp-body select {
+  border: none;
+  outline: none;
+  width: 80%;
+  padding-left: 5%;
+  font-size: 0.6rem;
+}
+.container .swipe .body-item .body-left {
+  margin-right: 5%;
+}
+.container .swipe .body-item #teeth_box {
+  font-size: 0.65rem;
+}
+.container .swipe .body-item #teeth_box input {
+  padding: 0;
+  width: 0.65rem;
+  height: 0.65rem;
+}
+.container .swipe .check-title {
+  padding: 1.2rem 0;
+}
+.container .swipe .check-item .check-box {
+  width: 100%;
+  height: 1.5rem;
+  line-height: 1.5rem;
+  border-bottom: 1px solid #ccc;
+  margin-top: 0.5rem;
+  font-size: 0.6rem;
+}
+.container .swipe .check-item .check-box select {
+  float: right;
+  border: none;
+  outline: none;
+  margin-right: 1.2rem;
+  padding-right: 1.6rem;
+  margin-top: 0.4rem;
+  font-size: 0.6rem;
+}
+.container .swipe .check-item .check-box input {
+  float: right;
+  margin-right: 1rem;
+  line-height: 1.4rem;
+  width: 20%;
+  font-size: 0.6rem;
+}
+.container .swipe .lugs-item {
+  margin-top: 1.5rem;
+  font-size: 0.6rem;
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+}
+.container .swipe .title-p,
+.container .swipe .base-p {
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  font-size: 0.9rem;
+}
+.container .swipe .base-p {
+  margin-bottom: 0.5rem 0;
+  padding: 0;
+  border-bottom: 0;
+}
+.container .swipe .health-item {
+  width: 100%;
+  padding: 0 0.6rem;
+}
+.container .swipe .health-item .health-box {
+  width: 100%;
+  height: 2rem;
+  line-height: 2rem;
+  border-bottom: 1px solid #ccc;
+  font-size: 0.6rem;
+}
+.container .swipe .health-item .health-box #health-sel {
+  border: none;
+  outline: none;
+  float: right;
+  margin-top: 0.6rem;
+  width: 40%;
+  font-size: 0.6rem;
+}
+.container .swipe .health-item .other-box {
+  width: 100%;
+  padding: 0.5rem 0;
+}
+.container .swipe .health-item .other-box .other-title {
+  padding: 0.5rem 0;
+  font-size: 0.6rem;
+}
+.container .swipe .health-item .other-box textarea {
+  margin-left: 0.5rem;
+}
+.container .swipe .health-item .health_head_box {
+  border: 1px solid #ccc;
+  margin: 0.6rem 0;
+  padding: 0.6rem 0;
+}
+.container .swipe .health-item .health_head_box .head_tit {
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+.container .swipe .health-item .health_head_box .head_p {
+  font-size: 0.65rem;
+}
+.container .swipe .health-item .health_head_box .head_p input {
+  width: 0.65rem;
+  height: 0.65rem;
+  vertical-align: middle;
+}
+.container .swipe .health-item .health_head_box span {
+  display: inline-block;
+  padding: 0.5rem 0.5rem 0 0.5rem;
+}
+.container .swipe .health-item .live_box {
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: 0 0.3rem;
+  margin: 0.4rem 0;
+}
+.container .swipe .health-item .live_box .live_tit {
+  font-size: 0.8rem;
+  padding: 1.4rem 0;
+}
+.container .swipe .health-item .live_box .live_min_tit {
+  font-size: 0.65rem;
+  padding-bottom: 0.3rem;
+}
+.container .swipe .health-item .live_box .live_icon {
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  padding: 0.4rem 0;
+  font-size: 0.65rem;
+}
+.container .swipe .health-item .live_box .live_icon input {
+  width: 35%;
+  text-align: center;
+}
+.container .swipe .health-item .health_assessment {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+}
+.container .swipe .health-item .health_assessment p {
+  font-size: 0.65rem;
+}
+.container .swipe .health-item .health_assessment p input {
+  vertical-align: middle;
+}
+.container .swipe .health-item .health_assessment p span {
+  padding-right: 0.4rem;
+}
+.container .swipe .health-item .health_advice {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  margin: 0.8rem 0;
+}
+.container .swipe .health-item .health_advice p {
+  font-size: 0.65rem;
+  line-height: 1.5rem;
+}
+.container .swipe .health-item .health_advice p span {
+  font-size: 0.65rem;
+}
+.container .swipe .health-item .health_advice p span input {
+  vertical-align: middle;
+  width: 0.65rem;
+  height: 0.65rem;
+  margin-right: 0.2rem;
+}
+.container .swipe .health-item .danger_control {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+}
+.container .swipe .health-item .danger_control span {
+  font-size: 0.65rem;
+  display: inline-block;
+  margin: 0.4rem 0;
+}
+.container .swipe .health-item .danger_control span input {
+  width: 0.65rem;
+  height: 0.65rem;
+  margin-right: 0.2rem;
+  vertical-align: middle;
+}
+.container .swipe .health-item .danger_control span .o_txt {
+  width: 60%;
+  height: 1rem;
+  border-bottom: 1px solid #ccc;
+}

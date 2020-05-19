@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!-- Bean头部 -->  
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xmlns:p="http://www.springframework.org/schema/p"  
+    xmlns:mvc="http://www.springframework.org/schema/mvc"  
+    xmlns:context="http://www.springframework.org/schema/context"  
+    xmlns:util="http://www.springframework.org/schema/util"  
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd  
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">  
+    <!-- 要调用的工作类 --> 
+    <bean id="testJob" class="com.thinkgem.hys.pd.web.task.QuartPdExpire"></bean>
+    <!-- 统计查询-库存查询 --> 
+    <bean id="stockTimeJob" class="com.thinkgem.hys.pd.web.task.QueryStockTimeTask"></bean>
+    <!-- 更新产品库存是否久存 -->
+    <bean id="longTimeJob" class="com.thinkgem.hys.pd.web.task.QuartPdStockLongTime"></bean>
+    <!-- 进销存报表插入数据 -->
+    <bean id ="InventoryStatement" class="com.thinkgem.hys.pd.web.task.QuartInventoryStatementTask"></bean> 
+    <!-- 同步中心平台 --><!-- 没有中心平台需要注释 -->
+    <!--<bean id ="syncCenterPlat" class="com.thinkgem.hys.pd.web.task.ConsumablesOrderTask"></bean>-->
+    <!-- 从his平台同步总库存 -->
+    <!--<bean id ="syncDrugDataFromHIS" class="com.thinkgem.hys.pd.web.task.SyncDrugDataTask"></bean>--><!-- 取消老版本药品同步定时任务-->
+    <!--<bean id ="checkFailedDataAndSync" class="com.thinkgem.hys.pd.web.task.DealSyncFailedTask"></bean>--><!-- 取消老版本药品同步定时任务-->
+    <!-- 同步产品数据至中心平台 --><!-- 没有中心平台需要注释 -->
+    <!--<bean id ="syncProductDataTask" class="com.thinkgem.hys.pd.web.task.SyncProductDataTask"></bean>-->
+    <!-- 更新生产厂家及供应商有效期标识数据 -->
+    <bean id ="updateAvailableDate" class="com.thinkgem.hys.pd.web.task.AvailableDateTask"></bean>
+    
+    <!-- 定义调用对象和调用对象的方法 --> 
+    <bean id="myJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    	<property name="targetObject">
+    		<ref bean="testJob"/>
+    	</property>
+    	<property name="targetMethod">
+    		<value>start</value>
+    	</property>
+    </bean>
+    <bean id="doTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+       <property name="jobDetail">  
+           <ref bean="myJobDetail" />  
+       </property>
+       <property name="cronExpression">
+       	   <!-- <value>* 0/10 * * * ?</value>   -->                  
+           <value>0 0 0 * * ?</value>
+       </property>  
+   	</bean>
+    
+    <bean id="stockTimeJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    	<property name="targetObject">
+    		<ref bean="stockTimeJob"/>
+    	</property>
+    	<property name="targetMethod">
+    		<value>saveEveryDayStock</value>
+    	</property>
+    </bean>
+    <bean id="stockTimeJobDoTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+       <property name="jobDetail">  
+           <ref bean="stockTimeJobDetail" />  
+       </property>
+       <property name="cronExpression">  
+           <value>59 59 23 * * ?</value>  
+       </property>  
+   	</bean>
+   	
+   	<bean id="longJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    	<property name="targetObject">
+    		<ref bean="longTimeJob"/>
+    	</property>
+    	<property name="targetMethod">
+    		<value>lonTimeUpdate</value>
+    	</property>
+    </bean>
+    <bean id="longTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+       <property name="jobDetail">  
+           <ref bean="longJobDetail" />  
+       </property>
+       <property name="cronExpression">       	                
+           <value>0 0 0 * * ?</value>
+       </property> 
+   	</bean>
+   	
+   	<!-- 同步中心平台 -->
+   	<!--<bean id="syncCenterPlatJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
+    	<!--<property name="targetObject">-->
+    		<!--<ref bean="syncCenterPlat"/>-->
+    	<!--</property>-->
+    	<!--<property name="targetMethod">-->
+    		<!--<value>start</value>-->
+    	<!--</property>-->
+    <!--</bean>-->
+    <!-- 同步中心平台 -->
+    <!--<bean id="syncCenterPlatTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  -->
+       <!--<property name="jobDetail">  -->
+           <!--<ref bean="syncCenterPlatJob" />  -->
+       <!--</property>-->
+       <!--<property name="cronExpression">       	                -->
+           <!--<value>59 50 23 * * ?</value>-->
+       <!--</property> -->
+   	<!--</bean>-->
+
+
+    <!-- 同步产品组别至中心平台-->
+    <!--<bean id="syncProductGroupTaskJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
+        <!--<property name="targetObject">-->
+            <!--<ref bean="syncProductDataTask"/>-->
+        <!--</property>-->
+        <!--<property name="targetMethod">-->
+            <!--<value>synPdGroupToCentralPlatform</value>-->
+        <!--</property>-->
+    <!--</bean>-->
+    <!-- 同步产品组别至中心平台 -->
+    <!--<bean id="syncProductGroupTaskTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">-->
+        <!--<property name="jobDetail">-->
+            <!--<ref bean="syncProductGroupTaskJob" />-->
+        <!--</property>-->
+        <!--<property name="cronExpression">-->
+            <!--<value>0 5 1 * * ?</value>-->
+            <!--&lt;!&ndash;<value>0 0/2 * * * ?</value>&ndash;&gt;-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!-- 同步产品分类至中心平台 -->
+    <!--<bean id="syncProductCategoryTaskJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
+        <!--<property name="targetObject">-->
+            <!--<ref bean="syncProductDataTask"/>-->
+        <!--</property>-->
+        <!--<property name="targetMethod">-->
+            <!--<value>synPdCategoryToCentralPlatform</value>-->
+        <!--</property>-->
+    <!--</bean>-->
+    <!-- 同步产品分类至中心平台 -->
+    <!--<bean id="syncProductCategoryTaskTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">-->
+        <!--<property name="jobDetail">-->
+            <!--<ref bean="syncProductCategoryTaskJob" />-->
+        <!--</property>-->
+        <!--<property name="cronExpression">-->
+            <!--<value>0 10 1 * * ?</value>-->
+            <!--&lt;!&ndash;<value>0 0/2 * * * ?</value>&ndash;&gt;-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!-- 同步产品厂家至中心平台 -->
+    <!--<bean id="syncProductVenderTaskJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
+        <!--<property name="targetObject">-->
+            <!--<ref bean="syncProductDataTask"/>-->
+        <!--</property>-->
+        <!--<property name="targetMethod">-->
+            <!--<value>synPdVenderToCentralPlatform</value>-->
+        <!--</property>-->
+    <!--</bean>-->
+    <!-- 同步产品厂家至中心平台 -->
+    <!--<bean id="syncProductVenderTaskTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">-->
+        <!--<property name="jobDetail">-->
+            <!--<ref bean="syncProductVenderTaskJob" />-->
+        <!--</property>-->
+        <!--<property name="cronExpression">-->
+            <!--<value>0 15 1 * * ?</value>-->
+            <!--&lt;!&ndash;<value>0 0/1 * * * ?</value>&ndash;&gt;-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!-- 同步产品至中心平台 -->
+    <!--<bean id="syncProductInfoTaskJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
+        <!--<property name="targetObject">-->
+            <!--<ref bean="syncProductDataTask"/>-->
+        <!--</property>-->
+        <!--<property name="targetMethod">-->
+            <!--<value>synPdProductToCentralPlatform</value>-->
+        <!--</property>-->
+    <!--</bean>-->
+    <!-- 同步产品至中心平台 -->
+    <!--<bean id="syncProductInfoTaskTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">-->
+        <!--<property name="jobDetail">-->
+            <!--<ref bean="syncProductInfoTaskJob" />-->
+        <!--</property>-->
+        <!--<property name="cronExpression">-->
+            <!--<value>0 20 1 * * ?</value>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+
+
+
+    <!-- 从HIS中同步药品目录 --><!-- 取消老版本药品同步定时任务-->
+   	<!--<bean id="syncDrugContentJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    	<property name="targetObject">
+    		<ref bean="syncDrugDataFromHIS"/>
+    	</property>
+    	<property name="targetMethod">
+    		<value>startDrugInfo</value>
+    	</property>
+    </bean>
+   	&lt;!&ndash; 从HIS中同步药品总库存 &ndash;&gt;
+   	<bean id="syncDrugTotalStockJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    	<property name="targetObject">
+    		<ref bean="syncDrugDataFromHIS"/>
+    	</property>
+    	<property name="targetMethod">
+    		<value>startDrugTotalStock</value>
+    	</property>
+    </bean>
+   	&lt;!&ndash; 从HIS中同步药品入库账单 &ndash;&gt;
+   	<bean id="syncDrugInStockJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    	<property name="targetObject">
+    		<ref bean="syncDrugDataFromHIS"/>
+    	</property>
+    	<property name="targetMethod">
+    		<value>startDrugInStockInfo</value>
+    	</property>
+    </bean>
+   	&lt;!&ndash; 从HIS中同步药品入库账单明细 &ndash;&gt;
+   	<bean id="syncDrugInStockDetailJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    	<property name="targetObject">
+    		<ref bean="syncDrugDataFromHIS"/>
+    	</property>
+    	<property name="targetMethod">
+    		<value>startDrugInStockDetail</value>
+    	</property>
+    </bean>
+   	&lt;!&ndash; 从HIS中同步药品退货账单 &ndash;&gt;
+   	<bean id="syncDrugRefundJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    	<property name="targetObject">
+    		<ref bean="syncDrugDataFromHIS"/>
+    	</property>
+    	<property name="targetMethod">
+    		<value>startDrugRefundInfo</value>
+    	</property>
+    </bean>
+   	&lt;!&ndash; 从HIS中同步药品退货账单明细 &ndash;&gt;
+   	<bean id="syncDrugRefundDetailJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    	<property name="targetObject">
+    		<ref bean="syncDrugDataFromHIS"/>
+    	</property>
+    	<property name="targetMethod">
+    		<value>startDrugRefundDetail</value>
+    	</property>
+    </bean>
+   	&lt;!&ndash; 从HIS中同步药品退货账单明细 &ndash;&gt;
+   	<bean id="syncDrugCgzdStatusJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    	<property name="targetObject">
+    		<ref bean="syncDrugDataFromHIS"/>
+    	</property>
+    	<property name="targetMethod">
+    		<value>syncDrugCgzdStatus</value>
+    	</property>
+    </bean>
+   	&lt;!&ndash; 检索同步失败记录表并同步 &ndash;&gt;
+   	<bean id="checkFailedDataAndSyncJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    	<property name="targetObject">
+    		<ref bean="checkFailedDataAndSync"/>
+    	</property>
+    	<property name="targetMethod">
+    		<value>checkAndSync</value>
+    	</property>
+    </bean>-->
+    
+    <!-- 触发时间配置 --><!-- 取消老版本药品同步定时任务-->
+    <!--<bean id="syncDrugContentTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+       <property name="jobDetail">  
+           <ref bean="syncDrugContentJob" />  
+       </property>
+       <property name="cronExpression">       	                
+           <value>0 10 0 * * ?</value>  
+       </property> 
+   	</bean>
+    <bean id="syncDrugTotalStockTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+       <property name="jobDetail">  
+           <ref bean="syncDrugTotalStockJob" />  
+       </property>
+       <property name="cronExpression">       	                
+           <value>0 20 0 * * ?</value>  
+       </property> 
+   	</bean>
+    <bean id="syncDrugInStockTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+       <property name="jobDetail">  
+           <ref bean="syncDrugInStockJob" />  
+       </property>
+       <property name="cronExpression">       	                
+           <value>0 25 0 * * ?</value>  
+       </property> 
+   	</bean>
+    <bean id="syncDrugInStockDetailTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+       <property name="jobDetail">  
+           <ref bean="syncDrugInStockDetailJob" />  
+       </property>
+       <property name="cronExpression">       	                
+           <value>0 30 0 * * ?</value>  
+       </property> 
+   	</bean>
+    <bean id="syncDrugRefundTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+       <property name="jobDetail">  
+           <ref bean="syncDrugRefundJob" />  
+       </property>
+       <property name="cronExpression">       	                
+           <value>0 35 0 * * ?</value>  
+       </property> 
+   	</bean>
+    <bean id="syncDrugRefundDetailTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+       <property name="jobDetail">  
+           <ref bean="syncDrugRefundDetailJob" />  
+       </property>
+       <property name="cronExpression">       	                
+           <value>0 40 0 * * ?</value>  
+       </property> 
+   	</bean>
+    <bean id="syncDrugCgzdStatusTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+       <property name="jobDetail">  
+           <ref bean="syncDrugCgzdStatusJob" />  
+       </property>
+       <property name="cronExpression">       	                
+           <value>0 0 11,14,17,20 * * ?</value>  
+       </property> 
+   	</bean>
+    <bean id="checkFailedDataAndSyncTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+       <property name="jobDetail">  
+           <ref bean="checkFailedDataAndSyncJob" />  
+       </property>
+       <property name="cronExpression">       	                
+           <value>0 0 1 * * ?</value>  
+       </property> 
+   	</bean>-->
+   	
+   	<!-- 启动触发器的配置开始  --> 
+   <bean name="startQuertz" lazy-init="true" autowire="no"  
+       class="org.springframework.scheduling.quartz.SchedulerFactoryBean">  
+       <property name="triggers">  
+           <list>  
+               <ref bean="doTime" />
+               <ref bean="stockTimeJobDoTime" />
+               <ref bean="longTime"/>
+               <ref bean="InventoryTime"/>
+               <!--<ref bean="syncCenterPlatTime"/>-->
+<!--               <ref bean="syncDrugContentTime"/>
+               <ref bean="syncDrugTotalStockTime"/>
+               <ref bean="syncDrugInStockTime"/>
+               <ref bean="syncDrugInStockDetailTime"/>
+               <ref bean="syncDrugRefundTime"/>
+               <ref bean="syncDrugRefundDetailTime"/>
+               <ref bean="syncDrugCgzdStatusTime"/>
+               <ref bean="checkFailedDataAndSyncTime"/>-->
+               <!--<ref bean="syncProductGroupTaskTime"/>-->
+               <!--<ref bean="syncProductCategoryTaskTime"/>-->
+               <!--<ref bean="syncProductVenderTaskTime"/>-->
+               <!--<ref bean="syncProductInfoTaskTime"/>-->
+               <ref bean="AvailableTime"/>
+           </list>  
+       </property>  
+   </bean>
+   
+   <!-- 进销存报表定时任务 -->
+	<bean id="InventoryJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    	<property name="targetObject">
+    		<ref bean="InventoryStatement"/>
+    	</property>
+    	<property name="targetMethod">
+    		<value>start</value>
+    	</property>
+    </bean>
+     <!-- 进销存报表定时任务时间区间 每天0点10分执行一次-->
+    <bean id="InventoryTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+       <property name="jobDetail">  
+           <ref bean="InventoryJobDetail" />  
+       </property>
+       <property name="cronExpression">
+           <value>0 10 0 * * ?</value>
+       </property>  
+   	</bean>
+    <!-- 更新有效期标识定时任务 -->
+    <bean id="AvailableJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="updateAvailableDate"/>
+        </property>
+        <property name="targetMethod">
+            <value>start</value>
+        </property>
+    </bean>
+    <!-- 更新有效期标识定时任务时间区间 每天0点10分执行一次-->
+    <bean id="AvailableTime" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="AvailableJobDetail" />
+        </property>
+        <property name="cronExpression">
+            <value>0 10 0 * * ?</value>
+        </property>
+    </bean>
+</beans>

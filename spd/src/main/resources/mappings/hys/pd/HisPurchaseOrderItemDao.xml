@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.HisPurchaseOrderItemDao">
+    
+	<sql id="hisPurchaseOrderItemColumns">
+		a.id AS "id",
+		a.p_id AS "pId",
+		a.drug_id AS "drugId",
+		a.ybtybm AS "ybtybm",
+		a.isjbyw AS "isjbyw",
+		a.kss AS "kss",
+		a.cmed_code AS "cmedCode",
+		a.drug_type AS "drugType",
+		a.dose_code AS "doseCode",
+		a.drug_name AS "drugName",
+		a.drug_spec AS "drugSpec",
+		a.package_unit AS "packageUnit",
+		a.package_qty AS "packageQty",
+		a.sales_unit AS "salesUnit",
+		a.sales_qty AS "salesQty",
+		a.put_qty AS "putQty",
+		a.drug_manft AS "drugManft",
+		a.drug_habitat AS "drugHabitat",
+		a.producer_name AS "producerName",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.syn_flag AS "synFlag"
+	</sql>
+	
+	<sql id="hisPurchaseOrderItemJoins">
+	</sql>
+    
+	<select id="get" resultType="HisPurchaseOrderItem">
+		SELECT 
+			<include refid="hisPurchaseOrderItemColumns"/>
+		FROM his_purchase_order_item a
+		<include refid="hisPurchaseOrderItemJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="HisPurchaseOrderItem">
+		SELECT 
+			<include refid="hisPurchaseOrderItemColumns"/>
+		FROM his_purchase_order_item a
+		<include refid="hisPurchaseOrderItemJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="pId != null and pId != ''">
+				AND a.p_id = #{pId}
+			</if>
+			<if test="drugName != null and drugName != ''">
+				AND a.drug_name like concat('%',#{drugName},'%')
+			</if>
+			<if test="drugId != null and drugId != ''">
+				AND a.drug_id like concat('%',#{drugId},'%')
+			</if>
+			<if test="drugSpec != null and drugSpec != ''">
+				AND a.drug_spec like concat('%',#{drugSpec},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="HisPurchaseOrderItem">
+		SELECT 
+			<include refid="hisPurchaseOrderItemColumns"/>
+		FROM his_purchase_order_item a
+		<include refid="hisPurchaseOrderItemJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="pId != null and pId != ''">
+				AND a.p_id = #{pId}
+			</if>
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findListByPid" resultType="com.thinkgem.hys.pd.entity.bo.HisPurchaseOrderItemBO">
+		SELECT
+			a.id AS "id",
+			a.p_id AS "pId",
+			a.drug_id AS "drugId",
+			a.ybtybm AS "ybtybm",
+			a.isjbyw AS "isjbyw",
+			a.kss AS "kss",
+			a.cmed_code AS "cmedCode",
+			a.drug_type AS "drugType",
+			a.dose_code AS "doseCode",
+			a.drug_name AS "drugName",
+			a.drug_spec AS "drugSpec",
+			a.package_unit AS "packageUnit",
+			a.package_qty AS "packageQty",
+			a.sales_unit AS "salesUnit",
+			a.sales_qty AS "salesQty",
+			a.put_qty AS "putQty",
+			a.drug_manft AS "drugManft",
+			a.drug_habitat AS "drugHabitat",
+			a.producer_name AS "producerName",
+			a.create_by AS "createBy",
+			a.create_date AS "createDate",
+			a.update_by AS "updateBy",
+			a.update_date AS "updateDate",
+			a.remarks AS "remarks",
+			a.del_flag AS "delFlag",
+			a.syn_flag AS "synFlag"
+		FROM his_purchase_order_item a
+		WHERE p_id = #{pId}
+		AND del_flag = 0
+	</select>
+
+	<insert id="insert">
+		INSERT INTO his_purchase_order_item(
+			id,
+			p_id,
+			drug_id,
+			ybtybm,
+			isjbyw,
+			kss,
+			cmed_code,
+			drug_type,
+			dose_code,
+			drug_name,
+			drug_spec,
+			package_unit,
+			package_qty,
+			sales_unit,
+			sales_qty,
+			put_qty,
+			drug_manft,
+			drug_habitat,
+			producer_name,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			syn_flag
+		) VALUES (
+			#{id},
+			#{pId},
+			#{drugId},
+			#{ybtybm},
+			#{isjbyw},
+			#{kss},
+			#{cmedCode},
+			#{drugType},
+			#{doseCode},
+			#{drugName},
+			#{drugSpec},
+			#{packageUnit},
+			#{packageQty},
+			#{salesUnit},
+			#{salesQty},
+			#{putQty},
+			#{drugManft},
+			#{drugHabitat},
+			#{producerName},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{synFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE his_purchase_order_item SET 	
+			p_id = #{pId},
+			drug_id = #{drugId},
+			ybtybm = #{ybtybm},
+			isjbyw = #{isjbyw},
+			kss = #{kss},
+			cmed_code = #{cmedCode},
+			drug_type = #{drugType},
+			dose_code = #{doseCode},
+			drug_name = #{drugName},
+			drug_spec = #{drugSpec},
+			package_unit = #{packageUnit},
+			package_qty = #{packageQty},
+			sales_unit = #{salesUnit},
+			sales_qty = #{salesQty},
+			put_qty = #{putQty},
+			drug_manft = #{drugManft},
+			drug_habitat = #{drugHabitat},
+			producer_name = #{producerName},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			syn_flag = #{synFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE his_purchase_order_item SET
+			syn_flag = 0,
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

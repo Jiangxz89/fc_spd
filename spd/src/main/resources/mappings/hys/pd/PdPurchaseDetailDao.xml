@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdPurchaseDetailDao">
+    
+	<sql id="pdPurchaseDetailColumns">
+		a.id AS "id",
+		a.order_no AS "orderNo",
+		a.prod_id AS "prodId",
+		a.prod_no AS "prodNo",
+		a.batch_no AS "batchNo",
+		a.expire_date AS "expireDate",
+		ifnull(a.in_price,0) AS "inPrice",
+		a.apply_count AS "applyCount",
+		a.amount_money AS "amountMoney",
+		a.stock_num AS "stockNum",
+		a.remarks AS "remarks",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag",
+		b.name AS "prodName",
+	    b.spec AS "prodSpec",
+	    b.version AS "prodVersion",
+		b.unit AS "prodUnit",
+		b.pru_price AS "prodPrice",
+		b.tp_prod_id AS "tpProdId",
+		b.vender_name AS "venderName",
+		g.ghdw_mc AS "supplierName"
+	</sql>
+	
+	<sql id="pdPurchaseDetailJoins">
+		LEFT JOIN pd_product b ON a.prod_id = b.id
+		LEFT JOIN pd_drug_supplier g ON b.id = g.ypdm and g.type = '1'
+	</sql>
+	<!-- 产品库存列 -->
+	<sql id="joinProductStockColumn">
+		,c.stock_num AS "myStockNum"
+	</sql>
+	<sql id="joinProductStockSql">
+		LEFT JOIN pd_product_stock_total c ON a.prod_id = c.product_id AND c.storeroom_id = #{storeroomId}
+	</sql>
+    
+	<select id="get" resultType="PdPurchaseDetail">
+		SELECT 
+			<include refid="pdPurchaseDetailColumns"/>
+		FROM pd_purchase_detail a
+		<include refid="pdPurchaseDetailJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdPurchaseDetail">
+		SELECT 
+			<include refid="pdPurchaseDetailColumns"/>
+			<if test="storeroomId != null and storeroomId != ''">
+				<include refid="joinProductStockColumn"/>
+			</if>
+		FROM pd_purchase_detail a
+		<include refid="pdPurchaseDetailJoins"/>
+		<if test="storeroomId != null and storeroomId != ''">
+			<include refid="joinProductStockSql"/>
+		</if>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="orderNo != null and orderNo != ''">
+				AND a.order_no = #{orderNo}
+			</if>
+			<if test="prodId != null and prodId != ''">
+				AND a.prod_id = #{prodId}
+			</if>
+			<if test="prodNo != null and prodNo != ''">
+				AND a.prod_no = #{prodNo}
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND a.batch_no = #{batchNo}
+			</if>
+			<if test="orderNos != null">
+				AND a.order_no in
+			    <foreach collection="orderNos" index="index" item="item" open="(" separator="," close=")">  
+			        #{item}  
+			    </foreach>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdPurchaseDetail">
+		SELECT 
+			<include refid="pdPurchaseDetailColumns"/>
+		FROM pd_purchase_detail a
+		<include refid="pdPurchaseDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_purchase_detail(
+			id,
+			order_no,
+			prod_id,
+			prod_no,
+			batch_no,
+			expire_date,
+			in_price,
+			apply_count,
+			amount_money,
+			stock_num,
+			remarks,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{orderNo},
+			#{prodId},
+			#{prodNo},
+			#{batchNo},
+			#{expireDate},
+			#{inPrice},
+			#{applyCount},
+			#{amountMoney},
+			#{stockNum},
+			#{remarks},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<insert id="batchInsert">
+		INSERT INTO pd_purchase_detail(
+			id,
+			order_no,
+			prod_id,
+			prod_no,
+			batch_no,
+			expire_date,
+            in_price,
+			apply_count,
+			amount_money,
+			stock_num,
+			remarks,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES 
+		<foreach collection="list" separator="," item="item">
+		(
+			#{item.id},
+			#{item.orderNo},
+			#{item.prodId},
+			#{item.prodNo},
+			#{item.batchNo},
+			#{item.expireDate},
+            #{item.inPrice},
+			#{item.applyCount},
+			#{item.amountMoney},
+			#{item.stockNum},
+			#{item.remarks},
+			#{item.createBy.id},
+			#{item.createDate},
+			#{item.updateBy.id},
+			#{item.updateDate},
+			#{item.delFlag}
+		)
+		</foreach>
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_purchase_detail SET 	
+			order_no = #{orderNo},
+			prod_id = #{prodId},
+			prod_no = #{prodNo},
+			batch_no = #{batchNo},
+			expire_date = #{expireDate},
+			apply_count = #{applyCount},
+			amount_money = #{amountMoney},
+			stock_num = #{stockNum},
+			remarks = #{remarks},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_purchase_detail SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 申购管理-按科室汇总列表 -->
+	<select id="queryGroupListByDept" parameterType="com.thinkgem.hys.pd.entity.vo.PurchaseOrderVo" resultType="com.thinkgem.hys.pd.entity.vo.PurchaseOrderVo">
+		select d.dept_id as "deptId",
+			   d.dept_name as "deptName",
+		 	   p.unit as "prodUnit",
+		 	   p.name as "prodName",
+		 	   p.spec as "prodSpec",
+		 	   p.version as "prodVersion",
+		 	   p.vender_name as "brandName",
+		 	   d.num as "purchaseNum"
+		from (select c.dept_id,c.dept_name,c.prod_id,sum(c.apply_count) as num from 
+				(select 
+					b.dept_id,b.dept_name,a.prod_id,a.apply_count
+				 from pd_purchase_detail a LEFT JOIN pd_purchase_order b ON a.order_no = b.order_no
+				 <where>
+				 	1=1 AND (b.order_status = '1' or b.order_status = '3')
+				 	<if test="deptId != null and deptId != ''">
+				 		AND b.dept_id = #{deptId}
+				 	</if>
+				 	<if test="deptName != null and deptName != ''">
+				 		AND b.dept_name LIKE CONCAT('%',#{deptName},'%')
+				 	</if>
+				 	<if test="orderStatus != null and orderStatus != ''">
+				 		AND b.order_status = #{orderStatus}
+				 	</if>
+				 	<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				 		AND b.order_date between #{startDate} and #{endDate}
+				 	</if>
+				 </where>
+				)c GROUP BY c.dept_id,c.dept_name,c.prod_id
+		)d LEFT JOIN pd_product p ON d.prod_id = p.id
+		 <where>
+		 	1=1
+		 	<if test="prodSpec != null and prodSpec != ''">
+		 		AND p.spec LIKE CONCAT('%', #{prodSpec}, '%')
+		 	</if>
+		 	<if test="prodVersion != null and prodVersion != ''">
+		 		AND p.version LIKE CONCAT('%', #{prodVersion}, '%')
+		 	</if>
+		 	<if test="prodName != null and prodName != ''">
+		 		AND p.name LIKE CONCAT('%', #{prodName}, '%')
+		 	</if>
+		 </where>
+	</select>
+	<!-- 申购管理-按品名汇总列表 -->
+	<select id="queryGroupListByProduct" parameterType="com.thinkgem.hys.pd.entity.vo.PurchaseOrderVo" resultType="com.thinkgem.hys.pd.entity.vo.PurchaseOrderVo">
+		select p.unit as "prodUnit",
+		 	   p.name as "prodName",
+		 	   p.spec as "prodSpec",
+		 	   p.version as "prodVersion",
+		 	   p.vender_name as "brandName",
+		 	   d.num as "purchaseNum"
+		from (select c.prod_id,sum(c.apply_count) as num from 
+				(select a.* from pd_purchase_detail a LEFT JOIN pd_purchase_order b on a.order_no = b.order_no
+				 <where>
+				 	1=1 AND (b.order_status = '1' or b.order_status = '3')
+				 	<if test="deptId != null and deptId != ''">
+				 		AND b.dept_id = #{deptId}
+				 	</if>
+				 	<if test="deptName != null and deptName != ''">
+				 		AND b.dept_name LIKE CONCAT('%', #{deptName}, '%')
+				 	</if>
+				 	<if test="orderStatus != null and orderStatus != ''">
+				 		AND b.order_status = #{orderStatus}
+				 	</if>
+				 	<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				 		AND b.order_date between #{startDate} and #{endDate}
+				 	</if>
+				 </where>
+				) c GROUP BY c.prod_id)d 
+			LEFT JOIN pd_product p ON d.prod_id = p.id
+		 <where>
+		 	1=1
+		 	<if test="prodSpec != null and prodSpec != ''">
+		 		AND p.spec LIKE CONCAT('%', #{prodSpec}, '%')
+		 	</if>
+		 	<if test="prodVersion != null and prodVersion != ''">
+		 		AND p.version LIKE CONCAT('%', #{prodVersion}, '%')
+		 	</if>
+		 	<if test="prodName != null and prodName != ''">
+		 		AND p.name LIKE CONCAT('%', #{prodName}, '%')
+		 	</if>
+		 </where>
+	</select>
+</mapper>

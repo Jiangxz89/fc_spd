@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdStoreroomPatrolRecordDao">
+    
+	<sql id="pdStoreroomPatrolRecordColumns">
+		a.id AS "id",
+		a.patrol_code AS "patrolCode",
+		a.product_id AS "productId",
+		a.patrol_result AS "patrolResult",
+		a.batch_no AS "batchNo",
+		a.product_bar_code AS "productBarCode",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.extend1 AS "extend1",
+		a.extend2 AS "extend2",
+		a.extend3 AS "extend3",
+		a.stock_num AS "stockNum",
+		IFNULL(b.pd_state,'') AS "isExpire",
+		b.valid_date AS "validDate",
+		c.name AS "pdProduct.name",
+		c.number AS "pdProduct.number",
+		c.unit AS "pdProduct.unit",
+		c.spec AS "pdProduct.spec",
+		c.version AS "pdProduct.version",
+		c.vender_name AS "pdProduct.venderName",
+		c.registration AS "pdProduct.registration",
+		d.storeroom_name AS "storeroomName"
+	</sql>
+	
+	<sql id="pdStoreroomPatrolRecordJoins">
+		LEFT JOIN pd_storeroom_patrol x ON a.patrol_code = x.patrol_code
+		LEFT JOIN pd_product_stock b ON (a.batch_no = b.batch_no AND a.product_bar_code = b.product_bar_code AND a.product_id = b.product_id AND x.storeroom_id = b.storeroom_id)
+		LEFT JOIN pd_product c ON a.product_id = c.id
+		LEFT JOIN pd_storeroom d ON x.storeroom_id = d.id
+	</sql>
+    
+	<select id="get" resultType="PdStoreroomPatrolRecord">
+		SELECT 
+			<include refid="pdStoreroomPatrolRecordColumns"/>
+		FROM pd_storeroom_patrol_record a
+		<include refid="pdStoreroomPatrolRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdStoreroomPatrolRecord">
+		SELECT 
+			<include refid="pdStoreroomPatrolRecordColumns"/>
+		FROM pd_storeroom_patrol_record a
+		<include refid="pdStoreroomPatrolRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="patrolCode != null and patrolCode != ''">
+				AND a.patrol_code = #{patrolCode}
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND a.batch_no = #{batchNo}
+			</if>
+			<if test="storeroomId != null and storeroomId != ''">
+				AND b.storeroom_id = #{storeroomId}
+			</if>
+			<if test="patrolResult != null and patrolResult != ''">
+				AND a.patrol_result = #{patrolResult}
+			</if>
+			<if test="pdProduct != null and pdProduct.name != null and pdProduct.name != ''">
+				AND c.name LIKE CONCAT('%', #{pdProduct.name}, '%')
+			</if>
+			<if test="pdProduct != null and pdProduct.number != null and pdProduct.number != ''">
+				AND c.number = #{pdProduct.number}
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+		 		AND (DATE_FORMAT(b.valid_date,'%Y-%m-%d') between #{startDate} and #{endDate})
+		 	</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY b.pd_state DESC ,b.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdStoreroomPatrolRecord">
+		SELECT 
+			<include refid="pdStoreroomPatrolRecordColumns"/>
+		FROM pd_storeroom_patrol_record a
+		<include refid="pdStoreroomPatrolRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_storeroom_patrol_record(
+			id,
+			patrol_code,
+			product_id,
+			patrol_result,
+			batch_no,
+			product_bar_code,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3,
+			stock_num
+		) VALUES (
+			#{id},
+			#{patrolCode},
+			#{productId},
+			#{patrolResult},
+			#{batchNo},
+			#{productBarCode},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{extend1},
+			#{extend2},
+			#{extend3},
+			#{stockNum}
+		)
+	</insert>
+	<!-- 批量插入 -->
+	<insert id="batchInsert">
+		INSERT INTO pd_storeroom_patrol_record(
+			id,
+			patrol_code,
+			product_id,
+			patrol_result,
+			batch_no,
+			product_bar_code,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3,
+			stock_num
+		) VALUES 
+		<foreach collection="list" separator="," item="item">
+		(
+			#{item.id},
+			#{item.patrolCode},
+			#{item.productId},
+			#{item.patrolResult},
+			#{item.batchNo},
+			#{item.productBarCode},
+			#{item.createBy.id},
+			#{item.createDate},
+			#{item.updateBy.id},
+			#{item.updateDate},
+			#{item.remarks},
+			#{item.delFlag},
+			#{item.extend1},
+			#{item.extend2},
+			#{item.extend3},
+			#{item.stockNum}
+		)
+		</foreach>
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_storeroom_patrol_record SET 	
+			patrol_code = #{patrolCode},
+			product_id = #{productId},
+			patrol_result = #{patrolResult},
+			batch_no = #{batchNo},
+			product_bar_code = #{productBarCode},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			extend1 = #{extend1},
+			extend2 = #{extend2},
+			extend3 = #{extend3},
+			stock_num = #{stockNum}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_storeroom_patrol_record SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	<update id="deletePatrolRecord">
+		UPDATE pd_storeroom_patrol_record SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE patrol_code = #{patrolCode}
+	</update>
+	
+	<!-- 更新巡查记录 -->
+	<update id="updatePatrolResult">
+		UPDATE pd_storeroom_patrol_record SET 
+			patrol_result = #{patrolResult},
+			remarks = #{remarks},
+			update_date = now(),
+			update_by = #{updateBy.id}
+		WHERE id = #{id}
+	</update>
+</mapper>

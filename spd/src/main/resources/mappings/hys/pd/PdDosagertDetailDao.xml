@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdDosagertDetailDao">
+    
+	<sql id="pdDosagertDetailColumns">
+		a.id AS "id",
+		a.dosagert_id AS "dosagertId",
+		a.prod_id AS "prodId",
+		a.prod_no AS "prodNo",
+		a.prod_barcode AS "prodBarcode",
+		a.prod_name AS "prodName",
+		a.prod_spec AS "prodSpec",
+		a.prod_unit AS "prodUnit",
+		a.batch_no AS "batchNo",
+		a.expire_date AS "expireDate",
+		a.rt_count AS "rtCount",
+		a.dosage_count AS "dosageCount",
+		a.unit_price AS "unitPrice",
+		a.amount_money AS "amountMoney",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.extend1 AS "extend1",
+		a.extend2 AS "extend2",
+		a.extend3 AS "extend3",
+		a.is_refund AS "isRefund"
+	</sql>
+	
+	<sql id="pdDosagertDetailJoins">
+	</sql>
+    
+	<select id="get" resultType="PdDosagertDetail">
+		SELECT 
+			<include refid="pdDosagertDetailColumns"/>
+		FROM pd_dosagert_detail a
+		<include refid="pdDosagertDetailJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdDosagertDetail">
+		SELECT 
+			<include refid="pdDosagertDetailColumns"/>
+		FROM pd_dosagert_detail a
+		<include refid="pdDosagertDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="dosagertId != null and dosagertId != ''">
+				AND a.dosagert_id = #{dosagertId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdDosagertDetail">
+		SELECT 
+			<include refid="pdDosagertDetailColumns"/>
+		FROM pd_dosagert_detail a
+		<include refid="pdDosagertDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_dosagert_detail(
+			id,
+			dosagert_id,
+			prod_id,
+			prod_no,
+			prod_barcode,
+			prod_name,
+			prod_spec,
+			prod_unit,
+			batch_no,
+			expire_date,
+			rt_count,
+			dosage_count,
+			unit_price,
+			amount_money,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3,
+			is_refund
+		) VALUES (
+			#{id},
+			#{dosagertId},
+			#{prodId},
+			#{prodNo},
+			#{prodBarcode},
+			#{prodName},
+			#{prodSpec},
+			#{prodUnit},
+			#{batchNo},
+			#{expireDate},
+			#{rtCount},
+			#{dosageCount},
+			#{unitPrice},
+			#{amountMoney},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{extend1},
+			#{extend2},
+			#{extend3},
+			${isRefund}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_dosagert_detail SET 	
+			dosagert_id = #{dosagertId},
+			prod_id = #{prodId},
+			prod_no = #{prodNo},
+			prod_barcode = #{prodBarcode},
+			prod_name = #{prodName},
+			prod_spec = #{prodSpec},
+			prod_unit = #{prodUnit},
+			batch_no = #{batchNo},
+			expire_date = #{expireDate},
+			rt_count = #{rtCount},
+			dosage_count = #{dosageCount},
+			unit_price = #{unitPrice},
+			amount_money = #{amountMoney},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			extend1 = #{extend1},
+			extend2 = #{extend2},
+			extend3 = #{extend3},
+			is_refund = #{isRefund}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_dosagert_detail SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 批量插入用量退回详情 -->
+	<insert id="batchInsert">
+		INSERT INTO pd_dosagert_detail(
+			id,
+			dosagert_id,
+			prod_id,
+			prod_no,
+			prod_barcode,
+			prod_name,
+			prod_spec,
+			prod_unit,
+			batch_no,
+			expire_date,
+			rt_count,
+			dosage_count,
+			unit_price,
+			amount_money,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3,
+			is_refund
+		) VALUES 
+		<foreach collection="list" separator="," item="item">
+		(
+			#{item.id},
+			#{item.dosagertId},
+			#{item.prodId},
+			#{item.prodNo},
+			#{item.prodBarcode},
+			#{item.prodName},
+			#{item.prodSpec},
+			#{item.prodUnit},
+			#{item.batchNo},
+			#{item.expireDate},
+			#{item.rtCount},
+			#{item.dosageCount},
+			#{item.unitPrice},
+			#{item.amountMoney},
+			#{item.createBy.id},
+			#{item.createDate},
+			#{item.updateBy.id},
+			#{item.updateDate},
+			#{item.remarks},
+			#{item.delFlag},
+			#{item.extend1},
+			#{item.extend2},
+			#{item.extend3},
+			#{item.isRefund}
+		)
+		</foreach>
+	</insert>
+	
+</mapper>

@@ -1,0 +1,97 @@
+/* 头部信息 */
+.topInfo{width: 100%;height: 35px;line-height: 33px;background: #eeeeee;color: #858c92;font-size: 14px;}
+.numbers{color: red;padding:0 2px;}
+.topInfo .topInfo_list{width: 1200px;margin: 0 auto;text-align: right;}
+.topInfo .topInfo_list a{display: inline-block;margin-left: 25px;line-height: 33px;color:#666}
+.topInfo .topInfo_list a:hover{color: #0f93ce;}
+.topInfo .topInfo_list>span{padding:0 5px;color: #666;}
+.topPic{width: 100%;height: 80px;margin: 0px auto 0px;background: url(../image/top.jpg) 50% 0 no-repeat;}
+/* 头部logo 搜索信息 */
+.topNav .topSearch{padding-top:30px;height: 133px;}
+.logoBox{margin-right: 15px;margin-top: -30px;height: 130px;}
+.logoBox a p{color: #666666;font-size: 12px;text-align: center;}
+.searchBox{margin-left:80px;}
+.searchForm{width: 625px;height: 44px;border:2px solid #0f93ce;background: #0f93ce}
+.searchForm input.searchInp{width: 555px;height: 44px;line-height: 44px;border:none;outline: none;text-indent: 20px;}
+.searchForm .fa-search{cursor: pointer; width: 60px;height: 45px;line-height: 45px;text-align: center;vertical-align: middle;font-size: 25px;color: #fff;}
+.searchForm .fa-search:hover{background: #005981;}
+.searchIcon{margin-top: 10px;}
+.searchIcon a{font-size: 12px;color: #999;}
+.searchIcon span{padding:0 8px;color: #999;}
+.topnavlist{height: 50px;line-height: 48px;}
+.topMedLeft{background: #0f93ce; width: 210px; height: 50px;line-height: 50px;text-align: center;cursor: pointer;position: relative;}
+.topMedLeft span{color: #fff;padding-left: 10px;font-size: 18px;}
+.topMedLeft i{color: #fff;font-size: 22px;vertical-align: middle;}
+.topMedCenter{margin-left:30px;}
+.topMedCenter ul li{float: left;line-height: 50px;}
+.topMedCenter ul li a{font-weight: 700;line-height: 50px;height: 46px;float: left;font-size: 16px;color: #000;padding:0 20px;}
+.topMedCenter ul li.active a{border-bottom: 4px solid #0f93ce; color: #0f93ce;}
+.topMedCenter ul li.lip{position: relative;}
+.topMedCenter ul li.lip span.topLip{position: absolute;width: 30px;height:20px;background: #f35f5d;color: #fff;top:-4px;right:13px;background: url(../image/hot.gif) no-repeat right;}
+.topMedRight .rightTit{width: 200px; height: 50px;line-height: 50px;text-align: center;background: #f69900;color: #fff;font-weight: 600;}
+.topMedRight .rightMenu{width: 200px;}
+.topMedRight .rightMenu ul li{margin-top: 25px;}
+.topMedRight .rightMenu ul li p{color: #999;line-height: 20px;padding-left:10px;line-height: 30px}
+.topMedRight .rightMenu ul li p:first-child{font-size: 17px;color: #000;}
+.topMedRight .rightMenu ul li img{width: 200px;}
+.leftMenu{position: absolute;top:50px;background: #006898;height: 475px;text-align: left;width: 210px;}
+.leftMenu ul li{color: white;padding: 25px 0 21px 18px;border-bottom: 1px solid #005981}
+.leftMenu ul li i{padding-right:20px;}
+.leftMenu ul li div:last-child{margin:10px 0 0 43px;}
+.leftMenu .leftDetail{display:none;position: absolute;left: 210px;height: 475px;top:0;background: #fff;border: 1px solid #ccc;z-index:99;}
+.leftMenu .leftDetail .leftDetail_item{width: 770px;height: 100%;display: none;}
+.leftMenu ul li.online{background: #fff;color: #999;}
+.leftMenu ul li.online i{color:#0f93ce;}
+.leftMenu .loopBox{position: absolute;left:210px;top:0;height: 475px;}
+.leftMenu .loopBox img{width: 718px;height: 475px;}
+.leftMenu .loopBox #skippr{width: 718px;height: 475px;}
+.leftMenu .loopBox #skippr>div{width:100%;height: 100%;background-size: 100% 100%;}
+/* 轮播下方广告 */
+.forthBan{clear: both;margin-top:50px;}
+.forthBan ul.forthList li{border-radius:3px; float: left;margin:20px 20px 0 0;width: 280px;height: 100px;line-height: 100px;font-size: 20px; }
+.forthBan ul.forthList li:nth-child(1){background: -webkit-linear-gradient(left, #ff76dc ,#ca76f3);}
+.forthBan ul.forthList li:nth-child(2){background: -webkit-linear-gradient(left, #00FFFF ,	#0000FF);}
+.forthBan ul.forthList li:nth-child(3){background: -webkit-linear-gradient(left, #FFA500 ,	#FF69B4);}
+.forthBan ul.forthList li:nth-child(4){background: -webkit-linear-gradient(left, #7FFFAA ,#00BFFF);}
+.forthBan ul.forthList li i{padding:0 50px;color: #fff;}
+.forthBan .forthTit{height: 50px;line-height: 50px;text-align: center;line-height: 50px;font-weight: 600;font-size: 20px;}
+/* POCT */
+.postItem{}
+.postItem p{float: left;}
+.postItem p:first-child img{width: 180px;height: 120px;}
+.postItem p img{width: 600px;height: 375px;}
+.postItem p:last-child{padding-left: 100px;}
+.postItem .postList{overflow: hidden;padding-left: 100px;}
+.postItem .postList li{line-height: 35px;}
+/* 汇创宜*/
+.company .conmpanyBox div{width: 312px;text-align: center;float: left;}
+.company .conmpanyBox div img{width: 250px;}
+.company .conmpanyBox div .comTit{font-size: 18px;font-weight: 600;padding:10px 0;te}
+.company .conmpanyBox div a{text-indent: 2em;text-align: left;display: inline-block;line-height: 25px}
+.company .conmpanyBox div .voicee{text-align: left;width: 312px;}
+.company .conmpanyBox div .voicee b{font-weight:600;font-size: 16px;}
+
+/* 楼层 */
+	#LoutiNav{ border: 1px solid gray; width: 60px; position: fixed; top: 150px; left: 50px; display: none;}
+   	#LoutiNav li{ width: 60px; height: 30px;border-bottom: 1px solid gray; line-height: 30px; text-align: center; cursor: pointer;}
+   	#LoutiNav li:last-child{border-bottom: 0;}
+   	#LoutiNav span{display: none;}
+   	#LoutiNav .active{background: darkred; color: #fff;}
+   	#LoutiNav li:hover span{display: block; font-size: 14px; background: #d70b1c;color: white;height: 30px;line-height: 30px;font}
+   	#LoutiNav li:hover i{display: none;}
+   	#goTop{width: 40px;height: 40px; line-height: 40px;text-align: center; background: gray; position: fixed;bottom: 30px; right: 30px; cursor: pointer;border-radius: 5px; display: none; }
+   	#goTop:hover{background: darkred; color: white;}
+   	#goTop:hover span{display: block;}
+   	#header{height: 200px; background: palegoldenrod; text-align: center; line-height: 200px; font-size: 72px; margin: 0 auto;}
+   	.louceng{ height: 810px; width: 1440;text-align: center; line-height: 800px; font-size: 120px; margin: 0 auto;}
+   	#erweima{width: 130px; height: 130px; background: palegreen; display: none; position: absolute; right: 46px; bottom: 5px;line-height: 130px; text-align: center; font-size: 20px; border-radius:10px ;}
+
+
+
+
+
+
+
+
+
+

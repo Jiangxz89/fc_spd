@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdAllocationProductDao">
+    
+	<sql id="pdAllocationProductColumns">
+		a.id AS "id",
+		a.allocation_code AS "allocationCode",
+		a.product_code AS "productCode",
+		a.allocation_num AS "allocationNum",
+		a.product_attr AS "productAttr"
+	</sql>
+	
+	<sql id="pdAllocationProductJoins">
+	</sql>
+    
+	<select id="get" resultType="PdAllocationProduct">
+		SELECT 
+			<include refid="pdAllocationProductColumns"/>
+		FROM pd_allocation_product a
+		<include refid="pdAllocationProductJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdAllocationProduct">
+		SELECT 
+			<include refid="pdAllocationProductColumns"/>
+		FROM pd_allocation_product a
+		<include refid="pdAllocationProductJoins"/>
+		<where>
+			<if test="allocationCode != null and allocationCode != ''">
+				AND a.allocation_code = #{allocationCode}
+			</if>
+			<if test="productCode != null and productCode != ''">
+				AND a.product_code = #{productCode}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdAllocationProduct">
+		SELECT 
+			<include refid="pdAllocationProductColumns"/>
+		FROM pd_allocation_product a
+		<include refid="pdAllocationProductJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_allocation_product(
+			id,
+			allocation_code,
+			product_code,
+			allocation_num,
+			product_attr
+		) VALUES (
+			#{id},
+			#{allocationCode},
+			#{productCode},
+			#{allocationNum},
+			#{productAttr}
+		)
+	</insert>
+	
+	<insert id="addAllocationProductBatch" useGeneratedKeys="true" keyProperty="id">  
+        INSERT INTO pd_allocation_product(allocation_code,product_code,allocation_num,product_attr)  
+        VALUES   
+        <foreach collection="pdAllocationProductList" item="pdAllocationProduct" separator=",">  
+            (#{pdAllocationProduct.allocationCode},#{pdAllocationProduct.productCode},#{pdAllocationProduct.allocationNum},#{pdAllocationProduct.productAttr})  
+        </foreach>  
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_allocation_product SET 	
+			allocation_code = #{allocationCode},
+			product_code = #{productCode},
+			allocation_num = #{allocationNum},
+			product_attr = #{productAttr}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM pd_allocation_product
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

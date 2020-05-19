@@ -1,0 +1,20 @@
+*{margin:0;padding:0;list-style:none;}
+#printBox{padding:30px 40px;display: block;}
+.printHeader{text-align: center;}
+.printHeader>h3{font-size:25px;color:#000;display: inline-block;font-weight:600;}
+.printHeader>h3:nth-child(1){padding-right:40px;}
+.printPage{width:100%;height:20px; font-size: 14px;color:#202020;padding:5px 0 20px 0;text-align: right;}
+.printList{clear:both;overflow:hidden;}
+.printList>ul{width:50%;float: left;padding:0;margin:0;text-align:left;}
+.printList>ul>li{width: 100%;height:25px;line-height: 25px;}
+.printList>ul>li.otherWord{position:absolute;}
+.printList>ul>li.otherWord>label{float:left;}
+.printList>ul>li.otherWord>span{width:auto;}
+.printList>ul>li>label{display:inline-block;width:80px;font-size: 13px;}
+.printList>ul>li>span{font-size:14px;font-weight:400;font-size:13px;}
+.printTab{}
+.printTab>table{width:100%;border-collapse: collapse;}
+.printTab>table>thead{border-bottom:2px solid #202020;}
+.printTab>table th{font-weight:400;}
+.printTab>table th,.printTab>table td{border-bottom: 1px solid #ccc;font-size:12px;color:#202020;height:35px;text-align: center;}
+.signBox>h3{font-size:14px;padding-top:20px;display: inline-block;margin-right:50px;color:#202020;font-weight:400;}

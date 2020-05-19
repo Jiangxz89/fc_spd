@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.DictMaterialDao">
+    
+	<sql id="dictMaterialColumns">
+		a.matid AS "matid",
+		a.numcode AS "numcode",
+		a.name AS "name",
+		a.pycode AS "pycode",
+		a.wbcode AS "wbcode",
+		a.cuscode AS "cuscode",
+		a.packunit AS "packunit",
+		a.miniunit AS "miniunit",
+		a.packamount AS "packamount",
+		a.spec AS "spec",
+		a.inprice AS "inprice",
+		a.sellprice AS "sellprice",
+		a.matclass AS "matclass",
+		a.matclassname AS "matclassname",
+		a.mretype AS "mretype",
+		a.isfee AS "isfee",
+		a.iscost AS "iscost",
+		a.isstop AS "isstop",
+		a.modstaff AS "modstaff",
+		a.modstaffname AS "modstaffname",
+		a.moddate AS "moddate",
+		a.sicode AS "sicode",
+		a.nhcode AS "nhcode",
+		a.facid AS "facid",
+		a.facname AS "facname",
+		a.zxauditstatus AS "zxauditstatus",
+		a.zxauditor AS "zxauditor",
+		a.zxauditorname AS "zxauditorname",
+		a.zxaudittime AS "zxaudittime"
+	</sql>
+
+	<!-- 本院物资目录 -->
+	<sql id="baseMatpriceColumns">
+		b.stockid AS "hisCode"
+	</sql>
+	
+	<sql id="dictMaterialJoins">
+	</sql>
+
+	<!-- 本院物资目录 -->
+	<sql id="baseMatpriceJoins">
+		LEFT JOIN base_matprice b on a.MatID = b.MatID
+	</sql>
+
+
+	<select id="get" resultType="DictMaterial">
+		SELECT 
+			<include refid="dictMaterialColumns"/>
+		FROM dict_material a
+		<include refid="dictMaterialJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DictMaterial">
+		SELECT 
+			<include refid="dictMaterialColumns"/>,
+			<include refid="baseMatpriceColumns"/>
+		FROM dict_material a
+		<include refid="dictMaterialJoins"/>
+		<include refid="baseMatpriceJoins"/>
+		<where>
+			1 = 1
+			<if test="name != null and name != ''">
+				AND a.name LIKE concat('%',#{name},'%') or a.pycode like concat('%',#{name},'%') or a.wbcode like concat('%',#{name},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DictMaterial">
+		SELECT 
+			<include refid="dictMaterialColumns"/>
+		FROM dict_material a
+		<include refid="dictMaterialJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO dict_material(
+			matid,
+			numcode,
+			name,
+			pycode,
+			wbcode,
+			cuscode,
+			packunit,
+			miniunit,
+			packamount,
+			spec,
+			inprice,
+			sellprice,
+			matclass,
+			matclassname,
+			mretype,
+			isfee,
+			iscost,
+			isstop,
+			modstaff,
+			modstaffname,
+			moddate,
+			sicode,
+			nhcode,
+			facid,
+			facname,
+			zxauditstatus,
+			zxauditor,
+			zxauditorname,
+			zxaudittime
+		) VALUES (
+			#{matid},
+			#{numcode},
+			#{name},
+			#{pycode},
+			#{wbcode},
+			#{cuscode},
+			#{packunit},
+			#{miniunit},
+			#{packamount},
+			#{spec},
+			#{inprice},
+			#{sellprice},
+			#{matclass},
+			#{matclassname},
+			#{mretype},
+			#{isfee},
+			#{iscost},
+			#{isstop},
+			#{modstaff},
+			#{modstaffname},
+			#{moddate},
+			#{sicode},
+			#{nhcode},
+			#{facid},
+			#{facname},
+			#{zxauditstatus},
+			#{zxauditor},
+			#{zxauditorname},
+			#{zxaudittime}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE dict_material SET 	
+			matid = #{matid},
+			numcode = #{numcode},
+			name = #{name},
+			pycode = #{pycode},
+			wbcode = #{wbcode},
+			cuscode = #{cuscode},
+			packunit = #{packunit},
+			miniunit = #{miniunit},
+			packamount = #{packamount},
+			spec = #{spec},
+			inprice = #{inprice},
+			sellprice = #{sellprice},
+			matclass = #{matclass},
+			matclassname = #{matclassname},
+			mretype = #{mretype},
+			isfee = #{isfee},
+			iscost = #{iscost},
+			isstop = #{isstop},
+			modstaff = #{modstaff},
+			modstaffname = #{modstaffname},
+			moddate = #{moddate},
+			sicode = #{sicode},
+			nhcode = #{nhcode},
+			facid = #{facid},
+			facname = #{facname},
+			zxauditstatus = #{zxauditstatus},
+			zxauditor = #{zxauditor},
+			zxauditorname = #{zxauditorname},
+			zxaudittime = #{zxaudittime}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM dict_material
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

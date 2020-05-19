@@ -1,0 +1,7 @@
+.newSearchBox{background:#DEE9F1;padding:10px 40px;line-height: 40px;margin:5px 0 0 0;border-radius: 12px;}
+.newSearchBox label,.newSearchBox input,.newSearchBox select{vertical-align: middle; color:#666;display: inline-block;height: 28px;line-height: 28px;border-radius:2px;font-size: 12px;}
+.newSearchBox label{width: 60px;text-align: left;margin:0;}
+.newSearchBox select{width: 129px;margin:0 20px 0 0;}
+.newSearchBox input[type='text']{width: 150px;margin:0 20px 0 0;padding:0 0 0 5px;}
+.newSearchBox input,.newSearchBox select{background: #fff;border:1px solid #ccc;box-shadow:none;}
+.newSearchBox input[type='button'],.newSearchBox input[type='submit'],.newSearchBox>a{line-height:1.5;height:auto;cursor: pointer;border:none;font-size:12px;}

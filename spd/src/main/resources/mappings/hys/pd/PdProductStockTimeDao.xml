@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdProductStockTimeDao">
+    
+	<sql id="pdProductStockTimeColumns">
+		a.id AS "id",
+		a.prod_id AS "prodId",
+		a.prod_no AS "prodNo",
+		a.batch_no AS "batchNo",
+		a.bar_code AS "barCode",
+		a.valid_date AS "validDate",
+		a.storeroom_id AS "storeroomId",
+		a.stock_num AS "stockNum",
+		a.stock_date AS "stockDate",
+		a.remarks AS "remarks",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag",
+		b.name AS "productName",
+		b.spec AS "productSpec",
+		b.version AS "productVersion",
+		b.vender_name AS "venderName",
+		p.supplier_name AS "supplierName"
+	</sql>
+	
+	<sql id="pdProductStockTimeJoins">
+		LEFT JOIN pd_product b ON a.prod_id = b.id
+		LEFT JOIN pd_product_stock_total c ON a.prod_id = c.product_id AND a.storeroom_id = c.storeroom_id
+		<!-- LEFT JOIN (
+			SELECT
+				t.*
+			FROM
+				pd_product_stock t
+			WHERE
+				t.supplier_id IS NOT NULL
+			AND t.storeroom_id = (
+				SELECT
+					tt.id
+				FROM
+					pd_storeroom tt
+				WHERE
+					tt.del_flag = '0'
+				AND tt.storeroom_type = '0'
+			)
+		) c ON a.prod_id = c.product_id 
+									 AND a.prod_no = c.product_no 
+									 AND a.bar_code = c.product_bar_code 
+									 AND a.batch_no = c.batch_no -->
+									 <!-- AND a.storeroom_id = c.storeroom_id -->
+		LEFT JOIN pd_supplier p ON c.supplier_id = p.id
+	</sql>
+    
+	<select id="get" resultType="PdProductStockTime">
+		SELECT 
+			<include refid="pdProductStockTimeColumns"/>
+		FROM pd_product_stock_time a
+		<include refid="pdProductStockTimeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdProductStockTime">
+		SELECT 
+			<include refid="pdProductStockTimeColumns"/>
+		FROM pd_product_stock_time a
+		<include refid="pdProductStockTimeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="prodNo != null and prodNo != ''">
+				AND a.prod_no = #{prodNo}
+			</if>
+			<if test="productVersion != null and productVersion != ''">
+				AND b.version = #{productVersion}
+			</if>
+			<if test="productName != null and productName != ''">
+				AND b.name LIKE CONCAT('%', #{productName}, '%')
+			</if>
+			<if test="supplierId != null and supplierId != ''">
+				AND c.supplier_id = #{supplierId}
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND a.batch_no = #{batchNo}
+			</if>
+			<if test="barCode != null and barCode != ''">
+				AND a.bar_code = #{barCode}
+			</if>
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.storeroom_id = #{storeroomId}
+			</if>
+			<if test="stockDate != null and stockDate != ''">
+				AND DATE_FORMAT(a.stock_date, '%Y-%m-%d') = DATE_FORMAT(#{stockDate}, '%Y-%m-%d')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdProductStockTime">
+		SELECT 
+			<include refid="pdProductStockTimeColumns"/>
+		FROM pd_product_stock_time a
+		<include refid="pdProductStockTimeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_product_stock_time(
+			id,
+			prod_id,
+			prod_no,
+			batch_no,
+			bar_code,
+			valid_date,
+			storeroom_id,
+			stock_num,
+			stock_date,
+			remarks,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{prodId},
+			#{prodNo},
+			#{batchNo},
+			#{barCode},
+			#{validDate},
+			#{storeroomId},
+			#{stockNum},
+			#{stockDate},
+			#{remarks},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<!-- 批量插入 -->
+	<insert id="batchInsert">
+		INSERT INTO pd_product_stock_time(
+			id,
+			prod_id,
+			prod_no,
+			batch_no,
+			bar_code,
+			valid_date,
+			storeroom_id,
+			stock_num,
+			stock_date,
+			remarks,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES 
+		<foreach collection="list" separator="," item="item">
+		(
+			REPLACE(uuid(), '-', ''),
+			#{item.productId},
+			#{item.productNo},
+			#{item.batchNo},
+			#{item.productBarCode},
+			#{item.validDate},
+			#{item.storeroomId},
+			#{item.stockNum},
+			#{stockDate},
+			#{item.remarks},
+			#{item.createBy.id},
+			now(),
+			#{item.updateBy.id},
+			now(),
+			#{item.delFlag}
+		)
+		</foreach>
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_product_stock_time SET 	
+			prod_id = #{prodId},
+			prod_no = #{prodNo},
+			batch_no = #{batchNo},
+			bar_code = #{barCode},
+			valid_date = #{validDate},
+			storeroom_id = #{storeroomId},
+			stock_num = #{stockNum},
+			stock_date = #{stockDate},
+			remarks = #{remarks},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_product_stock_time SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	<!-- 按日期和实物查询 -->
+	<select id="getPrdStockTime" resultType="PdProductStockTime">
+		SELECT 
+			a.id AS "id",
+			a.prod_id AS "prodId",
+			a.prod_no AS "prodNo",
+			a.batch_no AS "batchNo",
+			a.bar_code AS "barCode",
+			a.valid_date AS "validDate",
+			a.storeroom_id AS "storeroomId",
+			a.stock_num AS "stockNum",
+			a.stock_date AS "stockDate",
+			a.remarks AS "remarks",
+			a.create_by AS "createBy.id",
+			a.create_date AS "createDate",
+			a.update_by AS "updateBy.id",
+			a.update_date AS "updateDate",
+			a.del_flag AS "delFlag"
+		FROM pd_product_stock_time a
+		WHERE a.prod_id = #{prodId} 
+			AND a.prod_no = #{prodNo}
+			AND a.bar_code = #{barCode}
+			AND a.batch_no = #{batchNo}
+			AND a.storeroom_id = #{storeroomId}
+			AND DATE_FORMAT(a.stock_date, '%Y-%m-%d') = DATE_FORMAT(#{stockDate}, '%Y-%m-%d')
+	</select>
+	
+	<!-- 统计查询-查询当天的库存信息 -->
+	<select id="queryTodayStockInfo" resultType="PdProductStockTime">
+		SELECT 
+			a.id AS "id",
+			a.product_id AS "prodId",
+			a.product_no AS "prodNo",
+			a.batch_no AS "batchNo",
+			a.product_bar_code AS "barCode",
+			a.valid_date AS "validDate",
+			a.storeroom_id AS "storeroomId",
+			a.stock_num AS "stockNum",
+			a.remarks AS "remarks",
+			a.create_by AS "createBy.id",
+			a.create_date AS "createDate",
+			a.update_by AS "updateBy.id",
+			a.update_date AS "updateDate",
+			a.del_flag AS "delFlag",
+			b.name AS "productName",
+			b.spec AS "productSpec",
+			b.version AS "productVersion",
+			/*b.vender_name AS "venderName",*/
+			vd.name as venderName,
+			p.supplier_name AS "supplierName"
+		FROM pd_product_stock a
+		LEFT JOIN pd_product b ON a.product_id = b.id
+		LEFT JOIN pd_product_stock_total c ON a.product_id = c.product_id AND a.storeroom_id = c.storeroom_id
+		LEft JOIN pd_drug_supplier ds on b.id = ds.ypdm
+		/*LEFT JOIN pd_supplier p ON c.supplier_id = p.id 2019年5月28日11:10:11查询供应商都从关联表中查询*/
+		LEFT JOIN pd_supplier p ON ds.ghdw_id = p.id
+		LEFT JOIN pd_vender vd on b.vender_id = vd.id
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="prodNo != null and prodNo != ''">
+				AND a.product_no LIKE concat('%',#{prodNo},'%')
+			</if>
+			<if test="productVersion != null and productVersion != ''">
+				AND b.version = #{productVersion}
+			</if>
+			<if test="productName != null and productName != ''">
+				AND b.name LIKE CONCAT('%', #{productName}, '%')
+			</if>
+			<if test="supplierId != null and supplierId != ''">
+				AND ds.ghdw_id = #{supplierId}
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND a.batch_no = #{batchNo}
+			</if>
+			<if test="barCode != null and barCode != ''">
+				AND a.product_bar_code = #{barCode}
+			</if>
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.storeroom_id = #{storeroomId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+</mapper>

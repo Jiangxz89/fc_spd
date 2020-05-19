@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdStoreroomAdminDao">
+    
+	<sql id="pdStoreroomAdminColumns">
+		a.id AS "id",
+		a.storeroom_id AS "storeroomId",
+		a.admin_id AS "adminId",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.extend1 AS "extend1",
+		a.extend2 AS "extend2",
+		a.extend3 AS "extend3"
+	</sql>
+	
+	<sql id="pdStoreroomAdminJoins">
+	</sql>
+    
+	<select id="get" resultType="PdStoreroomAdmin">
+		SELECT 
+			<include refid="pdStoreroomAdminColumns"/>
+		FROM pd_storeroom_admin a
+		<include refid="pdStoreroomAdminJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdStoreroomAdmin">
+		SELECT 
+			<include refid="pdStoreroomAdminColumns"/>
+		FROM pd_storeroom_admin a
+		<include refid="pdStoreroomAdminJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.storeroom_id = #{storeroomId}
+			</if>
+			<if test="adminId != null and adminId != ''">
+				AND a.admin_id = #{adminId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdStoreroomAdmin">
+		SELECT 
+			<include refid="pdStoreroomAdminColumns"/>
+		FROM pd_storeroom_admin a
+		<include refid="pdStoreroomAdminJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_storeroom_admin(
+			id,
+			storeroom_id,
+			admin_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3
+		) VALUES (
+			#{id},
+			#{storeroomId},
+			#{adminId},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{extend1},
+			#{extend2},
+			#{extend3}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_storeroom_admin SET 	
+			storeroom_id = #{storeroomId},
+			admin_id = #{adminId},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			extend1 = #{extend1},
+			extend2 = #{extend2},
+			extend3 = #{extend3}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_storeroom_admin SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="deleteByStoreroomId">
+		DELETE FROM pd_storeroom_admin WHERE storeroom_id = #{storeroom_id}
+	</delete>
+	
+	<insert id="saveGroupByStoreroomId">
+		INSERT INTO pd_storeroom_admin(
+			id,
+			storeroom_id,
+			admin_id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3
+		) VALUES<foreach collection="list" item="item" index="index" open="" close="" separator=",">
+		 (
+			#{item.id},
+			#{item.storeroomId},
+			#{item.adminId},
+			#{item.createBy.id},
+			#{item.createDate},
+			#{item.updateBy.id},
+			#{item.updateDate},
+			#{item.remarks},
+			#{item.delFlag},
+			#{item.extend1},
+			#{item.extend2},
+			#{item.extend3}
+		)</foreach>
+	</insert>	
+	
+	<select id="findAdminList" resultType="PdStoreroomAdmin">
+		SELECT 
+			a.id AS "id",
+			a.storeroom_id AS "storeroomId",
+			a.admin_id AS "adminId",
+			a.create_by AS "createBy.id",
+			a.create_date AS "createDate",
+			a.update_by AS "updateBy.id",
+			a.update_date AS "updateDate",
+			a.remarks AS "remarks",
+			a.del_flag AS "delFlag",
+			a.extend1 AS "extend1",
+			a.extend2 AS "extend2",
+			a.extend3 AS "extend3",
+			b.login_name AS "adminLoginName",
+			b.name AS "adminName"
+		FROM pd_storeroom_admin a
+		LEFT JOIN sys_user b on a.admin_id = b.id
+		<include refid="pdStoreroomAdminJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.storeroom_id = #{storeroomId}
+			</if>
+			<if test="adminId != null and adminId != ''">
+				AND a.admin_id = #{adminId}
+			</if>
+		</where>
+	</select>
+</mapper>

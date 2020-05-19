@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.DataYfexemasterDao">
+    
+	<sql id="dataYfexemasterColumns">
+		a.masterid AS "masterid",
+		a.hospitalid AS "hospitalid",
+		a.hospitalname AS "hospitalname",
+		a.exedeptid AS "exedeptid",
+		a.exedeptname AS "exedeptname",
+		a.reatilfee AS "reatilfee",
+		a.costid AS "costid",
+		a.invoiceid AS "invoiceid",
+		a.invoiceno AS "invoiceno",
+		a.inid AS "inid",
+		a.fuqty AS "fuqty",
+		a.patlstno AS "patlstno",
+		a.patname AS "patname",
+		a.prntime AS "prntime",
+		a.dosstaff AS "dosstaff",
+		a.dosstaffname AS "dosstaffname",
+		a.opstaff AS "opstaff",
+		a.opstaffname AS "opstaffname",
+		a.optime AS "optime",
+		a.createtime AS "createtime",
+		a.orderclass AS "orderclass",
+		a.orderclassname AS "orderclassname",
+		a.pattype AS "pattype",
+		a.pattypename AS "pattypename"
+	</sql>
+	
+	<sql id="dataYfexemasterJoins">
+	</sql>
+    
+	<select id="get" resultType="DataYfexemaster">
+		SELECT 
+			<include refid="dataYfexemasterColumns"/>
+		FROM data_yfexemaster a
+		<include refid="dataYfexemasterJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DataYfexemaster">
+		SELECT 
+			<include refid="dataYfexemasterColumns"/>
+		FROM data_yfexemaster a
+		<include refid="dataYfexemasterJoins"/>
+		<where>
+			1 = 1
+			<if test="invoiceno != null and invoiceno != ''">
+				AND a.invoiceno LIKE concat('%',#{invoiceno},'%')
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND a.createtime BETWEEN #{startDate} AND #{endDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DataYfexemaster">
+		SELECT 
+			<include refid="dataYfexemasterColumns"/>
+		FROM data_yfexemaster a
+		<include refid="dataYfexemasterJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO data_yfexemaster(
+			masterid,
+			hospitalid,
+			hospitalname,
+			exedeptid,
+			exedeptname,
+			reatilfee,
+			costid,
+			invoiceid,
+			invoiceno,
+			inid,
+			fuqty,
+			patlstno,
+			patname,
+			prntime,
+			dosstaff,
+			dosstaffname,
+			opstaff,
+			opstaffname,
+			optime,
+			createtime,
+			orderclass,
+			orderclassname,
+			pattype,
+			pattypename
+		) VALUES (
+			#{masterid},
+			#{hospitalid},
+			#{hospitalname},
+			#{exedeptid},
+			#{exedeptname},
+			#{reatilfee},
+			#{costid},
+			#{invoiceid},
+			#{invoiceno},
+			#{inid},
+			#{fuqty},
+			#{patlstno},
+			#{patname},
+			#{prntime},
+			#{dosstaff},
+			#{dosstaffname},
+			#{opstaff},
+			#{opstaffname},
+			#{optime},
+			#{createtime},
+			#{orderclass},
+			#{orderclassname},
+			#{pattype},
+			#{pattypename}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE data_yfexemaster SET 	
+			masterid = #{masterid},
+			hospitalid = #{hospitalid},
+			hospitalname = #{hospitalname},
+			exedeptid = #{exedeptid},
+			exedeptname = #{exedeptname},
+			reatilfee = #{reatilfee},
+			costid = #{costid},
+			invoiceid = #{invoiceid},
+			invoiceno = #{invoiceno},
+			inid = #{inid},
+			fuqty = #{fuqty},
+			patlstno = #{patlstno},
+			patname = #{patname},
+			prntime = #{prntime},
+			dosstaff = #{dosstaff},
+			dosstaffname = #{dosstaffname},
+			opstaff = #{opstaff},
+			opstaffname = #{opstaffname},
+			optime = #{optime},
+			createtime = #{createtime},
+			orderclass = #{orderclass},
+			orderclassname = #{orderclassname},
+			pattype = #{pattype},
+			pattypename = #{pattypename}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM data_yfexemaster
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

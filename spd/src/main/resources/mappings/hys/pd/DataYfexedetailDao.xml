@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.DataYfexedetailDao">
+    
+	<sql id="dataYfexedetailColumns">
+		a.id AS "id",
+		a.masterid AS "masterid",
+		a.feeid AS "feeid",
+		a.feename AS "feename",
+		a.feespec AS "feespec",
+		a.facid AS "facid",
+		a.facname AS "facname",
+		a.unit AS "unit",
+		a.fuqty AS "fuqty",
+		a.amount AS "amount",
+		a.price AS "price",
+		a.totalamt AS "totalamt",
+		a.diagndept AS "diagndept",
+		a.diagndeptname AS "diagndeptname",
+		a.dosage AS "dosage",
+		a.injecttimes AS "injecttimes",
+		a.channelid AS "channelid",
+		a.channelname AS "channelname",
+		a.frequencryid AS "frequencryid",
+		a.frequencryname AS "frequencryname",
+		a.dosageunit AS "dosageunit",
+		a.days AS "days",
+		a.groupid AS "groupid",
+		a.num AS "num",
+		a.listno AS "listno",
+		a.status AS "status",
+		a.batch AS "batch",
+		a.dspt AS "dspt",
+		a.istake AS "istake",
+		a.presamount AS "presamount",
+		a.presamountunit AS "presamountunit"
+	</sql>
+	
+	<sql id="dataYfexedetailJoins">
+	</sql>
+    
+	<select id="get" resultType="DataYfexedetail">
+		SELECT 
+			<include refid="dataYfexedetailColumns"/>
+		FROM data_yfexedetail a
+		<include refid="dataYfexedetailJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DataYfexedetail">
+		SELECT 
+			<include refid="dataYfexedetailColumns"/>
+		FROM data_yfexedetail a
+		<include refid="dataYfexedetailJoins"/>
+		<where>
+			1 = 1
+			<if test="masterid != null and masterid != ''">
+				AND a.masterid = #{masterid}
+			</if>
+			<if test="feename != null and feename != ''">
+				AND a.feename LIKE concat('%',#{feename},'%')
+			</if>
+			<if test="facname != null and facname != ''">
+				AND a.facname LIKE concat('%',#{facname},'%')
+			</if>
+			<if test="batch != null and batch != ''">
+				AND a.batch LIKE concat('%',#{batch},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DataYfexedetail">
+		SELECT 
+			<include refid="dataYfexedetailColumns"/>
+		FROM data_yfexedetail a
+		<include refid="dataYfexedetailJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO data_yfexedetail(
+			id,
+			masterid,
+			feeid,
+			feename,
+			feespec,
+			facid,
+			facname,
+			unit,
+			fuqty,
+			amount,
+			price,
+			totalamt,
+			diagndept,
+			diagndeptname,
+			dosage,
+			injecttimes,
+			channelid,
+			channelname,
+			frequencryid,
+			frequencryname,
+			dosageunit,
+			days,
+			groupid,
+			num,
+			listno,
+			status,
+			batch,
+			dspt,
+			istake,
+			presamount,
+			presamountunit
+		) VALUES (
+			#{id},
+			#{masterid},
+			#{feeid},
+			#{feename},
+			#{feespec},
+			#{facid},
+			#{facname},
+			#{unit},
+			#{fuqty},
+			#{amount},
+			#{price},
+			#{totalamt},
+			#{diagndept},
+			#{diagndeptname},
+			#{dosage},
+			#{injecttimes},
+			#{channelid},
+			#{channelname},
+			#{frequencryid},
+			#{frequencryname},
+			#{dosageunit},
+			#{days},
+			#{groupid},
+			#{num},
+			#{listno},
+			#{status},
+			#{batch},
+			#{dspt},
+			#{istake},
+			#{presamount},
+			#{presamountunit}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE data_yfexedetail SET 	
+			masterid = #{masterid},
+			feeid = #{feeid},
+			feename = #{feename},
+			feespec = #{feespec},
+			facid = #{facid},
+			facname = #{facname},
+			unit = #{unit},
+			fuqty = #{fuqty},
+			amount = #{amount},
+			price = #{price},
+			totalamt = #{totalamt},
+			diagndept = #{diagndept},
+			diagndeptname = #{diagndeptname},
+			dosage = #{dosage},
+			injecttimes = #{injecttimes},
+			channelid = #{channelid},
+			channelname = #{channelname},
+			frequencryid = #{frequencryid},
+			frequencryname = #{frequencryname},
+			dosageunit = #{dosageunit},
+			days = #{days},
+			groupid = #{groupid},
+			num = #{num},
+			listno = #{listno},
+			status = #{status},
+			batch = #{batch},
+			dspt = #{dspt},
+			istake = #{istake},
+			presamount = #{presamount},
+			presamountunit = #{presamountunit}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM data_yfexedetail
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

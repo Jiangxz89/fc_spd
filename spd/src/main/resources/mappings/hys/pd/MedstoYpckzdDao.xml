@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.MedstoYpckzdDao">
+    
+	<sql id="medstoYpckzdColumns">
+		a.xh AS "xh",
+		a.rkdm AS "rkdm",
+		a.ny AS "ny",
+		a.rkdh AS "rkdh",
+		a.ksdm AS "ksdm",
+		a.fph AS "fph",
+		a.kprq AS "kprq",
+		a.dprq AS "dprq",
+		a.rkrq AS "rkrq",
+		a.rkczyh AS "rkczyh",
+		a.jzrq AS "jzrq",
+		a.jzczyh AS "jzczyh",
+		a.lsje AS "lsje",
+		a.pfje AS "pfje",
+		a.jjje AS "jjje",
+		a.yhje AS "yhje",
+		a.ghdwdm AS "ghdwdm",
+		a.ghdwmc AS "ghdwmc",
+		a.jzbz AS "jzbz",
+		a.gzbz AS "gzbz",
+		a.dpbz AS "dpbz",
+		a.cxbz AS "cxbz",
+		a.jlzt AS "jlzt",
+		a.xgxh AS "xgxh",
+		a.memo AS "memo",
+		a.ypzlsm AS "ypzlsm",
+		a.cgxh AS "cgxh",
+		a.ypbz AS "ypbz",
+		a.fkxh AS "fkxh",
+		a.dybz AS "dybz",
+		a.psdh AS "psdh",
+		a.scrq AS "scrq"
+	</sql>
+
+	<!-- 入库明细字段 -->
+	<sql id="medstoYpckmxColumns">
+		b.xh AS "medstoYpckmx.xh",
+		b.zd_xh AS "medstoYpckmx.zdXh",
+		b.fph AS "medstoYpckmx.fph",
+		b.kprq AS "medstoYpckmx.kprq",
+		b.dprq AS "medstoYpckmx.dprq",
+		b.czdm AS "medstoYpckmx.czdm",
+		b.cd_idm AS "medstoYpckmx.cdIdm",
+		b.gg_idm AS "medstoYpckmx.ggIdm",
+		b.drug_name AS "medstoYpckmx.drugName",
+		b.drug_spec AS "medstoYpckmx.drugSpec",
+		b.ypdm AS "medstoYpckmx.ypdm",
+		b.pcxh AS "medstoYpckmx.pcxh",
+		b.sxrq AS "medstoYpckmx.sxrq",
+		b.ph AS "medstoYpckmx.ph",
+		b.ykxs AS "medstoYpckmx.ykxs",
+		b.ypdw AS "medstoYpckmx.ypdw",
+		b.dwxs AS "medstoYpckmx.dwxs",
+		b.rksl AS "medstoYpckmx.rksl",
+		b.czsl AS "medstoYpckmx.czsl",
+		b.ypkl AS "medstoYpckmx.ypkl",
+		b.ypjj AS "medstoYpckmx.ypjj",
+		b.ypfj AS "medstoYpckmx.ypfj",
+		b.ylsj AS "medstoYpckmx.ylsj",
+		b.jjje AS "medstoYpckmx.jjje",
+		b.jxce AS "medstoYpckmx.jxce",
+		b.xgxh AS "medstoYpckmx.xgxh",
+		b.dpbz AS "medstoYpckmx.dpbz",
+		b.mrzbj AS "medstoYpckmx.mrzbj",
+		b.zbqh AS "medstoYpckmx.zbqh",
+		b.zbdw AS "medstoYpckmx.zbdw",
+		b.ypmrkl AS "medstoYpckmx.ypmrkl",
+		b.scrq AS "medstoYpckmx.scrq"
+	</sql>
+
+
+	<sql id="medstoYpckzdJoins">
+	</sql>
+
+	<!-- 入库明细表 -->
+	<sql id="medstoYpckmxJoins">
+		LEFT JOIN medsto_ypckmx b ON a.xh = b.zd_xh
+	</sql>
+    
+	<select id="get" resultType="MedstoYpckzd">
+		SELECT 
+			<include refid="medstoYpckzdColumns"/>
+		FROM medsto_ypckzd a
+		<include refid="medstoYpckzdJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MedstoYpckzd">
+		SELECT 
+			<include refid="medstoYpckzdColumns"/>
+		FROM medsto_ypckzd a
+		<include refid="medstoYpckzdJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MedstoYpckzd">
+		SELECT 
+			<include refid="medstoYpckzdColumns"/>
+		FROM medsto_ypckzd a
+		<include refid="medstoYpckzdJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO medsto_ypckzd(
+			xh,
+			rkdm,
+			ny,
+			rkdh,
+			ksdm,
+			fph,
+			kprq,
+			dprq,
+			rkrq,
+			rkczyh,
+			jzrq,
+			jzczyh,
+			lsje,
+			pfje,
+			jjje,
+			yhje,
+			ghdwdm,
+			ghdwmc,
+			jzbz,
+			gzbz,
+			dpbz,
+			cxbz,
+			jlzt,
+			xgxh,
+			memo,
+			ypzlsm,
+			cgxh,
+			ypbz,
+			fkxh,
+			dybz,
+			psdh,
+			scrq
+		) VALUES (
+			#{xh},
+			#{rkdm},
+			#{ny},
+			#{rkdh},
+			#{ksdm},
+			#{fph},
+			#{kprq},
+			#{dprq},
+			#{rkrq},
+			#{rkczyh},
+			#{jzrq},
+			#{jzczyh},
+			#{lsje},
+			#{pfje},
+			#{jjje},
+			#{yhje},
+			#{ghdwdm},
+			#{ghdwmc},
+			#{jzbz},
+			#{gzbz},
+			#{dpbz},
+			#{cxbz},
+			#{jlzt},
+			#{xgxh},
+			#{memo},
+			#{ypzlsm},
+			#{cgxh},
+			#{ypbz},
+			#{fkxh},
+			#{dybz},
+			#{psdh},
+			#{scrq}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE medsto_ypckzd SET 	
+			xh = #{xh},
+			rkdm = #{rkdm},
+			ny = #{ny},
+			rkdh = #{rkdh},
+			ksdm = #{ksdm},
+			fph = #{fph},
+			kprq = #{kprq},
+			dprq = #{dprq},
+			rkrq = #{rkrq},
+			rkczyh = #{rkczyh},
+			jzrq = #{jzrq},
+			jzczyh = #{jzczyh},
+			lsje = #{lsje},
+			pfje = #{pfje},
+			jjje = #{jjje},
+			yhje = #{yhje},
+			ghdwdm = #{ghdwdm},
+			ghdwmc = #{ghdwmc},
+			jzbz = #{jzbz},
+			gzbz = #{gzbz},
+			dpbz = #{dpbz},
+			cxbz = #{cxbz},
+			jlzt = #{jlzt},
+			xgxh = #{xgxh},
+			memo = #{memo},
+			ypzlsm = #{ypzlsm},
+			cgxh = #{cgxh},
+			ypbz = #{ypbz},
+			fkxh = #{fkxh},
+			dybz = #{dybz},
+			psdh = #{psdh},
+			scrq = #{scrq}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM medsto_ypckzd
+		WHERE id = #{id}
+	</update>
+
+	<!-- 药品出库明细 -->
+	<select id="findDrugOutDetaile" resultType="MedstoYpckzd">
+		SELECT
+		<include refid="medstoYpckzdColumns"/>,
+		<include refid="medstoYpckmxColumns"/>
+		FROM medsto_ypckzd a
+		<include refid="medstoYpckzdJoins"/>
+		<include refid="medstoYpckmxJoins"/>
+		<where>
+			1 = 1
+			<if test="rkdh != null and rkdh != ''">
+				AND a.rkdh = #{rkdh}
+			</if>
+			<if test="ksdm != null and ksdm != ''">
+				AND a.ksdm = #{ksdm}
+			</if>
+			<if test="ghdwdm != null and ghdwdm != ''">
+				AND a.ghdwdm  LIKE concat('%',#{ghdwdm},'%')
+			</if>
+			<if test="psdh != null and psdh != ''">
+				AND a.psdh = #{psdh}
+			</if>
+			<if test="drugName != null and drugName != ''">
+				AND b.drug_name LIKE concat('%',#{drugName},'%')
+			</if>
+			<if test="drugSpec != null and drugSpec != ''">
+				AND b.drug_spec LIKE concat('%',#{drugSpec},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+</mapper>

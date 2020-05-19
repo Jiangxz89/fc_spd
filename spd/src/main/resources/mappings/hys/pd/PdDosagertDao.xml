@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdDosagertDao">
+    
+	<sql id="pdDosagertColumns">
+		a.id AS "id",
+		a.dosagert_room_id AS "dosagertRoomId",
+		a.dosagert_no AS "dosagertNo",
+		a.dosagert_inroom_id AS "dosagertInroomId",
+		a.dosagert_date AS "dosagertDate",
+		a.in_hospital_no AS "inHospitalNo",
+		a.patient_name AS "patientName",
+		a.is_refund AS "isRefund",
+		a.dosagert_count AS "dosagertCount",
+		a.dosagert_money AS "dosagertMoney",
+		a.operater_name AS "operaterName",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.extend1 AS "extend1",
+		a.extend2 AS "extend2",
+		a.extend3 AS "extend3",
+		a.dosage_number AS "dosageNumber"
+
+
+	</sql>
+	
+	<!-- 用户退回详情 -->
+	<sql id="pdDosagertDetailColumns">
+		b.prod_name AS "prodName",
+		b.prod_no AS "prodNo",
+		b.prod_barcode AS "prodBarcode",
+		b.prod_spec AS "prodSpec",
+		b.batch_no AS "batchNo",
+		b.expire_date AS "expireDate",
+		b.dosage_count AS "dosageCount",
+		b.rt_count AS rtCount
+	</sql>
+	
+		<!-- 产品详情 -->
+	<sql id="pdProductColumns">
+		p.version AS "version"
+	</sql>
+	
+	<sql id="pdDosagertJoins">
+	</sql>
+	
+	<!-- 关联详情表 -->
+	<sql id="dosagertDetailJoins">
+		LEFT JOIN pd_dosagert_detail b on a.id = b.dosagert_id
+	</sql>
+	
+	<!-- 关联产品表 -->
+	<sql id="pdProductJoins">
+		LEFT JOIN pd_product p on b.prod_id = p.id
+	</sql>
+    
+	<select id="get" resultType="PdDosagert">
+		SELECT 
+			<include refid="pdDosagertColumns"/>
+		FROM pd_dosagert a
+		<include refid="pdDosagertJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdDosagert">
+		SELECT 
+			<include refid="pdDosagertColumns"/>
+		FROM pd_dosagert a
+		<include refid="pdDosagertJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="dosagertNo != null and dosagertNo != ''">
+				AND a.dosagert_no  LIKE concat('%',#{dosagertNo},'%')
+			</if>
+			<if test="dosagertInroomId != null and dosagertInroomId != ''">
+				AND a.dosagert_inroom_id = #{dosagertInroomId}
+			</if>
+			<if test="dosagertDate != null and dosagertDate != ''">
+				AND a.dosagert_date = #{dosagertDate}
+			</if>
+			<if test="dosageNumber != null and dosageNumber != ''">
+				AND a.dosage_number = #{dosageNumber}
+			</if>
+			<!-- 数据范围过滤 -->
+			${sqlMap.dsf}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdDosagert">
+		SELECT 
+			<include refid="pdDosagertColumns"/>
+		FROM pd_dosagert a
+		<include refid="pdDosagertJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_dosagert(
+			id,
+			dosagert_room_id,
+			dosagert_no,
+			dosagert_inroom_id,
+			dosagert_date,
+			in_hospital_no,
+			patient_name,
+			is_refund,
+			dosagert_count,
+			dosagert_money,
+			operater_name,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3,
+			dosage_number
+		) VALUES (
+			#{id},
+			#{dosagertRoomId},
+			#{dosagertNo},
+			#{dosagertInroomId},
+			#{dosagertDate},
+			#{inHospitalNo},
+			#{patientName},
+			#{isRefund},
+			#{dosagertCount},
+			#{dosagertMoney},
+			#{operaterName},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{extend1},
+			#{extend2},
+			#{extend3},
+			#{dosageNumber}
+		)
+	</insert>
+	
+	<insert id="insertOwnId">
+		INSERT INTO pd_dosagert(
+			id,
+			dosagert_room_id,
+			dosagert_no,
+			dosagert_inroom_id,
+			dosagert_date,
+			in_hospital_no,
+			patient_name,
+			is_refund,
+			dosagert_count,
+			dosagert_money,
+			operater_name,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3,
+			dosage_number
+		) VALUES (
+			#{id},
+			#{dosagertRoomId},
+			#{dosagertNo},
+			#{dosagertInroomId},
+			#{dosagertDate},
+			#{inHospitalNo},
+			#{patientName},
+			#{isRefund},
+			#{dosagertCount},
+			#{dosagertMoney},
+			#{operaterName},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{extend1},
+			#{extend2},
+			#{extend3},
+			#{dosageNumber}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_dosagert SET 	
+			dosagert_room_id = #{dosagertRoomId},
+			dosagert_no = #{dosagertNo},
+			dosagert_inroom_id = #{dosagertInroomId},
+			dosagert_date = #{dosagertDate},
+			in_hospital_no = #{inHospitalNo},
+			patient_name = #{patientName},
+			is_refund = #{isRefund},
+			dosagert_count = #{dosagertCount},
+			dosagert_money = #{dosagertMoney},
+			operater_name = #{operaterName},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			extend1 = #{extend1},
+			extend2 = #{extend2},
+			extend3 = #{extend3},
+			dosage_number = #{dosageNumber}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_dosagert SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	<update id="updateDosagertState">
+		UPDATE pd_dosagert SET 
+			dosagert_state = #{dosagertState},
+			update_date = now()
+		WHERE dosagert_no = #{dosagertNo}
+	</update>
+	
+	<!-- 用户退回明细查询 -->
+	<select id="detailList" resultType="PdDosagert">
+		SELECT 
+			<include refid="pdDosagertColumns"/>,
+			<include refid="pdDosagertDetailColumns"/>,
+			<include refid="pdProductColumns"/>
+		FROM pd_dosagert a
+		<include refid="dosagertDetailJoins"/>
+		<include refid="pdProductJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="dosagertNo != null and dosagertNo != ''">
+				AND a.dosagert_no = #{dosagertNo}
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND a.dosagert_date BETWEEN #{startDate} AND #{endDate}
+			</if>
+			<if test="version != null and version != ''">
+				AND p.version = #{version}
+			</if>
+			<if test="prodNo != null and prodNo != ''">
+				AND b.prod_no LIKE concat('%',#{prodNo},'%')
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND b.batch_no = #{batchNo}
+			</if>	
+			<if test="prodName != null and prodName != ''">
+				AND b.prod_name LIKE concat('%',#{prodName},'%')
+			</if>	
+			<if test="dosagertRoomId != null and dosagertRoomId != ''">
+				AND a.dosagert_room_id = #{dosagertRoomId}
+			</if>	
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+</mapper>

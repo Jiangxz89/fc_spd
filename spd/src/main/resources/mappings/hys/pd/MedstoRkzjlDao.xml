@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.MedstoRkzjlDao">
+    
+	<sql id="medstoRkzjlColumns">
+		a.xh AS "xh",
+		a.jgbm AS "jgbm",
+		a.store_id AS "storeId",
+		a.store_name AS "storeName",
+		a.entry_no AS "entryNo",
+		a.delivery_no AS "deliveryNo",
+		a.oper_name AS "operName",
+		a.check_name AS "checkName",
+		a.check_flag AS "checkFlag",
+		a.fph AS "fph",
+		a.rkrq AS "rkrq",
+		a.jjje AS "jjje",
+		a.lsje AS "lsje",
+		a.producer_name AS "producerName",
+		a.scrq AS "scrq"
+	</sql>
+
+	<!-- 入库明细表字段 -->
+	<sql id="medstoYprkmxNewColumns">
+		b.xh AS "medstoYprkmxNew.xh",
+		b.zd_xh AS "medstoYprkmxNew.zdXh",
+		b.fph AS "medstoYprkmxNew.fph",
+		b.kprq AS "medstoYprkmxNew.kprq",
+		b.dprq AS "medstoYprkmxNew.dprq",
+		b.czdm AS "medstoYprkmxNew.czdm",
+		b.cd_idm AS "medstoYprkmxNew.cdIdm",
+		b.gg_idm AS "medstoYprkmxNew.ggIdm",
+		b.drug_name AS "medstoYprkmxNew.drugName",
+		b.drug_spec AS "medstoYprkmxNew.drugSpec",
+		b.ypdm AS "medstoYprkmxNew.ypdm",
+		b.pcxh AS "medstoYprkmxNew.pcxh",
+		b.expiry AS "medstoYprkmxNew.expiry",
+		b.ph AS "medstoYprkmxNew.ph",
+		b.ykxs AS "medstoYprkmxNew.ykxs",
+		b.ypdw AS "medstoYprkmxNew.ypdw",
+		b.dwxs AS "medstoYprkmxNew.dwxs",
+		b.rksl AS "medstoYprkmxNew.rksl",
+		b.czsl AS "medstoYprkmxNew.czsl",
+		b.ypkl AS "medstoYprkmxNew.ypkl",
+		b.ypjj AS "medstoYprkmxNew.ypjj",
+		b.ypfj AS "medstoYprkmxNew.ypfj",
+		b.ylsj AS "medstoYprkmxNew.ylsj",
+		b.jjje AS "medstoYprkmxNew.jjje",
+		b.jxce AS "medstoYprkmxNew.jxce",
+		b.xgxh AS "medstoYprkmxNew.xgxh",
+		b.dpbz AS "medstoYprkmxNew.dpbz",
+		b.mrzbj AS "medstoYprkmxNew.mrzbj",
+		b.zbqh AS "medstoYprkmxNew.zbqh",
+		b.zbdw AS "medstoYprkmxNew.zbdw",
+		b.ypmrkl AS "medstoYprkmxNew.ypmrkl",
+		b.scrq AS "medstoYprkmxNew.scrq"
+	</sql>
+	
+	<sql id="medstoRkzjlJoins">
+	</sql>
+
+	<!-- 入库明细表 -->
+	<sql id="medstoYprkmxNewJoins">
+		LEFT JOIN medsto_yprkmx_new b ON a.xh = b.zd_xh
+	</sql>
+    
+	<select id="get" resultType="MedstoRkzjl">
+		SELECT 
+			<include refid="medstoRkzjlColumns"/>
+		FROM medsto_rkzjl a
+		<include refid="medstoRkzjlJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MedstoRkzjl">
+		SELECT 
+			<include refid="medstoRkzjlColumns"/>
+		FROM medsto_rkzjl a
+		<include refid="medstoRkzjlJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MedstoRkzjl">
+		SELECT 
+			<include refid="medstoRkzjlColumns"/>
+		FROM medsto_rkzjl a
+		<include refid="medstoRkzjlJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO medsto_rkzjl(
+			xh,
+			jgbm,
+			store_id,
+			store_name,
+			entry_no,
+			delivery_no,
+			oper_name,
+			check_name,
+			check_flag,
+			fph,
+			rkrq,
+			jjje,
+			lsje,
+			producer_name,
+			scrq
+		) VALUES (
+			#{xh},
+			#{jgbm},
+			#{storeId},
+			#{storeName},
+			#{entryNo},
+			#{deliveryNo},
+			#{operName},
+			#{checkName},
+			#{checkFlag},
+			#{fph},
+			#{rkrq},
+			#{jjje},
+			#{lsje},
+			#{producerName},
+			#{scrq}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE medsto_rkzjl SET 	
+			xh = #{xh},
+			jgbm = #{jgbm},
+			store_id = #{storeId},
+			store_name = #{storeName},
+			entry_no = #{entryNo},
+			delivery_no = #{deliveryNo},
+			oper_name = #{operName},
+			check_name = #{checkName},
+			check_flag = #{checkFlag},
+			fph = #{fph},
+			rkrq = #{rkrq},
+			jjje = #{jjje},
+			lsje = #{lsje},
+			producer_name = #{producerName},
+			scrq = #{scrq}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM medsto_rkzjl
+		WHERE id = #{id}
+	</update>
+
+	<!-- 药品入库明细查询 -->
+	<select id="findDrugInDetaile" resultType="MedstoRkzjl">
+		SELECT
+		<include refid="medstoRkzjlColumns"/>,
+		<include refid="medstoYprkmxNewColumns"/>
+		FROM medsto_rkzjl a
+		<include refid="medstoRkzjlJoins"/>
+		<include refid="medstoYprkmxNewJoins"/>
+		<where>
+			1 = 1
+			<if test="jgbm != null and jgbm != ''">
+				AND a.jgbm LIKE concat('%',#{jgbm},'%')
+			</if>
+			<if test="storeName != null and storeName != ''">
+				AND a.store_name LIKE concat('%',#{storeName},'%')
+			</if>
+			<if test="entryNo != null and entryNo != ''">
+				AND a.entry_no =  #{entryNo}
+			</if>
+			<if test="deliveryNo != null and deliveryNo != ''">
+				AND a.delivery_no =  #{deliveryNo}
+			</if>
+			<if test="producerName != null and producerName != ''">
+				AND a.producer_name LIKE concat('%',#{producerName},'%')
+			</if>
+			<if test="drugName != null and drugName != ''">
+				AND b.drug_name LIKE concat('%',#{drugName},'%')
+			</if>
+			<if test="drugSpec != null and drugSpec != ''">
+				AND b.drug_spec LIKE concat('%',#{drugSpec},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	
+</mapper>

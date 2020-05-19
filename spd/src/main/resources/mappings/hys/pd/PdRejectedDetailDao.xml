@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdRejectedDetailDao">
+    
+	<sql id="pdRejectedDetailColumns">
+		a.id AS "id",
+		a.rejected_id AS "rejectedId",
+		a.product_id AS "productId",
+		a.product_name AS "productName",
+		a.product_no AS "productNo",
+		a.product_bar_code AS "productBarCode",
+		a.batch_no AS "batchNo",
+		a.valid_date AS "validDate",
+		a.rejected_num AS "rejectedNum",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="pdRejectedDetailJoins">
+	</sql>
+    
+	<select id="get" resultType="PdRejectedDetail">
+		SELECT 
+			<include refid="pdRejectedDetailColumns"/>
+		FROM pd_rejected_detail a
+		<include refid="pdRejectedDetailJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdRejectedDetail">
+		SELECT 
+			<include refid="pdRejectedDetailColumns"/>
+		FROM pd_rejected_detail a
+		<include refid="pdRejectedDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="rejectedId != null and rejectedId != ''">
+				AND a.rejected_id = #{rejectedId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdRejectedDetail">
+		SELECT 
+			<include refid="pdRejectedDetailColumns"/>
+		FROM pd_rejected_detail a
+		<include refid="pdRejectedDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_rejected_detail(
+			id,
+			rejected_id,
+			product_id,
+			product_name,
+			product_no,
+			product_bar_code,
+			batch_no,
+			valid_date,
+			rejected_num,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{rejectedId},
+			#{productId},
+			#{productName},
+			#{productNo},
+			#{productBarCode},
+			#{batchNo},
+			#{validDate},
+			#{rejectedNum},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_rejected_detail SET 	
+			rejected_id = #{rejectedId},
+			product_id = #{productId},
+			product_name = #{productName},
+			product_no = #{productNo},
+			product_bar_code = #{productBarCode},
+			batch_no = #{batchNo},
+			valid_date = #{validDate},
+			rejected_num = #{rejectedNum},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_rejected_detail SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

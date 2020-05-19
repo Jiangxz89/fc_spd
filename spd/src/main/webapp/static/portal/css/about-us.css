@@ -1,0 +1,70 @@
+html {
+  font-size: 20px;
+  font-family: Microsoft YaHei;
+}
+html,
+body,
+#wrap {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+}
+#wrap {
+  width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+/*----------头部样式--------------*/
+.header {
+  width: 100%;
+  height: 2.2rem;
+  background: #00cfa5;
+  position: relative;
+}
+.header .title {
+  color: #fff;
+  line-height: 2.2rem;
+  text-align: center;
+  font-size: 0.75rem;
+}
+.header #back {
+  position: absolute;
+  left: 0.5rem;
+  top: 0.7rem;
+  -webkit-transform: scale(2);
+  color: #fff;
+}
+/*----------主体样式--------------*/
+.picBox {
+  text-align: center;
+  position: absolute;
+  width: 100%;
+  top: 15%;
+}
+.picBox img {
+    width: 33%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+.picBox span {
+  	font-weight: 600;
+    font-size: 0.6rem;
+    margin-top: 0.6rem;
+    display: block;
+    text-align: center;
+}
+.bottom_info {
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  bottom: 15%;
+  font-weight: 600;
+  font-size: 0.6rem;
+}

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.DictFeeDao">
+    
+	<sql id="dictFeeColumns">
+		a.feeid AS "feeid",
+		a.xname AS "xname",
+		a.bname AS "bname",
+		a.feenumber AS "feenumber",
+		a.pycode AS "pycode",
+		a.wbcode AS "wbcode",
+		a.cuscode AS "cuscode",
+		a.unit AS "unit",
+		a.price AS "price",
+		a.contain AS "contain",
+		a.cwcontent AS "cwcontent",
+		a.explain AS "explain",
+		a.mretype AS "mretype",
+		a.isstop AS "isstop",
+		a.modstaff AS "modstaff",
+		a.modstaffname AS "modstaffname",
+		a.moddate AS "moddate",
+		a.sicode AS "sicode",
+		a.nhcode AS "nhcode",
+		a.zxauditstatus AS "zxauditstatus",
+		a.zxauditor AS "zxauditor",
+		a.zxauditorname AS "zxauditorname",
+		a.zxaudittime AS "zxaudittime",
+		a.one_level AS "oneLevel",
+		a.two_level AS "twoLevel",
+		a.three_level AS "threeLevel"
+	</sql>
+	
+	<sql id="dictFeeJoins">
+	</sql>
+    
+	<select id="get" resultType="DictFee">
+		SELECT 
+			<include refid="dictFeeColumns"/>
+		FROM dict_fee a
+		<include refid="dictFeeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DictFee">
+		SELECT 
+			<include refid="dictFeeColumns"/>
+		FROM dict_fee a
+		<include refid="dictFeeJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DictFee">
+		SELECT 
+			<include refid="dictFeeColumns"/>
+		FROM dict_fee a
+		<include refid="dictFeeJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO dict_fee(
+			feeid,
+			xname,
+			bname,
+			feenumber,
+			pycode,
+			wbcode,
+			cuscode,
+			unit,
+			price,
+			contain,
+			cwcontent,
+			explain,
+			mretype,
+			isstop,
+			modstaff,
+			modstaffname,
+			moddate,
+			sicode,
+			nhcode,
+			zxauditstatus,
+			zxauditor,
+			zxauditorname,
+			zxaudittime,
+			one_level,
+			two_level,
+			three_level
+		) VALUES (
+			#{feeid},
+			#{xname},
+			#{bname},
+			#{feenumber},
+			#{pycode},
+			#{wbcode},
+			#{cuscode},
+			#{unit},
+			#{price},
+			#{contain},
+			#{cwcontent},
+			#{explain},
+			#{mretype},
+			#{isstop},
+			#{modstaff},
+			#{modstaffname},
+			#{moddate},
+			#{sicode},
+			#{nhcode},
+			#{zxauditstatus},
+			#{zxauditor},
+			#{zxauditorname},
+			#{zxaudittime},
+			#{oneLevel},
+			#{twoLevel},
+			#{threeLevel}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE dict_fee SET 	
+			feeid = #{feeid},
+			xname = #{xname},
+			bname = #{bname},
+			feenumber = #{feenumber},
+			pycode = #{pycode},
+			wbcode = #{wbcode},
+			cuscode = #{cuscode},
+			unit = #{unit},
+			price = #{price},
+			contain = #{contain},
+			cwcontent = #{cwcontent},
+			explain = #{explain},
+			mretype = #{mretype},
+			isstop = #{isstop},
+			modstaff = #{modstaff},
+			modstaffname = #{modstaffname},
+			moddate = #{moddate},
+			sicode = #{sicode},
+			nhcode = #{nhcode},
+			zxauditstatus = #{zxauditstatus},
+			zxauditor = #{zxauditor},
+			zxauditorname = #{zxauditorname},
+			zxaudittime = #{zxaudittime},
+			one_level = #{oneLevel},
+			two_level = #{twoLevel},
+			three_level = #{threeLevel}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM dict_fee
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

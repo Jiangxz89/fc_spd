@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdStoreroomProductDao">
+    
+	<sql id="pdStoreroomProductColumns">
+		a.id AS "id",
+		a.product_id AS "productId",
+		a.storeroom_id AS "storeroomId",
+		a.high_stock AS "highStock",
+		a.low_stock AS "lowStock",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.extend1 AS "extend1",
+		a.extend2 AS "extend2",
+		a.extend3 AS "extend3",
+		b.name AS "productName",
+		b.number AS "number",
+		b.spec AS "spec",
+		b.version AS "version",
+		b.unit AS "unit",
+		b.vender_name AS "venderName",
+		b.group_name AS "groupName",
+		b.vender_name AS "venderName",
+		b.registration AS "registration"
+	</sql>
+	
+	<sql id="pdStoreroomProductJoins">
+		LEFT JOIN pd_product b on a.product_id = b.id
+	</sql>
+    
+	<select id="get" resultType="PdStoreroomProduct">
+		SELECT 
+			<include refid="pdStoreroomProductColumns"/>
+		FROM pd_storeroom_product a
+		<include refid="pdStoreroomProductJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdStoreroomProduct">
+		SELECT 
+			<include refid="pdStoreroomProductColumns"/>
+		FROM pd_storeroom_product a
+		<include refid="pdStoreroomProductJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.storeroom_id = #{storeroomId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdStoreroomProduct">
+		SELECT 
+			<include refid="pdStoreroomProductColumns"/>
+		FROM pd_storeroom_product a
+		<include refid="pdStoreroomProductJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_storeroom_product(
+			id,
+			product_id,
+			storeroom_id,
+			high_stock,
+			low_stock,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3
+		) VALUES (
+			#{id},
+			#{productId},
+			#{storeroomId},
+			#{highStock},
+			#{lowStock},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{extend1},
+			#{extend2},
+			#{extend3}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_storeroom_product SET 	
+			product_id = #{productId},
+			storeroom_id = #{storeroomId},
+			high_stock = #{highStock},
+			low_stock = #{lowStock},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			extend1 = #{extend1},
+			extend2 = #{extend2},
+			extend3 = #{extend3}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_storeroom_product SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="deleteByStoreroomId">
+		DELETE FROM pd_storeroom_product WHERE storeroom_id = #{storeroom_id}
+	</delete>
+	
+	<insert id="saveGroupByStoreroomId">
+		INSERT INTO pd_storeroom_product(
+			id,
+			product_id,
+			storeroom_id,
+			high_stock,
+			low_stock,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3
+		) VALUES<foreach collection="list" item="item" index="index" open="" close="" separator=",">
+		 (
+			#{item.id},
+			#{item.productId},
+			#{item.storeroomId},
+			#{item.highStock},
+			#{item.lowStock},
+			#{item.createBy.id},
+			#{item.createDate},
+			#{item.updateBy.id},
+			#{item.updateDate},
+			#{item.remarks},
+			#{item.delFlag},
+			#{item.extend1},
+			#{item.extend2},
+			#{item.extend3}
+		)</foreach>
+	</insert>
+</mapper>

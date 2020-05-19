@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context-3.2.xsd"
+	default-lazy-init="true">
+
+	<description>Jedis Configuration</description>
+
+    <!-- 加载配置属性文件 -->
+	<context:property-placeholder ignore-unresolvable="true" location="classpath:jeesite.properties" />
+	<bean id="jedisConnFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+    	<property name="hostName" value="${redis.host}" />  
+	    <property name="port" value="${redis.port}" />
+		<property name="password" value="${redis.password}" /><!-- 这里的密码好像没啥用 -->
+	    <property name="poolConfig" ref="jedisPoolConfig" />
+	    <property name="timeout" value="${redis.timeout}" />
+	    <property name="usePool" value="true"/>
+    </bean>
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxIdle" value="300" /> <!-- 最大能够保持idel状态的对象数  -->
+		<property name="maxTotal" value="60000" /> <!-- 最大分配的对象数 -->
+		<property name="testOnBorrow" value="true" /> <!-- 当调用borrow Object方法时，是否进行有效性检查 -->
+	</bean>
+	
+	<bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+		<constructor-arg index="0" ref="jedisPoolConfig" />
+		<constructor-arg index="1" value="${redis.host}" />
+		<constructor-arg index="2" value="${redis.port}" type="int" />
+		<constructor-arg index="3" value="${redis.timeout}" type="int" />
+		<constructor-arg index="4" value="${redis.password}" />  <!--需要设置密码 -->
+	</bean>
+	<bean id="stringSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer" />  
+	<!-- redis template definition   p:use-pool="true"-->
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate"><!--  p:connection-factory-ref="jedisConnFactory"/> -->
+		<!-- 定义序列化方法，默认的序列化可能导致key出现类似\xac\xed\x00\x05t\x00\tb的东西 -->
+		<property name='connectionFactory' ref="jedisConnFactory"/>
+		<property name="keySerializer" ref="stringSerializer"/>  
+		<property name="valueSerializer" ref="stringSerializer"/>  
+		<property name="hashKeySerializer" ref="stringSerializer"/>  
+		<property name="hashValueSerializer" ref="stringSerializer"/>  
+	</bean>
+</beans>

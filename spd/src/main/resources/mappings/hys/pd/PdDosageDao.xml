@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdDosageDao">
+    
+	<sql id="pdDosageColumns">
+		a.id AS "id",
+		a.dosage_no AS "dosageNo",
+		a.warehouse_id AS "warehouseId",
+		b.storeroom_name AS "warehouseName",
+		a.dosage_count AS "dosageCount",
+		a.dosage_date AS "dosageDate",
+		a.dosage_by AS "dosageBy",
+		a.salesman AS "salesman",
+		a.amount_count AS "amountCount",
+		a.amount_money AS "amountMoney",
+		a.patient_info AS "patientInfo",
+		a.patient_detail_info AS "patientDetailInfo",
+		a.exe_dept_id AS "exeDeptId",
+		a.exe_dept_name AS "exeDeptName",
+		a.opr_dept_id AS "oprDeptId",
+		a.opr_dept_name AS "oprDeptName",
+		a.surgeon AS "surgeon",
+		a.surgeon_id AS "surgeonId",
+		a.sqrt_doctor AS "sqrtDoctor",
+		a.sqrt_doctor_id AS "sqrtDoctorId",
+		a.in_hospital_no AS "inHospitalNo",
+		a.display_flag AS "displayFlag",
+		a.remarks AS "remarks",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag",
+		u.name AS "dosageOperator",
+		a.subordinate_wardId AS "subordinateWardId",
+		a.subordinate_ward AS "subordinateWard",
+		a.outpatient_number AS "outpatientNumber",
+		a.operative_number AS "operativeNumber"
+	</sql>
+	
+	<!-- 产品信息 -->
+	<sql id="pdProductColumns">
+		pp.number AS "number",
+		pp.name AS "pdName",		
+		pp.spec AS "spec",
+		pp.version AS "version",
+		pp.unit AS "unit",		
+		pp.vender_id AS "venderId",
+		/*pp.vender_name AS "venderName",	*/
+		pp.pru_price AS "pruPrice",
+		pp.selling_price AS "sellingPrice",
+		pp.registration AS "registration",
+		pp.power AS "power"
+	</sql>
+
+	<!-- 用量详情 -->
+	<sql id="pdDosageDetailColumns">
+		dd.prod_barcode AS "productBarCode",
+		dd.batch_no AS "batchNo",
+		dd.expire_date AS "limitDate",
+		dd.dosage_count AS "productNum",
+		dd.is_charge AS "chargeFlag",
+		dd.charge_code AS "chargeCode"
+	</sql>
+	
+	<!-- 供应商信息 -->
+	<sql id="pdSupplierColumns">
+			pst.supplier_id AS "supplierId",
+			sp.supplier_name AS "supplierName"
+	</sql>
+
+    <!-- 生产厂家字段 -->
+    <sql id="pdVenderColumns">
+    	vd.name as venderName
+    </sql>
+
+	<!-- 产品 -->
+	<sql id="pdProductJoins">
+		LEFT JOIN pd_product pp on dd.prod_id = pp.id
+	</sql>
+
+    <!-- 生产厂家信息 -->
+    <sql id="pdVenderJoins">
+    	LEFT JOIN pd_vender vd on pp.vender_id = vd.id
+    </sql>
+
+	<!-- 用量明细 -->
+	<sql id="pdDosageDetailJoins">
+		LEFT JOIN pd_dosage_detail dd on a.dosage_no = dd.dosage_no
+	</sql>
+	
+	<!-- 库房总表 -->
+	<sql id="pdproductStockTotalJoins">
+		LEFT JOIN (select * from pd_product_stock_total t where t.supplier_id is not null GROUP BY product_id ) pst 
+			on dd.prod_id = pst.product_id
+	</sql>
+	
+	<!-- 供应商 -->
+	<sql id="pdSupplierJoins">
+		LEFT JOIN pd_supplier sp ON pst.supplier_id = sp.id
+	</sql>
+    
+    <sql id="pdDosageJoins">
+		LEFT JOIN pd_storeroom b ON a.warehouse_id = b.id
+		LEFT JOIN sys_user u ON a.dosage_by = u.id
+	</sql>
+    
+	<select id="get" resultType="PdDosage">
+		SELECT 
+			<include refid="pdDosageColumns"/>
+		FROM pd_dosage a
+		<include refid="pdDosageJoins"/>
+		WHERE a.id = #{id} or a.dosage_no = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdDosage">
+		SELECT 
+			<include refid="pdDosageColumns"/>
+		FROM pd_dosage a
+		<include refid="pdDosageJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="dosageNo != null and dosageNo != ''">
+				AND a.dosage_no LIKE concat('%',#{dosageNo},'%')
+			</if>
+			<if test="warehouseId != null and warehouseId != ''">
+				AND a.warehouse_id = #{warehouseId}
+			</if>
+			<if test="warehouseName != null and warehouseName != ''">
+				AND a.warehouse_name = #{warehouseName}
+			</if>
+			<if test="inHospitalNo != null and inHospitalNo != ''">
+				AND a.in_hospital_no = #{inHospitalNo}
+			</if>
+			<if test="patientInfo != null and patientInfo != ''">
+				AND a.patient_info LIKE concat('%',#{patientInfo},'%') 
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+		 		AND a.dosage_date between #{startDate} and #{endDate}
+		 	</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdDosage">
+		SELECT 
+			<include refid="pdDosageColumns"/>
+		FROM pd_dosage a
+		<include refid="pdDosageJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_dosage(
+			id,
+			dosage_no,
+			warehouse_id,
+			warehouse_name,
+			dosage_count,
+			dosage_date,
+			dosage_by,
+			salesman,
+			amount_count,
+			amount_money,
+			patient_info,
+			patient_detail_info,
+			exe_dept_id,
+			exe_dept_name,
+			opr_dept_id,
+			opr_dept_name,
+			surgeon,
+			surgeon_id,
+			sqrt_doctor,
+			sqrt_doctor_id,
+			in_hospital_no,
+			display_flag,
+			remarks,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			subordinate_wardId,
+			subordinate_ward,
+			outpatient_number,
+			operative_number
+		) VALUES (
+			#{id},
+			#{dosageNo},
+			#{warehouseId},
+			#{warehouseName},
+			#{dosageCount},
+			#{dosageDate},
+			#{dosageBy},
+			#{salesman},
+			#{amountCount},
+			#{amountMoney},
+			#{patientInfo},
+			#{patientDetailInfo},
+			#{exeDeptId},
+			#{exeDeptName},
+			#{oprDeptId},
+			#{oprDeptName},
+			#{surgeon},
+			#{surgeonId},
+			#{sqrtDoctor},
+			#{sqrtDoctorId},
+			#{inHospitalNo},
+			#{displayFlag},
+			#{remarks},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag},
+			#{subordinateWardId},
+			#{subordinateWard},
+			#{outpatientNumber},
+			#{operativeNumber}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_dosage SET 	
+			dosage_no = #{dosageNo},
+			warehouse_id = #{warehouseId},
+			warehouse_name = #{warehouseName},
+			dosage_count = #{dosageCount},
+			dosage_date = #{dosageDate},
+			dosage_by = #{dosageBy},
+			salesman = #{salesman},
+			amount_count = #{amountCount},
+			amount_money = #{amountMoney},
+			patient_info = #{patientInfo},
+			patient_detail_info = #{patientDetailInfo},
+			exe_dept_id = #{exeDeptId},
+			exe_dept_name = #{exeDeptName},
+			opr_dept_id = #{oprDeptId},
+			opr_dept_name = #{oprDeptName},
+			surgeon = #{surgeon},
+			surgeon_id = #{surgeonId},
+			sqrt_doctor = #{sqrtDoctor},
+			sqrt_doctor_id = #{sqrtDoctorId},
+			in_hospital_no = #{inHospitalNo},
+			display_flag = #{displayFlag},
+			remarks = #{remarks},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			subordinate_wardId = #{subordinateWardId},
+			subordinate_ward = #{subordinateWard},
+			outpatient_number = #{outpatientNumber},
+			operative_number = #{operativeNumber}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_dosage SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 统计查询-用量使用 -->
+	<select id="findDosageSubsidiary" resultType="PdDosage">
+		SELECT 
+			<include refid="pdDosageColumns"/>,
+			<include refid="pdProductColumns"/>,
+			<include refid="pdDosageDetailColumns"/>,
+			<include refid="pdSupplierColumns"/>,
+            <include refid="pdVenderColumns"/>
+		FROM pd_dosage a
+		<include refid="pdDosageJoins"/>
+		<include refid="pdDosageDetailJoins"/>
+		<include refid="pdProductJoins"/>
+		<include refid="pdproductStockTotalJoins"/>
+		<include refid="pdSupplierJoins"/>
+        <include refid="pdVenderJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="dosageNo != null and dosageNo != ''">
+				AND a.dosage_no = #{dosageNo}
+			</if>
+			<if test="warehouseId != null and warehouseId != ''">
+				AND a.warehouse_id = #{warehouseId}
+			</if>
+			<if test="warehouseName != null and warehouseName != ''">
+				AND a.warehouse_name = #{warehouseName}
+			</if>
+			<if test="inHospitalNo != null and inHospitalNo != ''">
+				AND a.in_hospital_no = #{inHospitalNo}
+			</if>
+			<if test="patientInfo != null and patientInfo != ''">
+				AND a.patient_info LIKE concat('%',#{patientInfo},'%') 
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+		 		AND a.dosage_date between #{startDate} and #{endDate}
+		 	</if>
+		 	<if test="pdName != null and pdName != ''">
+				AND pp.name LIKE concat('%',#{pdName},'%')
+			</if>
+			<if test="version != null and version != ''">
+				AND pp.version = #{version}
+			</if>
+			<if test="spec != null and spec != ''">
+				AND pp.spec = #{spec}
+			</if>
+			<if test="number != null and number != ''">
+				AND pp.number LIKE concat('%',#{number},'%')
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND dd.batch_no = #{batchNo}
+			</if>
+			<if test="supplierId != null and supplierId != ''">
+				AND pst.supplier_id = #{supplierId}
+			</if>
+			<if test="power != null and power != ''">
+				AND pp.power = #{power}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+</mapper>

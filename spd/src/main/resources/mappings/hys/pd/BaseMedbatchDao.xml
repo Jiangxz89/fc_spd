@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.BaseMedbatchDao">
+    
+	<sql id="baseMedbatchColumns">
+		a.id AS "id",
+		a.hospitalid AS "hospitalid",
+		a.hospitalname AS "hospitalname",
+		a.deptid AS "deptid",
+		a.deptname AS "deptname",
+		a.stockid AS "stockid",
+		a.medname AS "medname",
+		a.batch AS "batch",
+		a.qty AS "qty",
+		a.unit AS "unit",
+		a.inprice AS "inprice",
+		a.clinprice AS "clinprice",
+		a.wardprice AS "wardprice",
+		a.expidate AS "expidate",
+		a.facid AS "facid",
+		a.facname AS "facname",
+		a.state AS "state",
+		a.permdoc AS "permdoc",
+		a.refercnt AS "refercnt",
+		a.createtime AS "createtime",
+		a.supplierid AS "supplierid",
+		a.suppliername AS "suppliername",
+		a.validqty AS "validqty",
+		a.batchno AS "batchno",
+		a.cabinetid AS "cabinetid"
+	</sql>
+	
+	<sql id="baseMedbatchJoins">
+	</sql>
+    
+	<select id="get" resultType="BaseMedbatch">
+		SELECT 
+			<include refid="baseMedbatchColumns"/>
+		FROM base_medbatch a
+		<include refid="baseMedbatchJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BaseMedbatch">
+		SELECT 
+			<include refid="baseMedbatchColumns"/>
+		FROM base_medbatch a
+		<include refid="baseMedbatchJoins"/>
+		<where>
+			1 = 1
+			<if test="deptname != null and deptname != ''">
+				AND a.deptname LIKE concat('%',#{deptname},'%')
+			</if>
+			<if test="medname != null and medname != ''">
+				AND a.medname LIKE concat('%',#{medname},'%')
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND a.createtime BETWEEN #{startDate} AND #{endDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BaseMedbatch">
+		SELECT 
+			<include refid="baseMedbatchColumns"/>
+		FROM base_medbatch a
+		<include refid="baseMedbatchJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO base_medbatch(
+			id,
+			hospitalid,
+			hospitalname,
+			deptid,
+			deptname,
+			stockid,
+			medname,
+			batch,
+			qty,
+			unit,
+			inprice,
+			clinprice,
+			wardprice,
+			expidate,
+			facid,
+			facname,
+			state,
+			permdoc,
+			refercnt,
+			createtime,
+			supplierid,
+			suppliername,
+			validqty,
+			batchno,
+			cabinetid
+		) VALUES (
+			#{id},
+			#{hospitalid},
+			#{hospitalname},
+			#{deptid},
+			#{deptname},
+			#{stockid},
+			#{medname},
+			#{batch},
+			#{qty},
+			#{unit},
+			#{inprice},
+			#{clinprice},
+			#{wardprice},
+			#{expidate},
+			#{facid},
+			#{facname},
+			#{state},
+			#{permdoc},
+			#{refercnt},
+			#{createtime},
+			#{supplierid},
+			#{suppliername},
+			#{validqty},
+			#{batchno},
+			#{cabinetid}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE base_medbatch SET 	
+			hospitalid = #{hospitalid},
+			hospitalname = #{hospitalname},
+			deptid = #{deptid},
+			deptname = #{deptname},
+			stockid = #{stockid},
+			medname = #{medname},
+			batch = #{batch},
+			qty = #{qty},
+			unit = #{unit},
+			inprice = #{inprice},
+			clinprice = #{clinprice},
+			wardprice = #{wardprice},
+			expidate = #{expidate},
+			facid = #{facid},
+			facname = #{facname},
+			state = #{state},
+			permdoc = #{permdoc},
+			refercnt = #{refercnt},
+			createtime = #{createtime},
+			supplierid = #{supplierid},
+			suppliername = #{suppliername},
+			validqty = #{validqty},
+			batchno = #{batchno},
+			cabinetid = #{cabinetid}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM base_medbatch
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

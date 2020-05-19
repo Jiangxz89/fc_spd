@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdRejectsRecordDao">
+    
+	<sql id="pdRejectsRecordColumns">
+		a.id AS "id",
+		a.product_id AS "productId",
+		a.batch_no AS "batchNo",
+		a.product_bar_code AS "productBarCode",
+		a.valid_date AS "validDate",
+		a.serious_grade AS "seriousGrade",
+		a.storeroom_id AS "storeroomId",
+		a.describe_info AS "describeInfo",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.extend1 AS "extend1",
+		a.extend2 AS "extend2",
+		a.extend3 AS "extend3",
+		b.name AS "pdProduct.name",
+		b.number AS "pdProduct.number",
+		b.spec AS "pdProduct.spec",
+		b.version AS "pdProduct.version",
+		b.unit AS "pdProduct.unit",
+		b.charge_code AS "pdProduct.chargeCode",
+		b.vender_name AS "pdProduct.venderName",
+		b.registration AS "pdProduct.registration",
+		c.expire_date AS "pdProduct.validDate",
+		c.in_hospital_no AS "inHospitalNo"
+	</sql>
+	
+	
+	
+	<sql id="pdRejectsRecordJoins">
+		LEFT JOIN pd_product b ON a.product_id = b.id
+		LEFT JOIN (
+					select x.in_hospital_no,x.warehouse_id,y.*
+					from pd_dosage x,pd_dosage_detail y 
+					where x.dosage_no = y.dosage_no
+				  )c ON a.product_bar_code = c.prod_barcode 
+				  		AND a.batch_no = c.batch_no 
+				  		AND a.product_id = c.prod_id 
+				  		AND a.storeroom_id = c.warehouse_id
+	</sql>
+
+	<sql id="pdNewRejectsRecordJoins">
+		LEFT JOIN pd_product b ON a.product_id = b.id
+		LEFT JOIN (
+					select x.in_hospital_no,x.warehouse_id,y.*
+					from pd_dosage x,pd_dosage_detail y
+					where x.dosage_no = y.dosage_no
+				  )c ON a.product_bar_code = c.prod_barcode
+				  		AND a.batch_no = c.batch_no
+				  		AND a.product_id = c.prod_id
+	</sql>
+    
+	<select id="get" resultType="PdRejectsRecord">
+		SELECT 
+			<include refid="pdRejectsRecordColumns"/>
+		FROM pd_rejects_record a
+		<include refid="pdRejectsRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdRejectsRecord">
+		SELECT 
+			<include refid="pdRejectsRecordColumns"/>
+		FROM pd_rejects_record a
+		<include refid="pdNewRejectsRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.storeroom_id = #{storeroomId}
+			</if>
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND a.batch_no = #{batchNo}
+			</if>
+			<if test="productBarCode != null and productBarCode != ''">
+				AND a.product_bar_code = #{productBarCode}
+			</if>
+			<if test="seriousGrade != null and seriousGrade != ''">
+				AND a.serious_grade = #{seriousGrade}
+			</if>
+			<if test="pdProduct != null and pdProduct.number != null and pdProduct.number != ''">
+				AND b.number = #{pdProduct.number}
+			</if>
+			<if test="pdProduct != null and pdProduct.name != null and pdProduct.name != ''">
+				AND b.name LIKE CONCAT('%', #{pdProduct.name}, '%')
+			</if>
+			<if test="pdProduct != null and pdProduct.version != null and pdProduct.version != ''">
+				AND b.version LIKE CONCAT('%', #{pdProduct.version}, '%')
+			</if>
+			<if test="pdProduct != null and pdProduct.spec != null and pdProduct.spec != ''">
+				AND b.spec LIKE CONCAT('%', #{pdProduct.spec}, '%')
+			</if>
+			<if test="inHospitalNo != null and inHospitalNo != ''">
+				AND c.in_hospital_no LIKE CONCAT('%', #{inHospitalNo}, '%')
+			</if>
+			<if test="startDate != null and endDate != null">
+				AND ( a.create_date BETWEEN #{startDate} AND #{endDate} )
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdRejectsRecord">
+		SELECT 
+			<include refid="pdRejectsRecordColumns"/>
+		FROM pd_rejects_record a
+		<include refid="pdRejectsRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_rejects_record(
+			id,
+			product_id,
+			batch_no,
+			product_bar_code,
+			valid_date,
+			serious_grade,
+			storeroom_id,
+			describe_info,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3
+		) VALUES (
+			#{id},
+			#{productId},
+			#{batchNo},
+			#{productBarCode},
+			#{validDate},
+			#{seriousGrade},
+			#{storeroomId},
+			#{describeInfo},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{extend1},
+			#{extend2},
+			#{extend3}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_rejects_record SET 	
+			product_id = #{productId},
+			batch_no = #{batchNo},
+			product_bar_code = #{productBarCode},
+			valid_date = #{validDate},
+			serious_grade = #{seriousGrade},
+			storeroom_id = #{storeroomId},
+			describe_info = #{describeInfo},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			extend1 = #{extend1},
+			extend2 = #{extend2},
+			extend3 = #{extend3}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_rejects_record SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

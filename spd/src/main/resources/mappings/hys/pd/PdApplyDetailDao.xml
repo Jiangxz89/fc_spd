@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdApplyDetailDao">
+    
+	<sql id="pdApplyDetailColumns">
+		a.id AS "id",
+		a.apply_no AS "applyNo",
+		a.prod_id AS "prodId",
+		a.prod_no AS "prodNo",
+		a.batch_no AS "batchNo",
+		a.package_id AS "packageId",
+		a.package_count AS "packageCount",
+		a.expire_date AS "expireDate",
+		a.apply_count AS "applyCount",
+		a.stock_num AS "stockNum",
+		a.refund_count AS "refundCount",
+		a.remarks AS "remarks",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag",
+		b.name AS "pdProduct.name",
+		b.number AS "pdProduct.number",
+		b.unit AS "pdProduct.unit",
+		b.spec AS "pdProduct.spec",
+		b.version AS "pdProduct.version",
+		c.name AS "packageName",
+		c.number AS "packageNumber",
+		x.product_count AS "productCount",
+		ifnull(s.in_price,0) as "inPrice",
+		ifnull(s.out_price,0) as "outPrice"
+	</sql>
+	
+	<sql id="pdApplyDetailJoins">
+		LEFT JOIN pd_product b ON a.prod_id = b.id
+		LEFT JOIN pd_package c ON a.package_id = c.id
+		LEFT JOIN pd_product_m_package x ON a.package_id = x.package_id AND a.prod_id = x.product_id
+		left join pd_stock_record_product s on a.apply_no = s.import_no and a.prod_id = s.product_id
+	</sql>
+	
+	<sql id="stockColumn">
+		,IFNULL(d.stock_num,'0') AS "mineStockNum",
+		IFNULL(d1.stock_num,'0') AS "yourStockNum"
+	</sql>
+	<!-- 查询该产品所在当前人仓库中的库存 -->
+	<sql id="storeroomStockSql">
+		LEFT JOIN (
+					select t.* from pd_product_stock_total t
+					<where>
+						t.del_flag = '0'
+						<choose>
+							<when test="storeroomId != null and storeroomId != ''">
+								and t.storeroom_id = #{storeroomId}
+							</when>
+							<otherwise>
+								and (t.storeroom_id is null or t.storeroom_id = '')
+							</otherwise>
+						</choose>
+					</where>
+				)d
+		ON a.prod_id = d.product_id
+		LEFT JOIN (
+					select t.* from pd_product_stock_total t
+					<where>
+						t.del_flag = '0'
+						<choose>
+							<when test="deptId != null and deptId != ''">
+								and t.storeroom_id = #{deptId}
+							</when>
+							<otherwise>
+								and (t.storeroom_id is null or t.storeroom_id = '')
+							</otherwise>
+						</choose>
+					</where>
+				)d1
+		ON a.prod_id = d1.product_id
+	</sql>
+    
+	<select id="get" resultType="PdApplyDetail">
+		SELECT 
+			<include refid="pdApplyDetailColumns"/>
+		FROM pd_apply_detail a
+		<include refid="pdApplyDetailJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdApplyDetail">
+		SELECT 
+			<include refid="pdApplyDetailColumns"/><include refid="stockColumn"/>
+		FROM pd_apply_detail a
+		<include refid="pdApplyDetailJoins"/>
+		<include refid="storeroomStockSql"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="applyNo != null and applyNo != ''">
+				AND a.apply_no = #{applyNo}
+			</if>
+			<if test="prodId != null and prodId != ''">
+				AND a.prod_id = #{prodId}
+			</if>
+			<if test="prodNo != null and prodNo != ''">
+				AND a.prod_no = #{prodNo}
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND a.batch_no = #{batchNo}
+			</if>
+			<if test="packageId != null and packageId != ''">
+				AND a.package_id = #{packageId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdApplyDetail">
+		SELECT 
+			<include refid="pdApplyDetailColumns"/>
+		FROM pd_apply_detail a
+		<include refid="pdApplyDetailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_apply_detail(
+			id,
+			apply_no,
+			prod_id,
+			prod_no,
+			batch_no,
+			package_id,
+			package_count,
+			expire_date,
+			apply_count,
+			stock_num,
+			refund_count,
+			remarks,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{applyNo},
+			#{prodId},
+			#{prodNo},
+			#{batchNo},
+			#{packageId},
+			#{packageCount},
+			#{expireDate},
+			#{applyCount},
+			#{stockNum},
+			#{refundCount},
+			#{remarks},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	<!-- 批量插入 -->
+	<insert id="batchInsert">
+		INSERT INTO pd_apply_detail(
+			id,
+			apply_no,
+			prod_id,
+			prod_no,
+			batch_no,
+			package_id,
+			package_count,
+			expire_date,
+			apply_count,
+			stock_num,
+			refund_count,
+			remarks,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES 
+		<foreach collection="list" separator="," item="item">
+		(
+			#{item.id},
+			#{item.applyNo},
+			#{item.prodId},
+			#{item.prodNo},
+			#{item.batchNo},
+			#{item.packageId},
+			#{item.packageCount},
+			#{item.expireDate},
+			#{item.applyCount},
+			#{item.stockNum},
+			#{item.refundCount},
+			#{item.remarks},
+			#{item.createBy.id},
+			#{item.createDate},
+			#{item.updateBy.id},
+			#{item.updateDate},
+			#{item.delFlag}
+		)
+		</foreach>
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_apply_detail SET 	
+			apply_no = #{applyNo},
+			prod_id = #{prodId},
+			prod_no = #{prodNo},
+			batch_no = #{batchNo},
+			package_id = #{packageId},
+			package_count = #{packageCount},
+			expire_date = #{expireDate},
+			apply_count = #{applyCount},
+			stock_num = #{stockNum},
+			refund_count = #{refundCount},
+			remarks = #{remarks},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_apply_detail SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdHisSyncDao">
+    
+	<sql id="pdHisSyncColumns">
+		a.id AS "id",
+		a.day_time AS "dayTime",
+		a.data_type AS "dataType",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="pdHisSyncJoins">
+	</sql>
+    
+	<select id="get" resultType="PdHisSync">
+		SELECT 
+			<include refid="pdHisSyncColumns"/>
+		FROM pd_his_sync a
+		<include refid="pdHisSyncJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdHisSync">
+		SELECT 
+			<include refid="pdHisSyncColumns"/>
+		FROM pd_his_sync a
+		<include refid="pdHisSyncJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="dayTime != null and dayTime != ''">
+				AND a.day_time = #{dayTime}
+			</if>
+			<if test="dataType != null and dataType != ''">
+				AND a.data_type = #{dataType}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdHisSync">
+		SELECT 
+			<include refid="pdHisSyncColumns"/>
+		FROM pd_his_sync a
+		<include refid="pdHisSyncJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_his_sync(
+			id,
+			day_time,
+			data_type,
+			create_date,
+			update_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{dayTime},
+			#{dataType},
+			#{createDate},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_his_sync SET 	
+			day_time = #{dayTime},
+			data_type = #{dataType},
+			update_date = #{updateDate},
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_his_sync SET
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

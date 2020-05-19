@@ -1,0 +1,42 @@
+*{ margin:0;padding:0;list-style-type:none;}
+.cbody988{ margin:0 auto;width:988px; position:relative;}
+.cbody937{ margin:0 auto;width:937px; position:relative; padding-left:7px;}
+input,select,textarea,img{vertical-align:middle;}
+img{ border:0;}
+.overhide{overflow:hidden;text-indent:-100em;}
+/*浣嶇疆灞炴�*/
+.marTop10{margin-top:10px;}
+.left{	float:left;}
+.right{	float:right;}
+.clear {clear: both;}
+.clearfix:after {clear: both;content: '';display: block;font-size: 0;line-height: 0;visibility: hidden;width: 0;height: 0;}
+.clearfix {display: +inline-block;}
+/*wrapper*/
+#wrapper{ width:1100px;  margin:0 auto;}
+
+.imgnav{ width:1100px; margin:10px auto;}
+#content{margin:0px auto;  line-height:19px;}
+#content p{ text-indent:2em; color:#333;}
+
+.imgnav{  position:relative; margin:0 auto; width:1100px;}
+#img{ z-index:10; width:1100px; position:relative; text-align:center;}
+#img>a{height:400px; display:none;}
+#img img{ height:400px;}
+#front{ position:absolute; left:0px; top:0px; z-index:10; cursor:pointer;  width:394px; height:578px; background:url(../images/ico/blank.gif); }
+#front a{  position:absolute; left:20px; top:224px;display:block; background:url(../images/ico/imgSlideLeft.png) no-repeat; width:104px; height:104px; display:none;}
+#next{  position:absolute; right:0px; top:0px; z-index:10;cursor:pointer; width:394px; height:578px;  background:url(../images/ico/blank.gif);}
+#next a{  position:absolute; right:20px; top:224px; display:block; background:url(../images/ico/imgSlideRight.png) no-repeat; width:104px; height:104px; display:none;}
+
+#cbtn{position:relative; height:122px;margin-top:12px; }
+#cbtn ul{position:relative; width:10000px; height:122px;}
+#cbtn ul li{ float:left; padding:0; width:200px; height:86px; cursor:pointer; text-align:center; margin-right:20px; position:relative;}
+#cbtn ul li img{ width:200px; height:86px; display:block;}
+#cbtn ul li tt{ background:#000; color:#FFF; position:absolute; right:4px; bottom:4px; z-index:20; font-family:"瀹嬩綋" ;font-size:12px; line-height:16px; padding:0 5px;}
+#cbtn li.hov{border:2px solid #62BD60;}
+.ctrl div{ clear:both;}
+#cSlideUl{width:990px; height:116px;overflow:hidden; position:relative; top:10px; margin:0 auto;padding-top:10px;}
+.picSildeLeft{cursor:pointer; position:absolute; top:32px; left:10px; z-index:9;}
+.picSildeRight{cursor:pointer; position:absolute; top:32px; right:10px; z-index:9;}
+
+
+

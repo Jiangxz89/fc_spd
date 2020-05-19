@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdProductStockCheckChildDao">
+    
+	<sql id="pdProductStockCheckChildColumns">
+		a.id AS "id",
+		a.parent_id AS "parentId",
+		a.stock_id AS "stockId",
+		a.actual_count AS "actualCount",
+		a.profit_loss_count AS "profitLossCount",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="pdProductStockColumns">
+		b.id AS "id",
+		b.product_id AS "productId",
+		b.batch_no AS "batchNo",
+		b.product_bar_code AS "productBarCode",
+		b.stock_num AS "stockNum",
+		b.storeroom_id AS "storeroomId",
+		b.produce_date AS "produceDate",
+		b.valid_date AS "validDate",
+		b.create_by AS "createBy.id",
+		b.create_date AS "createDate",
+		b.update_by AS "updateBy.id",
+		b.update_date AS "updateDate",
+		b.remarks AS "remarks",
+		b.del_flag AS "delFlag",
+		b.extend1 AS "extend1",
+		b.extend2 AS "extend2",
+		b.extend3 AS "extend3"
+	</sql>
+	
+	<sql id="pdProductColumns">
+		c.id AS "id",
+		c.number AS "number",
+		c.name AS "name",
+		c.spm AS "spm",
+		c.spec AS "spec",
+		c.version AS "version",
+		c.unit AS "unit",
+		c.power AS "power",
+		c.type AS "type",
+		c.category_id AS "categoryId",
+		c.category_name AS "categoryName",
+		c.group_id AS "groupId",
+		c.group_name AS "groupName",
+		c.vender_id AS "venderId",
+		c.vender_name AS "venderName",
+		c.brand_id AS "brandId",
+		c.brand_name AS "brandName",
+		c.pru_price AS "pruPrice",
+		c.selling_price AS "sellingPrice",
+		c.charge_code AS "chargeCode",
+		c.registration AS "registration",
+		c.description AS "description",
+		c.img_auth_number AS "imgAuthNumber",
+		c.img_auth_date AS "imgAuthDate",
+		c.img_auth_site AS "imgAuthSite",
+		c.img_register_number1 AS "imgRegisterNumber1",
+		c.img_register_date1 AS "imgRegisterDate1",
+		c.img_register_site1 AS "imgRegisterSite1",
+		c.img_register_number2 AS "imgRegisterNumber2",
+		c.img_register_date2 AS "imgRegisterDate2",
+		c.img_register_site2 AS "imgRegisterSite2",
+		c.img_register_number3 AS "imgRegisterNumber3",
+		c.img_register_date3 AS "imgRegisterDate3",
+		c.img_register_site3 AS "imgRegisterSite3",
+		c.img_license_number1 AS "imgLicenseNumber1",
+		c.img_license_date1 AS "imgLicenseDate1",
+		c.img_license_site1 AS "imgLicenseSite1",
+		c.img_license_number1 AS "imgLicenseNumber2",
+		c.img_license_date1 AS "imgLicenseDate2",
+		c.img_license_site2 AS "imgLicenseSite2",
+		c.img_license_number1 AS "imgLicenseNumber3",
+		c.img_license_date1 AS "imgLicenseDate3",
+		c.img_license_site3 AS "imgLicenseSite3",
+		c.img_license_number1 AS "imgLicenseNumber4",
+		c.img_license_date1 AS "imgLicenseDate4",
+		c.img_license_site4 AS "imgLicenseSite4",
+		c.img_product1 AS "imgProduct1",
+		c.img_product2 AS "imgProduct2",
+		c.img_product3 AS "imgProduct3",
+		c.is_urgent AS "isUrgent",
+		c.urgent_pur_count AS "urgentPurCount",
+		c.surplus_pur_count AS "surplusPurCount",
+		c.create_by AS "createBy.id",
+		c.create_date AS "createDate",
+		c.update_by AS "updateBy.id",
+		c.update_date AS "updateDate",
+		c.remarks AS "remarks",
+		c.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="pdProductStockCheckChildJoins">
+	</sql>
+    
+	<select id="get" resultType="PdProductStockCheckChild">
+		SELECT 
+			<include refid="pdProductStockCheckChildColumns"/>
+		FROM pd_product_stock_check_child a
+		<include refid="pdProductStockCheckChildJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdProductStockCheckChild">
+		SELECT 
+			<include refid="pdProductStockCheckChildColumns"/>
+		FROM pd_product_stock_check_child a
+		<include refid="pdProductStockCheckChildJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdProductStockCheckChild">
+		SELECT 
+			<include refid="pdProductStockCheckChildColumns"/>
+		FROM pd_product_stock_check_child a
+		<include refid="pdProductStockCheckChildJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_product_stock_check_child(
+			id,
+			parent_id,
+			stock_id,
+			actual_count,
+			profit_loss_count,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{parentId},
+			#{stockId},
+			#{actualCount},
+			#{profitLossCount},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_product_stock_check_child SET 	
+			id = #{id},
+			parent_id = #{parentId},
+			stock_id = #{stockId},
+			actual_count = #{actualCount},
+			profit_loss_count = #{profitLossCount},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_product_stock_check_child SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<resultMap id="getAllResult" type="PdProductStockCheckChild">
+		<id column="id" property="id"/>
+		<result column="parentId" property="parentId" />
+		<result column="stockId" property="stockId" />
+		<result column="actualCount" property="actualCount" />
+		<result column="profitLossCount" property="profitLossCount" />
+		<result column="remarks" property="remarks" />
+		<association property="pdProductStock" javaType="com.thinkgem.hys.pd.entity.PdProductStock">
+			<id column="id1" property="id"/>
+			<result column="productId" property="productId" />
+			<result column="batchNo" property="batchNo" />
+			<result column="productBarCode" property="productBarCode" />
+			<result column="stockNum" property="stockNum" />
+			<result column="storeroomId" property="storeroomId" />
+			<result column="produceDate" property="produceDate" />
+			<result column="validDate" property="validDate" />
+			<result column="b.extend1" property="extend1" />
+			<result column="b.extend2" property="extend2" />
+			<result column="b.extend3" property="extend3" />
+		</association>
+		<association property="pdProduct" javaType="com.thinkgem.hys.pd.entity.PdProduct">
+			<id column="id2" property="id" />
+			<result column="number" property="number" />
+			<result column="name" property="name" />
+			<result column="spm" property="spm" />
+			<result column="spec" property="spec" />
+			<result column="version" property="version" />
+			<result column="unit" property="unit" />
+			<result column="power" property="power" />
+			<result column="type" property="type" />
+			<result column="categoryId" property="categoryId" />
+			<result column="categoryName" property="categoryName" />
+			<result column="groupId" property="groupId" />
+			<result column="groupName" property="groupName" />
+			<result column="venderId" property="venderId" />
+			<result column="venderName" property="venderName" />
+			<result column="brandId" property="brandId" />
+			<result column="brandName" property="brandName" />
+			<result column="pruPrice" property="pruPrice" />
+			<result column="sellingPrice" property="sellingPrice" />
+			<result column="chargeCode" property="chargeCode" />
+			<result column="description" property="description" />
+		</association>
+	</resultMap>
+	<select id="getAll" resultMap="getAllResult">
+		select 
+		<include refid="pdProductStockCheckChildColumns"/>
+		,<include refid="pdProductStockColumns"/>
+		,<include refid="pdProductColumns"/>
+		from pd_product_stock_check_child a left join
+			pd_product_stock b on a.stock_id = b.id left join 
+			pd_product c on b.product_id = c.id 
+		where a.parent_id = #{parentId}
+	</select>
+	
+</mapper>

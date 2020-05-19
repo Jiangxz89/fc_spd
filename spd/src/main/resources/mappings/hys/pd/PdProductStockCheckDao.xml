@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdProductStockCheckDao">
+    
+	<sql id="pdProductStockCheckColumns">
+		a.id AS "id",
+		a.number AS "number",
+		a.repo_id AS "repoId",
+		a.repo_name AS "repoName",
+		a.check_date AS "checkDate",
+		a.oper_person AS "operPerson",
+		a.should_count AS "shouldCount",
+		a.already_count AS "alreadyCount",
+		a.profit_loss_count AS "profitLossCount",
+		a.status AS "status",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+
+	
+	<sql id="pdProductStockCheckJoins">
+	</sql>
+    
+	<select id="get" resultType="PdProductStockCheck">
+		SELECT 
+			<include refid="pdProductStockCheckColumns"/>
+		FROM pd_product_stock_check a
+		<include refid="pdProductStockCheckJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdProductStockCheck">
+		SELECT 
+			<include refid="pdProductStockCheckColumns"/>
+		FROM pd_product_stock_check a
+		<include refid="pdProductStockCheckJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="checkDate != null and checkDate != ''">
+				AND instr(#{checkDate},left(a.check_date,10))>0
+			</if>
+			<if test="repoName != null and repoName != ''">
+				AND a.repo_name = #{repoName} 
+			</if>
+			<if test="repoId != null and repoId != ''">
+				AND a.repo_id = #{repoId} 
+			</if>
+			<if test="operPerson != null and operPerson != ''">
+				AND a.oper_person = #{operPerson}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdProductStockCheck">
+		SELECT 
+			<include refid="pdProductStockCheckColumns"/>
+		FROM pd_product_stock_check a
+		<include refid="pdProductStockCheckJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_product_stock_check(
+			id,
+			number,
+			repo_id,
+			repo_name,
+			check_date,
+			oper_person,
+			should_count,
+			already_count,
+			profit_loss_count,
+			status,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{number},
+			#{repoId},
+			#{repoName},
+			#{checkDate},
+			#{operPerson},
+			#{shouldCount},
+			#{alreadyCount},
+			#{profitLossCount},
+			#{status},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<insert id="insertNoneId">
+		INSERT INTO pd_product_stock_check(
+			id,
+			number,
+			repo_id,
+			repo_name,
+			check_date,
+			oper_person,
+			should_count,
+			already_count,
+			profit_loss_count,
+			status,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{number},
+			#{repoId},
+			#{repoName},
+			#{checkDate},
+			#{operPerson},
+			#{shouldCount},
+			#{alreadyCount},
+			#{profitLossCount},
+			#{status},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_product_stock_check SET 	
+			id = #{id},
+			number = #{number},
+			repo_id = #{repoId},
+			repo_name = #{repoName},
+			check_date = #{checkDate},
+			oper_person = #{operPerson},
+			should_count = #{shouldCount},
+			already_count = #{alreadyCount},
+			profit_loss_count = #{profitLossCount},
+			status = #{status},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_product_stock_check SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+
+	
+	
+	
+</mapper>

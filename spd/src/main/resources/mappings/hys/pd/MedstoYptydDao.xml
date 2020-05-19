@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.MedstoYptydDao">
+    
+	<sql id="medstoYptydColumns">
+		a.xh AS "xh",
+		a.store_name AS "storeName",
+		a.drug_id AS "drugId",
+		a.ybtybm AS "ybtybm",
+		a.isjbyw AS "isjbyw",
+		a.kss AS "kss",
+		a.cmed_code AS "cmedCode",
+		a.drug_detail_type AS "drugDetailType",
+		a.dose_code AS "doseCode",
+		a.drug_name AS "drugName",
+		a.drug_spec AS "drugSpec",
+		a.package_unit AS "packageUnit",
+		a.package_qty AS "packageQty",
+		a.sales_unit AS "salesUnit",
+		a.sales_qty AS "salesQty",
+		a.sales_relation AS "salesRelation",
+		a.producer_name AS "producerName",
+		a.cost_price AS "costPrice",
+		a.sale_price AS "salePrice",
+		a.cost_amt AS "costAmt",
+		a.sale_amt AS "saleAmt",
+		a.batch_no AS "batchNo",
+		a.sdrugmanufacturers AS "sdrugmanufacturers",
+		a.sdrughabitat AS "sdrughabitat",
+		a.sratificationno AS "sratificationno",
+		a.ddateproduce AS "ddateproduce",
+		a.expiry AS "expiry",
+		a.inventorystorage AS "inventorystorage",
+		a.storagenumber AS "storagenumber",
+		a.inventorynumber AS "inventorynumber",
+		a.thrq AS "thrq",
+		a.thyy AS "thyy",
+		a.scrq AS "scrq"
+	</sql>
+	
+	<sql id="medstoYptydJoins">
+	</sql>
+    
+	<select id="get" resultType="MedstoYptyd">
+		SELECT 
+			<include refid="medstoYptydColumns"/>
+		FROM medsto_yptyd a
+		<include refid="medstoYptydJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MedstoYptyd">
+		SELECT 
+			<include refid="medstoYptydColumns"/>
+		FROM medsto_yptyd a
+		<include refid="medstoYptydJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MedstoYptyd">
+		SELECT 
+			<include refid="medstoYptydColumns"/>
+		FROM medsto_yptyd a
+		<include refid="medstoYptydJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO medsto_yptyd(
+			xh,
+			store_name,
+			drug_id,
+			ybtybm,
+			isjbyw,
+			kss,
+			cmed_code,
+			drug_detail_type,
+			dose_code,
+			drug_name,
+			drug_spec,
+			package_unit,
+			package_qty,
+			sales_unit,
+			sales_qty,
+			sales_relation,
+			producer_name,
+			cost_price,
+			sale_price,
+			cost_amt,
+			sale_amt,
+			batch_no,
+			sdrugmanufacturers,
+			sdrughabitat,
+			sratificationno,
+			ddateproduce,
+			expiry,
+			inventorystorage,
+			storagenumber,
+			inventorynumber,
+			thrq,
+			thyy,
+			scrq
+		) VALUES (
+			#{xh},
+			#{storeName},
+			#{drugId},
+			#{ybtybm},
+			#{isjbyw},
+			#{kss},
+			#{cmedCode},
+			#{drugDetailType},
+			#{doseCode},
+			#{drugName},
+			#{drugSpec},
+			#{packageUnit},
+			#{packageQty},
+			#{salesUnit},
+			#{salesQty},
+			#{salesRelation},
+			#{producerName},
+			#{costPrice},
+			#{salePrice},
+			#{costAmt},
+			#{saleAmt},
+			#{batchNo},
+			#{sdrugmanufacturers},
+			#{sdrughabitat},
+			#{sratificationno},
+			#{ddateproduce},
+			#{expiry},
+			#{inventorystorage},
+			#{storagenumber},
+			#{inventorynumber},
+			#{thrq},
+			#{thyy},
+			#{scrq}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE medsto_yptyd SET 	
+			xh = #{xh},
+			store_name = #{storeName},
+			drug_id = #{drugId},
+			ybtybm = #{ybtybm},
+			isjbyw = #{isjbyw},
+			kss = #{kss},
+			cmed_code = #{cmedCode},
+			drug_detail_type = #{drugDetailType},
+			dose_code = #{doseCode},
+			drug_name = #{drugName},
+			drug_spec = #{drugSpec},
+			package_unit = #{packageUnit},
+			package_qty = #{packageQty},
+			sales_unit = #{salesUnit},
+			sales_qty = #{salesQty},
+			sales_relation = #{salesRelation},
+			producer_name = #{producerName},
+			cost_price = #{costPrice},
+			sale_price = #{salePrice},
+			cost_amt = #{costAmt},
+			sale_amt = #{saleAmt},
+			batch_no = #{batchNo},
+			sdrugmanufacturers = #{sdrugmanufacturers},
+			sdrughabitat = #{sdrughabitat},
+			sratificationno = #{sratificationno},
+			ddateproduce = #{ddateproduce},
+			expiry = #{expiry},
+			inventorystorage = #{inventorystorage},
+			storagenumber = #{storagenumber},
+			inventorynumber = #{inventorynumber},
+			thrq = #{thrq},
+			thyy = #{thyy},
+			scrq = #{scrq}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM medsto_yptyd
+		WHERE id = #{id}
+	</update>
+
+	<!-- 药品退药单查询 -->
+	<select id="findDrugReturnBillDetaile" resultType="MedstoYptyd">
+		SELECT
+		<include refid="medstoYptydColumns"/>
+		FROM medsto_yptyd a
+		<include refid="medstoYptydJoins"/>
+		<where>
+			1 = 1
+			<if test="storeName != null and storeName != ''">
+				AND a.store_name = #{storeName}
+			</if>
+			<if test="drugId != null and drugId != ''">
+				AND a.drug_id = #{drugId}
+			</if>
+			<if test="drugName != null and drugName != ''">
+				AND a.drug_name = #{drugName}
+			</if>
+			<if test="drugSpec != null and drugSpec != ''">
+				AND a.drug_spec = #{drugSpec}
+			</if>
+			<if test="isjbyw != null and isjbyw != ''">
+				AND a.isjbyw = #{isjbyw}
+			</if>
+			<if test="kss != null and kss != ''">
+				AND a.kss = #{kss}
+			</if>
+			<if test="sdrugmanufacturers != null and sdrugmanufacturers != ''">
+				AND a.sdrugmanufacturers  LIKE concat('%',#{sdrugmanufacturers},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+</mapper>

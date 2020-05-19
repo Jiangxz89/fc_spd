@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdRejectedListHeadDao">
+    
+	<sql id="pdRejectedListHeadColumns">
+		a.id AS "id",
+		a.number AS "number",
+		a.rejected_date AS "rejectedDate",
+		a.rejected_repo_id AS "rejectedRepoId",
+		a.rejected_repo_name AS "rejectedRepoName",
+		a.supplier_id AS "supplierId",
+		a.supplier_name AS "supplierName",
+		a.oper_person AS "operPerson",
+		a.is_end AS "isEnd",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<!-- 产品信息 -->
+	<sql id="pdPorductColumns">
+		p.name AS "productName",
+		p.number AS "productNumber",
+		p.version AS "version",
+		p.spec AS "spec",
+		p.unit AS "unit",
+		p.category_id AS "categoryId",
+		p.category_name AS "categoryName",
+		p.group_id AS "groupId",
+		p.group_name AS "groupName"
+	</sql>
+		
+	<!-- 库存信息 -->
+	<sql id="pdPorductStockColumns">
+		c.valid_date AS "validDate",
+		c.batch_no AS "batchNo",
+		c.product_bar_code  AS "productBarCode"
+	</sql>
+
+	<!-- 产品关联供应商信息 -->
+	<sql id="pdDrugSupplierColumns">
+			s.ghdw_mc AS "ghdwMc"
+	</sql>
+
+
+	<!-- 关联表信息 -->
+	<sql id="pdRejectedListHeadChildColumns">
+		b.rejected_count AS "rejectedCount"
+	</sql>
+	
+	<!-- 供应商信息 -->
+	<sql id="pdSupplierColumns">
+		s.supplier_name as supplier
+	</sql>
+
+
+	<sql id="pdRejectedListHeadJoins">
+	</sql>
+
+	<!-- 产品关联供应商信息 -->
+	<sql id="pdDrugSupplierJoins">
+		LEFT JOIN pd_drug_supplier s on p.id = s.ypdm
+	</sql>
+    
+    <!-- 关联退货详情 -->
+    <sql id="pdRejectedListHeadChildJoins">	
+    	LEFT JOIN pd_rejected_list_child b ON a.id = b.head_id
+	</sql>
+	
+	<!-- 关联库存信息 -->
+	<sql id="pdProductStockJoins">	
+    	LEFT JOIN pd_product_stock c on b.product_stock_id = c.id
+	</sql>
+	
+	<!-- 关联产品信息 -->
+	<sql id="pdProductJoins">	
+    	LEFT JOIN pd_product p  on c.product_id = p.id
+	</sql>
+    
+    <!-- 关联供应商信息 -->
+    <sql id="pdSupplierJoins">	
+    	LEFT JOIN pd_supplier s  on a.supplier_id = s.id
+	</sql>
+    
+	<select id="get" resultType="PdRejectedListHead">
+		SELECT 
+			<include refid="pdRejectedListHeadColumns"/>
+		FROM pd_rejected_list_head a
+		<include refid="pdRejectedListHeadJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdRejectedListHead">
+		SELECT 
+			<include refid="pdRejectedListHeadColumns"/>
+		FROM pd_rejected_list_head a
+		<include refid="pdRejectedListHeadJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="number != null and number != ''">
+				AND a.number LIKE concat('%',#{number},'%')
+			</if>
+			<if test="rejectedDate != null and rejectedDate != ''">
+				AND instr(#{rejectedDate},a.rejected_date)>0
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdRejectedListHead">
+		SELECT 
+			<include refid="pdRejectedListHeadColumns"/>
+		FROM pd_rejected_list_head a
+		<include refid="pdRejectedListHeadJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_rejected_list_head(
+			id,
+			number,
+			rejected_date,
+			rejected_repo_id,
+			rejected_repo_name,
+			supplier_id,
+			supplier_name,
+			oper_person,
+			is_end,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{number},
+			#{rejectedDate},
+			#{rejectedRepoId},
+			#{rejectedRepoName},
+			#{supplierId},
+			#{supplierName},
+			#{operPerson},
+			#{isEnd},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_rejected_list_head SET 	
+			id = #{id},
+			number = #{number},
+			rejected_date = #{rejectedDate},
+			rejected_repo_id = #{rejectedRepoId},
+			rejected_repo_name = #{rejectedRepoName},
+			supplier_id = #{supplierId},
+			supplier_name = #{supplierName},
+			oper_person = #{operPerson},
+			is_end = #{isEnd},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_rejected_list_head SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="isEnd">
+		UPDATE pd_rejected_list_head SET 
+			is_end = 1
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 统计查询 院外退货明细查询 -->
+	<select id="findHospitaloutsideReturnDetail" resultType="PdRejectedListHead">
+		SELECT 
+			<include refid="pdRejectedListHeadColumns"/>,
+			<include refid="pdPorductColumns"/>,
+			<include refid="pdPorductStockColumns"/>,
+			<include refid="pdRejectedListHeadChildColumns"/>,
+			<include refid="pdDrugSupplierColumns"/>
+		FROM pd_rejected_list_head a
+		<include refid="pdRejectedListHeadJoins"/>
+		<include refid="pdRejectedListHeadChildJoins"/>
+		<include refid="pdProductStockJoins"/>
+		<include refid="pdProductJoins"/>
+		<include refid="pdDrugSupplierJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="number != null and number != ''">
+				AND a.number LIKE concat('%',#{number},'%')
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND a.rejected_date BETWEEN #{startDate} AND #{endDate}
+			</if>	
+			<if test="productName != null and productName != ''">
+				AND p.name LIKE concat('%',#{productName},'%')
+			</if>
+			<if test="productNumber != null and productNumber != ''">
+				AND p.number LIKE concat('%',#{productNumber},'%')
+			</if>
+			<if test="rejectedRepoId != null and rejectedRepoId != ''">
+				AND a.rejected_repo_id = #{rejectedRepoId}
+			</if>
+			<if test="rejectedRepoName != null and rejectedRepoName != ''">
+				AND a.rejected_repo_name = #{rejectedRepoName}
+			</if>
+			<if test="version != null and version != ''">
+				AND p.version = #{version}
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND c.batch_no = #{batchNo}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 查询退货数据 给中心平台使用 -->
+	<select id="findListByDate" resultType="PdRejectedListHead">
+		SELECT 
+			<include refid="pdRejectedListHeadColumns"/>,
+			<include refid="pdSupplierColumns"/>
+		FROM pd_rejected_list_head a
+		<include refid="pdRejectedListHeadJoins"/>
+		<include refid="pdSupplierJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="number != null and number != ''">
+				AND a.number = #{number}
+			</if>
+			<if test="rejectedDate != null and rejectedDate != ''">
+				AND instr(#{rejectedDate},a.rejected_date)>0
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+</mapper>

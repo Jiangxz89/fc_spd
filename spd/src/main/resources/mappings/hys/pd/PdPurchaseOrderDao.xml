@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdPurchaseOrderDao">
+    
+	<sql id="pdPurchaseOrderColumns">
+		a.id AS "id",
+		a.order_no AS "orderNo",
+		a.purchase_by AS "purchaseBy",
+		a.order_date AS "orderDate",
+		a.dept_id AS "deptId",
+		a.dept_name AS "deptName",
+		a.order_status AS "orderStatus",
+		a.merge_order_no AS "mergeOrderNo",
+		a.audit_by AS "auditBy",
+		a.audit_date AS "auditDate",
+		a.refuse_reason AS "refuseReason",
+		a.amount_count AS "amountCount",
+		a.amount_money AS "amountMoney",
+		a.remarks AS "remarks",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag",
+		s.name AS "auditName",
+		u.name AS "purchaseName"
+	</sql>
+	
+	<sql id="pdPurchaseOrderJoins">
+		LEFT JOIN sys_user s ON a.audit_by = s.id
+		LEFT JOIN sys_user u ON a.purchase_by = u.id
+	</sql>
+    
+	<select id="get" resultType="PdPurchaseOrder">
+		SELECT 
+			<include refid="pdPurchaseOrderColumns"/>
+		FROM pd_purchase_order a
+		<include refid="pdPurchaseOrderJoins"/>
+		WHERE a.id = #{id} or a.order_no = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdPurchaseOrder">
+		SELECT 
+			<include refid="pdPurchaseOrderColumns"/>
+		FROM pd_purchase_order a
+		<include refid="pdPurchaseOrderJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="orderNo != null and orderNo != ''">
+				AND a.order_no = #{orderNo}
+			</if>
+			<if test="orderDate != null and orderDate != ''">
+				AND a.order_date = #{orderDate}
+			</if>
+			<if test="deptId != null and deptId != ''">
+				AND a.dept_id = #{deptId}
+			</if>
+			<if test="deptName != null and deptName != ''">
+				AND a.dept_name LIKE CONCAT('%', #{deptName}, '%')
+			</if>
+			<if test="prodName != null and prodName != ''">
+				AND a.order_no IN ( SELECT x.order_no FROM pd_purchase_detail x LEFT JOIN pd_product y ON x.prod_id = y.id WHERE y.name LIKE CONCAT('%', #{prodName}, '%') )
+			</if>
+			<if test="prodSpec != null and prodSpec != ''">
+				AND a.order_no IN ( SELECT x.order_no FROM pd_purchase_detail x LEFT JOIN pd_product y ON x.prod_id = y.id WHERE y.spec LIKE CONCAT('%', #{prodSpec}, '%') )
+			</if>
+			<if test="prodVersion != null and prodVersion != ''">
+				AND a.order_no IN ( SELECT x.order_no FROM pd_purchase_detail x LEFT JOIN pd_product y ON x.prod_id = y.id WHERE y.version LIKE CONCAT('%', #{prodVersion}, '%') )
+			</if>
+			<if test="mergeOrderNo != null and mergeOrderNo != ''">
+				AND a.merge_order_no = #{mergeOrderNo}
+			</if>
+			<if test="orderStatus != null and orderStatus != ''">
+				AND a.order_status = #{orderStatus}
+			</if>
+			<if test="isPurchaseAudit != null and isPurchaseAudit != ''">
+				AND a.order_status IN ('0', '2')
+			</if>
+			<if test="purchaseBy != null and purchaseBy != ''">
+				AND a.purchase_by = #{purchaseBy}
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+		 		AND a.order_date between #{startDate} and #{endDate}
+		 	</if>
+			<if test="auditDate != null and auditDate != ''">
+		 		AND DATE_FORMAT(a.audit_date, '%Y-%m-%d') = DATE_FORMAT(#{auditDate}, '%Y-%m-%d')
+		 	</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdPurchaseOrder">
+		SELECT 
+			<include refid="pdPurchaseOrderColumns"/>
+		FROM pd_purchase_order a
+		<include refid="pdPurchaseOrderJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_purchase_order(
+			id,
+			order_no,
+			purchase_by,
+			order_date,
+			dept_id,
+			dept_name,
+			order_status,
+			merge_order_no,
+			audit_by,
+			audit_date,
+			refuse_reason,
+			amount_count,
+			amount_money,
+			remarks,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{orderNo},
+			#{purchaseBy},
+			#{orderDate},
+			#{deptId},
+			#{deptName},
+			#{orderStatus},
+			#{mergeOrderNo},
+			#{auditBy},
+			#{auditDate},
+			#{refuseReason},
+			#{amountCount},
+			#{amountMoney},
+			#{remarks},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_purchase_order SET 	
+			order_no = #{orderNo},
+			purchase_by = #{purchaseBy},
+			order_date = #{orderDate},
+			dept_id = #{deptId},
+			dept_name = #{deptName},
+			order_status = #{orderStatus},
+			merge_order_no = #{mergeOrderNo},
+			audit_by = #{auditBy},
+			audit_date = #{auditDate},
+			refuse_reason = #{refuseReason},
+			amount_count = #{amountCount},
+			amount_money = #{amountMoney},
+			remarks = #{remarks},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_purchase_order SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	<!-- 审核采购单状态 -->
+	<update id="batchUpdateOrderStatus" parameterType="java.util.HashMap">
+		UPDATE pd_purchase_order 
+		SET order_status = #{orderStatus},
+		    refuse_reason = #{refuseReason},
+		    audit_by = #{auditBy.id},
+		    audit_date = #{auditDate}
+		WHERE order_no IN ${orderNos}
+	</update>
+	<!-- 更新合并单号 -->
+	<update id="batchUpdateMergeOrderNo" parameterType="java.util.HashMap">
+		UPDATE pd_purchase_order 
+		SET merge_order_no = #{mergeOrderNo},
+		    update_by = #{updateBy.id}, 
+		    update_date = #{updateDate} 
+		WHERE order_no IN ${orderNos}
+	</update>
+	<!-- 更新采购单状态 -->
+	<update id="updateStatusByOrderNo" parameterType="java.lang.String">
+		UPDATE pd_purchase_order 
+		SET order_status = #{orderStatus},
+		    update_date = now() 
+		WHERE merge_order_no = #{orderNo}
+	</update>
+	
+	
+	<!-- 统计一个订单下的产品数量和金额 -->
+	<select id="getCountAndMoney" resultType="PdPurchaseOrder" parameterType="java.util.List">
+		SELECT 
+			sum(amount_count) as amountCount, 
+			sum(amount_money) as amountMoney
+		FROM pd_purchase_order 
+		WHERE order_no IN 
+		<foreach collection="orderNos" item="item" separator="," open="(" close=")">
+			#{item}
+		</foreach>
+	</select>
+</mapper>

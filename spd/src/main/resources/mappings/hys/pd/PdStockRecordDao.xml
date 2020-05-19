@@ -1,0 +1,629 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdStockRecordDao">
+    
+	<sql id="pdStockRecordColumns">
+		a.id AS "id",
+		a.record_no AS "recordNo",
+		a.recode_type AS "recodeType",
+		a.out_type AS "outType",
+		a.in_type AS "inType",
+		a.order_no AS "orderNo",
+		a.allocation_no AS "allocationNo",
+		a.apply_no AS "applyNo",		
+		a.dosagert_no AS "dosagertNo",
+		a.record_people AS "recordPeople",
+		a.record_date AS "recordDate",
+		a.record_state AS "recordState",
+		a.reject_reason AS "rejectReason",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.extend1 AS "extend1",
+		a.extend2 AS "extend2",
+		a.extend3 AS "extend3",
+		a.test_result AS "testResult",
+		a.storage_result AS "storageResult",
+		a.temperature AS "temperature",
+		a.humidity AS "humidity",
+		a.out_id AS "outId",
+		a.out_name AS "outName",
+		a.in_id AS "inId",
+		a.in_name AS "inName",
+		a.supplier_id AS "supplierId",
+		a.check_people AS "checkPeople",
+		a.check_time AS "checkTime"
+	</sql>
+	
+	<sql id="pdStockRecordJoins">
+		<!-- LEFT JOIN pd_stock_record_product srp ON a.id = srp.record_id
+		LEFT JOIN pd_product p ON srp.product_id=p.id -->
+	</sql>
+	
+	<!-- 产品信息 -->
+	<sql id="pdProductColumns">		
+		pp.number AS "number",
+		pp.name AS "pdName",		
+		pp.spec AS "spec",
+		pp.version AS "version",
+		pp.unit AS "unit",		
+		pp.vender_id AS "venderId",
+		/*pp.vender_name AS "venderName",		*/
+		pp.pru_price AS "pruPrice",
+		pp.selling_price AS "sellingPrice",
+		pp.charge_code AS "chargeCode",
+		pp.registration AS "registration"		
+	</sql>
+	
+	<!-- 发票信息 -->
+	<sql id="pdProductInvoiceColumns">		
+		sri.sale_date AS "saleDate",
+		sri.invoice_date AS "invoiceDate",
+		sri.invoice_no AS "invoiceNo"
+	</sql>
+	
+	<!-- 订单信息 -->
+	<sql id="pdStockRecordOtherColumns">		
+		srp.product_num AS "productNum",
+		srp.batch_no AS "batchNo",
+		srp.limit_date AS "limitDate",
+		srp.product_bar_code AS "productBarCode"
+	</sql>
+	
+	<!-- 自关联查询出库单号 -->
+	<sql id="pdProductOneselfColumns">		
+		sr.record_no AS "outReCordNo"
+	</sql>
+
+	<!-- 供应商字段 -->
+	<sql id="pdSupplierColumns">
+		su.supplier_name as supplierName
+	</sql>
+
+	<!-- 生产厂家字段 -->
+	<sql id="pdVenderColumns">
+    	vd.name as venderName
+    </sql>
+
+	<!-- 供应商字段 -->
+	<sql id="pdSupplierJoins">
+		LEFT JOIN pd_supplier su on pst.supplier_id = su.id
+	</sql>
+
+
+	<sql id="pdStockRecordOtherJoins">
+		left join pd_stock_record_product srp ON a.id = srp.record_id 
+		left join pd_product pp on srp.product_id = pp.id
+	</sql>
+	
+	<!-- 入库统计查询时显示供应商信息 -->
+	<sql id="pdproductStockTotalJoins">
+		LEFT JOIN (select * from pd_product_stock_total t where t.supplier_id is not null GROUP BY product_id ) pst 
+			on srp.product_id = pst.product_id
+	</sql>
+	
+	
+	<!-- 自关联查询出库单号 -->
+	<sql id="pdStockRecordOneselfJoins">
+		LEFT JOIN pd_stock_record sr on a.allocation_no = sr.allocation_no
+	</sql>
+	
+
+    <!-- 发票信息 -->
+    <sql id="pdProductStockInvoiceTotalJoins">
+    	LEFT JOIN pd_stock_record_invoice sri on a.id = sri.record_no	
+    </sql>
+
+	<!-- 生产厂家信息 -->
+	<sql id="pdVenderJoins">
+    	LEFT JOIN pd_vender vd on pp.vender_id = vd.id
+    </sql>
+    
+	<select id="get" resultType="PdStockRecord">
+		SELECT 
+			<include refid="pdStockRecordColumns"/>
+		FROM pd_stock_record a
+		<include refid="pdStockRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdStockRecord">
+		SELECT 
+			<include refid="pdStockRecordColumns"/>
+		FROM pd_stock_record a
+		<include refid="pdStockRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="inId != null and inId != ''">
+				AND a.in_id = #{inId}
+			</if>
+			<if test="outId != null and outId != ''">
+				AND a.out_id = #{outId}
+			</if>
+			<if test="recordNo != null and recordNo != ''">
+				AND a.record_no LIKE concat('%',#{recordNo},'%')
+			</if>
+			<if test="recodeType != null and recodeType != ''">
+				AND a.recode_type = #{recodeType}
+			</if>
+			<if test="outType != null and outType != ''">
+				AND a.out_type = #{outType}
+			</if>
+			<if test="inType != null and inType != ''">
+				AND a.in_type = #{inType}
+			</if>
+			<if test="orderNo != null and orderNo != ''">
+				AND a.order_no = #{orderNo}
+			</if>
+			<if test="applyNo != null and applyNo != ''">
+				AND a.apply_no = #{applyNo}
+			</if>
+			<if test="allocationNo != null and allocationNo != ''">
+				AND a.allocation_no = #{allocationNo}
+			</if>
+			<if test="recordPeople != null and recordPeople != ''">
+				AND a.record_people = #{recordPeople}
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND a.record_date BETWEEN #{startDate} AND #{endDate}
+			</if>
+			<if test="recordDate != null and recordDate != ''">
+				AND a.record_date = #{recordDate}
+			</if>
+			<if test="supplierId != null and supplierId != ''">
+				AND a.supplier_id = #{supplierId}
+			</if>
+			<if test="recordState != null and recordState != ''">
+				AND a.record_state = #{recordState}
+			</if>
+			<if test="returnState != null and returnState != ''">
+				AND a.return_state = #{returnState}
+			</if>
+			<!-- <if test="pdName != null and pdName != ''">
+				AND p.name = #{pdName}
+			</if> -->
+			<if test="productName != null and productName != ''">
+				AND a.id in(
+				select srp.record_id from pd_stock_record_product srp,pd_product pp 
+				where srp.product_id=pp.id 
+				AND pp.name LIKE 
+				<if test="dbName == 'oracle'">'%'||#{productName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{productName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{productName},'%')</if>
+				AND srp.del_flag=#{DEL_FLAG_NORMAL}
+				AND pp.del_flag=#{DEL_FLAG_NORMAL})
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC, a.record_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdStockRecord">
+		SELECT 
+			<include refid="pdStockRecordColumns"/>
+		FROM pd_stock_record a
+		<include refid="pdStockRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_stock_record(
+			id,
+			record_no,
+			recode_type,
+			out_type,
+			in_type,
+			order_no,
+			allocation_no,
+			apply_no,
+			dosagert_no,
+			record_people,
+			record_date,
+			record_state,
+			reject_reason,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			extend1,
+			extend2,
+			extend3,
+			test_result,
+			storage_result,
+			temperature,
+			humidity,
+			out_id,
+			out_name,
+			in_id,
+			in_name,
+			supplier_id,
+			check_people,
+			check_time,
+			return_state
+		) VALUES (
+			#{id},
+			#{recordNo},
+			#{recodeType},
+			#{outType},
+			#{inType},
+			#{orderNo},
+			#{allocationNo},
+			#{applyNo},
+			#{dosagertNo},
+			#{recordPeople},
+			#{recordDate},
+			#{recordState},
+			#{rejectReason},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{extend1},
+			#{extend2},
+			#{extend3},
+			#{testResult},
+			#{storageResult},
+			#{temperature},
+			#{humidity},
+			#{outId},
+			#{outName},
+			#{inId},
+			#{inName},
+			#{supplierId},
+			#{checkPeople},
+			#{checkTime},
+			#{returnState}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_stock_record SET
+			order_no = #{orderNo},
+			allocation_no = #{allocationNo},
+			apply_no = #{applyNo},
+			dosagert_no = #{dosagertNo},
+			record_people = #{recordPeople},
+			record_date = #{recordDate},
+			record_state = #{recordState},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			extend1 = #{extend1},
+			extend2 = #{extend2},
+			extend3 = #{extend3},
+			test_result = #{testResult},
+			storage_result = #{storageResult},
+			temperature = #{temperature},
+			humidity = #{humidity},
+			out_id = #{outId},
+			out_name = #{outName},
+			in_id = #{inId},
+			check_user_id = #{checkUserId},
+			check_people =#{checkPeople},
+			check_time = #{checkTime},
+			in_name = #{inName},
+			supplier_id = #{supplierId}
+			WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_stock_record SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateRecordState">
+		UPDATE pd_stock_record SET 
+			<if test="returnState != null and returnState != ''">
+				return_state = #{returnState},
+			</if>
+			<if test="recordState != null and recordState != ''">
+				record_state = #{recordState},
+			</if>
+			update_date = now(),
+			check_time = now(),
+			check_people =#{checkPeople}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="examineIn">
+		UPDATE pd_stock_record SET 
+			record_state = #{recordState},
+			remarks = #{remarks},
+			update_date = now()
+		WHERE id = #{id}
+	</update>
+	
+	<update id="rejectAll">
+		UPDATE pd_stock_record SET 
+			record_state = #{recordState},
+			reject_reason = #{rejectReason},
+			check_time = now(),
+			check_people =#{checkPeople}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 统计入库查询 -->
+	<select id="findCensusQuery" resultType="PdStockRecord">
+		SELECT
+			a.id AS "id",
+			a.record_no AS "recordNo",
+			a.recode_type AS "recodeType",
+			a.out_type AS "outType",
+			a.in_type AS "inType",
+			a.order_no AS "orderNo",
+			a.allocation_no AS "allocationNo",
+			a.apply_no AS "applyNo",
+			a.dosagert_no AS "dosagertNo",
+			a.record_people AS "recordPeople",
+			a.record_date AS "recordDate",
+			a.record_state AS "recordState",
+			a.reject_reason AS "rejectReason",
+			a.create_by AS "createBy.id",
+			a.create_date AS "createDate",
+			a.update_by AS "updateBy.id",
+			a.update_date AS "updateDate",
+			a.remarks AS "remarks",
+			a.del_flag AS "delFlag",
+			a.extend1 AS "extend1",
+			a.extend2 AS "extend2",
+			a.extend3 AS "extend3",
+			a.test_result AS "testResult",
+			a.storage_result AS "storageResult",
+			a.temperature AS "temperature",
+			a.humidity AS "humidity",
+			a.out_id AS "outId",
+			a.out_name AS "outName",
+			a.in_id AS "inId",
+			a.in_name AS "inName",
+			pst.supplier_id AS "supplierId",
+			a.check_people AS "checkPeople",
+			a.check_time AS "checkTime",
+			<include refid="pdProductColumns"/>,		
+			<!-- <include refid="pdProductInvoiceColumns"/>,		 -->	
+			<include refid="pdStockRecordOtherColumns"/>,
+			<include refid="pdSupplierColumns"/>,
+			<include refid="pdVenderColumns"/>
+		FROM pd_stock_record a
+		<include refid="pdStockRecordOtherJoins"/>
+		<include refid="pdproductStockTotalJoins"/>
+		<include refid="pdSupplierJoins"/>
+		<include refid="pdVenderJoins"/>
+		<!-- <include refid="pdProductStockInvoiceTotalJoins"/> -->
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="version != null and version != ''">
+				AND pp.version = #{version}
+			</if>
+			<if test="number != null and number != ''">
+				AND pp.number LIKE concat('%',#{number},'%')
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND srp.batch_no = #{batchNo}
+			</if>			
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.in_id = #{storeroomId}
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND a.record_date BETWEEN #{startDate} AND #{endDate}
+			</if>	
+			<if test="supplierId != null and supplierId != ''">
+				AND pst.supplier_id = #{supplierId}
+			</if>
+			<if test="productName != null and productName != ''">
+				AND pp.name LIKE concat('%',#{productName},'%')
+			</if>
+			<if test="recodeType != null and recodeType != ''">
+				AND a.recode_type = #{recodeType}
+			</if>
+			<if test="recordState != null and recordState != ''">
+				AND a.record_state = #{recordState}
+			</if>
+		</where>			
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC, a.record_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 统计出库查询 -->
+	<select id="findOutQuery" resultType="PdStockRecord">
+		SELECT
+			<include refid="pdStockRecordColumns"/>,
+			<include refid="pdProductColumns"/>,		
+			<!-- <include refid="pdProductInvoiceColumns"/>,	 -->		
+			<include refid="pdStockRecordOtherColumns"/>			
+		FROM pd_stock_record a
+		<include refid="pdStockRecordOtherJoins"/>
+		<!-- <include refid="pdProductStockInvoiceTotalJoins"/> -->
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="version != null and version != ''">
+				AND pp.version = #{version}
+			</if>
+			<if test="number != null and number != ''">
+				AND pp.number LIKE concat('%',#{number},'%')
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND srp.batch_no = #{batchNo}
+			</if>			
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.out_id = #{storeroomId}
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND a.record_date BETWEEN #{startDate} AND #{endDate}
+			</if>	
+			<if test="supplierId != null and supplierId != ''">
+				AND a.supplier_id = #{supplierId}
+			</if>
+			<if test="productName != null and productName != ''">
+				AND pp.name LIKE concat('%',#{productName},'%')
+			</if>
+			<if test="recodeType != null and recodeType != ''">
+				AND a.recode_type = #{recodeType}
+			</if>
+			<if test="outType != null and outType != ''">
+				AND a.out_type = #{outType}
+			</if>
+			<if test="recordState != null and recordState != ''">
+				AND a.record_state = #{recordState}
+			</if>
+		</where>			
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC, a.record_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 统计调入查询 -->
+	<select id="findCallInQuery" resultType="PdStockRecord">
+		SELECT
+			<include refid="pdStockRecordColumns"/>,
+			<include refid="pdProductColumns"/>,		
+			<include refid="pdStockRecordOtherColumns"/>,
+			<include refid="pdProductOneselfColumns"/>	
+		FROM pd_stock_record a
+		<include refid="pdStockRecordOtherJoins"/>
+		<include refid="pdStockRecordOneselfJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="version != null and version != ''">
+				AND pp.version = #{version}
+			</if>
+			<if test="number != null and number != ''">
+				AND pp.number LIKE concat('%',#{number},'%')
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND srp.batch_no = #{batchNo}
+			</if>			
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.in_id = #{storeroomId}
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND a.record_date BETWEEN #{startDate} AND #{endDate}
+			</if>	
+			<if test="supplierId != null and supplierId != ''">
+				AND a.supplier_id = #{supplierId}
+			</if>
+			<if test="productName != null and productName != ''">
+				AND pp.name LIKE concat('%',#{productName},'%')
+			</if>
+			<if test="recodeType != null and recodeType != ''">
+				AND a.recode_type = #{recodeType}
+			</if>
+			<if test="recordState != null and recordState != ''">
+				AND a.record_state = #{recordState}
+			</if>
+			<if test="inType != null and inType != ''">
+				AND a.in_type  = #{inType}
+			</if>
+			AND a.id != sr.id
+		</where>			
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC, a.record_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--退货单驳回时修改出库单的returnState状态 -->
+	<update id="updateReturnState">
+		UPDATE pd_stock_record SET
+			return_state = #{returnState}
+			<where> 
+				1 = 1
+				<if test="recodeType != null and recodeType != ''">
+					AND recode_type  = #{recodeType}
+				</if>
+				<if test="outType != null and outType != ''">
+					AND out_type  = #{outType}
+				</if>
+					AND record_no = #{recordNo}
+			</where>
+	</update>
+	
+	<!-- 查询产品的配送订货量配送量等信息(给中心平台的数据) -->
+	<select id="findPdConsumablesOrderTime" resultType="com.thinkgem.hys.pd.entity.PdConsumablesOrderTime">
+		SELECT
+			xx.*, yy.total AS orderQuantity,
+			(yy.total * xx.price) AS amount
+		FROM
+			(
+				SELECT
+					a.id,
+					a.record_no,
+					a.order_no AS number,
+					sum(srp.product_num) AS psQuantity,
+					p.`name`,
+					p.number AS productNumber,
+					p.pru_price AS price,
+					a.check_time AS 'checkTime'
+				FROM
+					`pd_stock_record` a
+				LEFT JOIN pd_stock_record_product srp ON a.id = srp.record_id
+				LEFT JOIN pd_product p ON srp.product_id = p.id
+				WHERE
+					a.del_flag =  #{DEL_FLAG_NORMAL}
+				AND a.recode_type = #{recodeType}
+				AND a.record_state = #{recordState}
+				AND a.in_type = #{inType}
+				AND a.order_no IS NOT NULL
+				AND a.order_no != ""
+				AND DATE_FORMAT(a.check_time,'%Y-%m-%d') = DATE_FORMAT(#{checkTime}, '%Y-%m-%d')
+				GROUP BY
+					a.order_no,
+					srp.product_id
+			) xx
+		LEFT JOIN (
+			SELECT
+				a.id,
+				a.order_no,
+				a.merge_order_no,
+				pd.prod_no,
+				p.`name`,
+				sum(pd.apply_count) AS total
+			FROM
+				pd_purchase_order a
+			LEFT JOIN pd_purchase_detail pd ON a.order_no = pd.order_no
+			LEFT JOIN pd_product p ON pd.prod_id = p.id
+			GROUP BY
+				a.merge_order_no,
+				pd.prod_no
+		) yy ON xx.number = yy.merge_order_no
+		AND xx.productNumber = yy.prod_no
+	</select>
+</mapper>

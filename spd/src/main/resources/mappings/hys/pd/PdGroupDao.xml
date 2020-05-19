@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdGroupDao">
+    
+	<sql id="pdGroupColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.udpate_by AS "udpateBy",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.syn_flag AS "synFlag"
+	</sql>
+	
+	<sql id="pdGroupJoins">
+	</sql>
+    
+	<select id="get" resultType="PdGroup">
+		SELECT 
+			<include refid="pdGroupColumns"/>
+		FROM pd_group a
+		<include refid="pdGroupJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getByName" resultType="PdGroup">
+		SELECT 
+			<include refid="pdGroupColumns"/>
+		FROM pd_group a
+		<include refid="pdGroupJoins"/>
+		WHERE a.name = #{name} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<select id="findList" resultType="PdGroup">
+		SELECT 
+			<include refid="pdGroupColumns"/>
+		FROM pd_group a
+		<include refid="pdGroupJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findUnsynchronizedList" resultType="com.thinkgem.hys.pd.entity.bo.PdGroupBO">
+		SELECT
+			a.id AS "id",
+			a.name AS "name",
+			a.create_by AS "createBy",
+			a.create_date AS "createDate",
+			a.udpate_by AS "udpateBy",
+			a.update_date AS "updateDate",
+			a.remarks AS "remarks",
+			a.del_flag AS "delFlag",
+			a.syn_flag AS "synFlag"
+		FROM pd_group a
+		<where> 1=1
+			and (a.syn_flag &lt;&gt; 1 or a.syn_flag is null)
+		</where>
+	</select>
+
+	<select id="findAllList" resultType="PdGroup">
+		SELECT 
+			<include refid="pdGroupColumns"/>
+		FROM pd_group a
+		<include refid="pdGroupJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_group(
+			id,
+			name,
+			create_by,
+			create_date,
+			udpate_by,
+			update_date,
+			remarks,
+			del_flag,
+			syn_flag
+		) VALUES (
+			#{id},
+			#{name},
+			#{createBy.id},
+			#{createDate},
+			#{udpateBy},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{synFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_group SET 	
+			id = #{id},
+			name = #{name},
+			udpate_by = #{udpateBy},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			syn_flag = #{synFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_group SET
+			syn_flag = 0,
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<update id="updateSynFlag" parameterType="com.thinkgem.hys.pd.entity.bo.PdGroupBO">
+		UPDATE pd_group SET
+			syn_flag = #{synFlag}
+		WHERE id = #{id}
+	</update>
+		<!-- 校验组别名称是否唯一 -->
+	<select id="verify" resultType="PdGroup">
+		SELECT 
+			<include refid="pdGroupColumns"/>
+		FROM pd_group a
+		<include refid="pdGroupJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			and a.name = #{name}
+			<if test="id != null and id != ''">
+				AND a.id != #{id}
+			</if>
+		</where>
+	</select>
+	
+		<!-- 校验组别是否存在 -->
+	<select id="findByName" resultType="PdGroup">
+		SELECT 
+			<include refid="pdGroupColumns"/>
+		FROM pd_group a
+		<include refid="pdGroupJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			and a.name = #{name}
+			<if test="id != null and id != ''">
+				AND a.id != #{id}
+			</if>
+		</where>
+	</select>
+	
+</mapper>

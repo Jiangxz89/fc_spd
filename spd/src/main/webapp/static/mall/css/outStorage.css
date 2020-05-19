@@ -1,0 +1,58 @@
+.allOrderitem{height: 30px;text-align: center;float: left;color: #666;font-size: 15px;font-weight: 600;padding:0 8px;}
+		.allOrderitem.on{color: #03b8cc;border-bottom:2px solid #03b8cc;}
+		a.allOrderitem:hover{color: #03b8cc;!important;}
+		.infoList{background: #fff9ef;padding: 10px;margin: 10px 0;}
+		.infoList a span{font-size: 14px;color: #000;vertical-align: middle;}
+		.orderInfo{line-height: 50px;}
+		.orderInfo input[type='radio']{vertical-align: middle;margin:0 5px;}
+		.orderInfo label{font-size: 13px;color: #000;}
+		.order-tab-box>table>tbody>tr>td>img{display: inline-block;width: 66px;height: 67px;}
+		.order-info-list{padding:10px 0;}
+		.order-info-list ul li{font-size:13px;clear: both;overflow: hidden;padding-bottom: 15px;}
+		.order-info-list ul li h1{font-size: 15px;padding-right: 20px;color:#03b8cc;}
+		.order-info-list ul li>ol>li{display: inline-block;margin:0 20px 0 0;}
+		.order-info-list ul li>ol{padding-top:5px;margin-left:0;}
+		.order-info-list ul li input{width: 160px;height: 28px;border:1px solid #ccc;border-radius: 2px;margin-left: 10px;margin-bottom:0;}
+		.orderTime{width: 160px;height: 28px;border:1px solid #ccc;border-radius: 2px;}
+		.recordTit{width: 190px;height: 40px;line-height: 40px;text-align: center;background:#03b8cc;color: #fff;font-size: 16px;position: relative;margin:15px 0;}
+		.recordTit:after{position:absolute;content: ""; width: 0;height: 0;border-top: 20px solid transparent;border-left: 27px solid #03b8cc;border-bottom: 20px solid transparent;top:0;right:-27px;
+		}
+		.order-info-list select{margin:0;}
+		.order-tab-box{border:1px solid #ccc;padding:15px 0;}
+		.timeTd input[type='text']{width:100px;height:28px;border:1px solid #ccc;border-radius:2px;display:block;}
+		.inpTd  input[type='text']{width:60px;height:28px;border:1px solid #ccc;border-radius:2px;display:block;}
+		.hcy-table-gray>tbody>tr>td.companyTd select{display:block;!important}
+		.hcy-table-gray>tbody>tr>td.wareHouseTd select{display:block;!important} 
+		.hcy-table-gray>tbody>tr>td.companyTd input[type='text']{display:block;width:80px; !important}
+		.hcy-table-gray>tbody>tr>td.wareHouseTd input[type='text']{display:block;width:80px; !important} 
+		/* 打印 */
+		#selectItem{margin:20px;line-height:1.5;cursor:pointer;border: 1px solid #03b8cc;background-color: #03b8cc;color: white;}
+		.rightTab{position: absolute;right:10px;top:10px;}
+		.theadBox{position: absolute;right:20px;top:40px;background: #fff;border:1px solid #ccc;padding:5px;display: none;width:180px;}
+		.theadBox ul{margin:0;}
+		.theadBox ul li{line-height: 24px;}
+		.checkList li span{cursor: pointer;display: inline-block;display: none;margin:0 10px;}
+		#printButton{border: 1px solid #03b8cc;background-color: #03b8cc;color: white;margin-right:10px;line-height:1.5;margin-top:20px;cursor:pointer;}
+		.ul-order-list{margin:0;}
+		.ul-order-list li{clear:both;overflow: hidden;line-height: 25px;text-align: center;}
+		.ul-order-list li span{width:200px;text-align: left;}
+		.hcy-public-table td{border:1px solid #ccc;}
+		.orderInfoTab{font-family: verdana,arial,sans-serif;font-size:13px;color:#333333;border-width: 1px;border-color: #666666;border-collapse: collapse;width: 100%;}
+		.orderInfoTab th {border-width: 1px;padding: 8px;border-style: solid;border-color: #666666;}
+		.orderInfoTab td {border-width: 1px;padding: 8px;border-style: solid;border-color: #666666;height: 40px;}
+		#printBox{display:none;}
+		#outTableId tbody>tr>td>select,#outTableId tbody>tr>td>input{margin:0 0 10px 0;}
+		#outTableId tbody>tr>td>div.allInpBox{margin:0 0 10px 0;}
+		#numberTab tr td input{width:160px;height:28px;border:1px solid #ccc;border-radius:2px;}
+		.bottomDiv{position:fixed;bottom:20px;text-align:center;width:100%;}
+		.bottomDiv a,.allTitle a{cursor:pointer;}
+		.tipWord{background:#d0f1f4;line-height:30px;font-size:13px;}
+		#inputUl,.exUl{margin:0;clear:both;overflow:hidden;}
+		#inputUl>li,.exUl>li{float:left;margin-right:10px}
+		#inputUl>li>input,.exUl>li>input{width:100px;height:28px;border-radius:2px;}
+		.productList{overflow-y:scroll; position: absolute;top: 0;left: 0;z-index: 10;width: 720px;height: 222px;display: none;border: 1px solid #eef1f5;background-color: white;}
+		.numShow{display: inline-block;height: 30px;vertical-align: middle;line-height: 30px;letter-spacing: 2px;padding-left: 5px;cursor: pointer;}
+		.numberWrap{border: 1px solid #ccc;width: 120px;display: inline-block;border-radius: 2px;background: #fff;display:none; }
+		.numberWrap>input[type='text']{width:80px;box-shadow:none;border:none;display:inline-block;margin:0;}
+		.numberWrap>span{cursor:pointer;letter-spacing: 2px;}
+		.houseTitle{font-size:13px;color:#666;font-weight:400;margin-right:8px;}

@@ -1,0 +1,60 @@
+/* 澶撮儴瀵艰埅鏍峰紡 */
+.topTitle{height: 40px;padding: 0 10px;color: #323232;font-size: 18px;line-height: 40px;}
+.topTitle h3{float: left;height: 40px;font-size: 18px;line-height: 40px;font-weight: 400;}
+.topTitle ul.topList{float: left;margin-left: 40px;height:40px;}
+.topTitle ul.topList>li{float: left;height: 100%;}
+.topTitle ul.topList>li>a{display: block;margin-right: 2px;width: 120px;text-align: center;color: #26344b;font-size: 13px;background-color: #d6dde3;line-height: 40px;}
+.topTitle ul.topList>li>a:hover{background:#bfcad1}
+.topTitle ul.topList>li>a.active{line-height: 38px;font-size: 14px;border-top: 2px solid #03b8cc;background-color: #f7fbfe;}
+.topTitle .fr>a.hcy-btn{float: left;line-height: 1.5;}
+/* 搴曢儴涓讳綋 */
+.bottomItem{padding:15px;background: #f7fbfe;}
+.topTitle .fr>a.hcy-btn:first-child{margin-right:20px;}
+#form>div{display: none;}
+#form>div:first-child{display: block;}
+/* 绗竴涓猅ab涓讳綋 */
+.formGroup{margin-bottom: 20px;}
+.formGroup>label{display: inline-block;width: 80px;text-align: right;color: #666666;font-size:13px;font-weight: 600;}
+.formGroup label>span.must{color: red;padding-right:5px;}
+.formGroup>input[type='text']{display: inline-block;margin-left:15px;height: 30px;vertical-align: middle;padding:0 5px;color: #323232;font-size: 13px;border: 1px solid #bfcad1;width: 390px;}
+.formGroup>.areaBox{width: 390px;height: 60px;margin-left:15px;display: inline-block;}
+.formGroup>.areaBox>textarea{width: 100%;height: 60px;}
+.formGroup .inpFile{position: relative;display: inline-block;margin-left: 15px;}
+.formGroup .inpFile>a.hcy-btn{position: relative;z-index: 1;}
+.formGroup .inpFile>p{color:#459df5 ;font-size: 12px;}
+.formGroup .inpFile>.inpBox{width: 80px;height: 28px;position: absolute;left:0px;top:0;overflow: hidden;z-index: 0;}
+.formGroup.switch>label{height: 32px;line-height: 32px;float: left;}
+.formGroup.switch>.hcy-switch{float: left;}
+
+/* 绗簩涓猅ab涓讳綋 */
+.words{color: #65ad6e;border: 1px solid #cbf0c1;background-color: #e9f9e7;padding:20px;}
+.words>p{font-size: 12px;line-height: 20px;}
+
+/* 鏂板灞炴� */
+#AddtypeBox{width: 100%;height: 300px;border:1px solid #ccc;}
+#AddtypeBox h3.formTip{line-height: 40px;}
+#AddtypeBox .formGroup-left{float: left;height: 100%;width: 280px;background-color: rgb(242, 242, 242);}
+#AddtypeBox .formGroup-left ul li{line-height: 40px;padding-left:40px;}
+#AddtypeBox .formGroup-left ul li input[type="checkbox"]{vertical-align: middle;margin:0 10px 0 5px;}
+#AddtypeBox .formGroup-left ul li:hover,#AddtypeBox .formGroup-left ul li.on{background-color: #fff;}
+#AddtypeBox .formGroup-right{margin-left:280px;height: 100%;}
+#AddtypeBox .formGroup-right>div.formGroup-right-inline{height:230px;overflow:auto;padding:20px;}
+#AddtypeBox .formGroup-right>div{display: none;}
+#AddtypeBox .formGroup-right>div.active{display: block;}
+#AddtypeBox .formGroup-right>div label{display: inline-block; width: 200px;height: 30px;line-height: 30px;}
+#AddtypeBox .formGroup-right>div input[type='checkbox']{vertical-align: middle;margin:0 6px;}
+/* 绗笁涓猅ab涓讳綋 */
+
+/* 绗洓涓猅ab涓讳綋 */
+
+
+
+
+
+
+
+
+
+
+
+

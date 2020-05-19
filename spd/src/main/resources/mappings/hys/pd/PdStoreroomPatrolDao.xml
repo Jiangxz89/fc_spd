@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.PdStoreroomPatrolDao">
+    
+	<sql id="pdStoreroomPatrolColumns">
+		a.id AS "id",
+		a.patrol_code AS "patrolCode",
+		a.storeroom_id AS "storeroomId",
+		a.patrol_count AS "patrolCount",
+		a.pass_count AS "passCount",
+		a.fail_count AS "failCount",
+		a.temperature AS "temperature",
+		a.wetness AS "wetness",
+		a.patrol_man AS "patrolMan",
+		a.patrol_date AS "patrolDate",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id='pdUserColumns'>
+    	b.name AS "patrolManName"
+    </sql>
+	
+	<sql id="pdStoreroomPatrolJoins">
+	</sql>
+    
+    
+    <sql id='pdUserJoins'>
+    	LEFT JOIN sys_user b on a.patrol_man = b.id 
+    </sql>
+    
+	<select id="get" resultType="PdStoreroomPatrol">
+		SELECT 
+			<include refid="pdStoreroomPatrolColumns"/>
+		FROM pd_storeroom_patrol a
+		<include refid="pdStoreroomPatrolJoins"/>
+		WHERE a.id = #{id} or a.patrol_code = #{id}
+	</select>
+	
+	<select id="findList" resultType="PdStoreroomPatrol">
+		SELECT 
+			<include refid="pdStoreroomPatrolColumns"/>,
+			<include refid="pdUserColumns"/>
+		FROM pd_storeroom_patrol a
+		<include refid="pdStoreroomPatrolJoins"/>
+		<include refid="pdUserJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="storeroomId != null and storeroomId != ''">
+				AND a.storeroom_id = #{storeroomId}
+			</if>
+			<if test="patrolMan != null and patrolMan != ''">
+				AND a.patrol_man = #{patrolMan}
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+		 		AND a.patrol_date between #{startDate} and #{endDate}
+		 	</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PdStoreroomPatrol">
+		SELECT 
+			<include refid="pdStoreroomPatrolColumns"/>
+		FROM pd_storeroom_patrol a
+		<include refid="pdStoreroomPatrolJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO pd_storeroom_patrol(
+			id,
+			patrol_code,
+			storeroom_id,
+			patrol_count,
+			pass_count,
+			fail_count,
+			temperature,
+			wetness,
+			patrol_man,
+			patrol_date,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{patrolCode},
+			#{storeroomId},
+			#{patrolCount},
+			#{passCount},
+			#{failCount},
+			#{temperature},
+			#{wetness},
+			#{patrolMan},
+			#{patrolDate},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE pd_storeroom_patrol SET 	
+			patrol_code = #{patrolCode},
+			storeroom_id = #{storeroomId},
+			patrol_count = #{patrolCount},
+			pass_count = #{passCount},
+			fail_count = #{failCount},
+			temperature = #{temperature},
+			wetness = #{wetness},
+			patrol_man = #{patrolMan},
+			patrol_date = #{patrolDate},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE pd_storeroom_patrol SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateDegree">
+		UPDATE pd_storeroom_patrol SET 
+			temperature = #{temperature},
+			wetness = #{wetness},
+			update_date = now(),
+			update_by = #{updateBy.id}
+			<if test="passCount != null and passCount != ''">
+				,pass_count = #{passCount}
+			</if>
+			<if test="failCount != null and failCount != ''">
+				,fail_count = #{failCount}
+			</if>
+		WHERE patrol_code = #{patrolCode}
+	</update>
+	
+</mapper>

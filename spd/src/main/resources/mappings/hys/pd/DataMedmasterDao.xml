@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.DataMedmasterDao">
+    
+	<sql id="dataMedmasterColumns">
+		a.masterid AS "masterid",
+		a.hospitalid AS "hospitalid",
+		a.hospitalname AS "hospitalname",
+		a.deptid AS "deptid",
+		a.deptname AS "deptname",
+		a.redeptid AS "redeptid",
+		a.redeptname AS "redeptname",
+		a.billdate AS "billdate",
+		a.billno AS "billno",
+		a.supplierid AS "supplierid",
+		a.suppliername AS "suppliername",
+		a.billkd AS "billkd",
+		a.billstf AS "billstf",
+		a.billstfname AS "billstfname",
+		a.state AS "state",
+		a.audstf AS "audstf",
+		a.audstfname AS "audstfname",
+		a.audtime AS "audtime",
+		a.mataccpid AS "mataccpid",
+		a.housepid AS "housepid",
+		a.relatedid AS "relatedid",
+		a.dspt AS "dspt",
+		a.gatkdid AS "gatkdid",
+		a.invoiceno AS "invoiceno",
+		a.receiptno AS "receiptno",
+		a.invoicedate AS "invoicedate"
+	</sql>
+	
+	<sql id="dataMedmasterJoins">
+	</sql>
+    
+	<select id="get" resultType="DataMedmaster">
+		SELECT 
+			<include refid="dataMedmasterColumns"/>
+		FROM data_medmaster a
+		<include refid="dataMedmasterJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DataMedmaster">
+		SELECT 
+			<include refid="dataMedmasterColumns"/>
+		FROM data_medmaster a
+		<include refid="dataMedmasterJoins"/>
+		<where>
+			1 = 1
+			<if test="billno != null and billno != ''">
+				AND a.billno LIKE concat('%',#{billno},'%')
+			</if>
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+				AND a.billdate BETWEEN #{startDate} AND #{endDate}
+			</if>
+			<if test="billkd != null and billkd != ''">
+				AND a.billkd = #{billkd}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DataMedmaster">
+		SELECT 
+			<include refid="dataMedmasterColumns"/>
+		FROM data_medmaster a
+		<include refid="dataMedmasterJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO data_medmaster(
+			masterid,
+			hospitalid,
+			hospitalname,
+			deptid,
+			deptname,
+			redeptid,
+			redeptname,
+			billdate,
+			billno,
+			supplierid,
+			suppliername,
+			billkd,
+			billstf,
+			billstfname,
+			state,
+			audstf,
+			audstfname,
+			audtime,
+			mataccpid,
+			housepid,
+			relatedid,
+			dspt,
+			gatkdid,
+			invoiceno,
+			receiptno,
+			invoicedate
+		) VALUES (
+			#{masterid},
+			#{hospitalid},
+			#{hospitalname},
+			#{deptid},
+			#{deptname},
+			#{redeptid},
+			#{redeptname},
+			#{billdate},
+			#{billno},
+			#{supplierid},
+			#{suppliername},
+			#{billkd},
+			#{billstf},
+			#{billstfname},
+			#{state},
+			#{audstf},
+			#{audstfname},
+			#{audtime},
+			#{mataccpid},
+			#{housepid},
+			#{relatedid},
+			#{dspt},
+			#{gatkdid},
+			#{invoiceno},
+			#{receiptno},
+			#{invoicedate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE data_medmaster SET 	
+			masterid = #{masterid},
+			hospitalid = #{hospitalid},
+			hospitalname = #{hospitalname},
+			deptid = #{deptid},
+			deptname = #{deptname},
+			redeptid = #{redeptid},
+			redeptname = #{redeptname},
+			billdate = #{billdate},
+			billno = #{billno},
+			supplierid = #{supplierid},
+			suppliername = #{suppliername},
+			billkd = #{billkd},
+			billstf = #{billstf},
+			billstfname = #{billstfname},
+			state = #{state},
+			audstf = #{audstf},
+			audstfname = #{audstfname},
+			audtime = #{audtime},
+			mataccpid = #{mataccpid},
+			housepid = #{housepid},
+			relatedid = #{relatedid},
+			dspt = #{dspt},
+			gatkdid = #{gatkdid},
+			invoiceno = #{invoiceno},
+			receiptno = #{receiptno},
+			invoicedate = #{invoicedate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM data_medmaster
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

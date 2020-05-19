@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.hys.pd.dao.DataDetailpanDao">
+    
+	<sql id="dataDetailpanColumns">
+		a.id AS "id",
+		a.masterid AS "masterid",
+		a.matid AS "matid",
+		a.medname AS "medname",
+		a.batch AS "batch",
+		a.qty AS "qty",
+		a.realqty AS "realqty",
+		a.inprice AS "inprice",
+		a.clinprice AS "clinprice",
+		a.batchno AS "batchno"
+	</sql>
+	
+	<sql id="dataDetailpanJoins">
+	</sql>
+    
+	<select id="get" resultType="DataDetailpan">
+		SELECT 
+			<include refid="dataDetailpanColumns"/>
+		FROM data_detailpan a
+		<include refid="dataDetailpanJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DataDetailpan">
+		SELECT 
+			<include refid="dataDetailpanColumns"/>
+		FROM data_detailpan a
+		<include refid="dataDetailpanJoins"/>
+		<where>
+			1 = 1
+			<if test="masterid != null and masterid != ''">
+				AND a.masterid = #{masterid}
+			</if>
+			<if test="medname != null and medname != ''">
+				AND a.medname LIKE concat('%',#{medname},'%')
+			</if>
+			<if test="batch != null and batch != ''">
+				AND a.batch LIKE concat('%',#{batch},'%')
+			</if>
+			<if test="batchno != null and batchno != ''">
+				AND a.batchno LIKE concat('%',#{batchno},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DataDetailpan">
+		SELECT 
+			<include refid="dataDetailpanColumns"/>
+		FROM data_detailpan a
+		<include refid="dataDetailpanJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO data_detailpan(
+			id,
+			masterid,
+			matid,
+			medname,
+			batch,
+			qty,
+			realqty,
+			inprice,
+			clinprice,
+			batchno
+		) VALUES (
+			#{id},
+			#{masterid},
+			#{matid},
+			#{medname},
+			#{batch},
+			#{qty},
+			#{realqty},
+			#{inprice},
+			#{clinprice},
+			#{batchno}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE data_detailpan SET 	
+			masterid = #{masterid},
+			matid = #{matid},
+			medname = #{medname},
+			batch = #{batch},
+			qty = #{qty},
+			realqty = #{realqty},
+			inprice = #{inprice},
+			clinprice = #{clinprice},
+			batchno = #{batchno}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM data_detailpan
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
