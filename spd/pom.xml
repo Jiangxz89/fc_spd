@@ -35,7 +35,7 @@
         <commons-fileupload.version>1.3.1</commons-fileupload.version>
         <commons-beanutils.version>1.9.1</commons-beanutils.version>
 
-        <jackson.version>2.2.3</jackson.version>
+        <jackson.version>2.11.0</jackson.version>
         <fastjson_version>1.2.6</fastjson_version>
         <fastjson.version>1.2.47</fastjson.version>
         <xstream.version>1.4.7</xstream.version>
