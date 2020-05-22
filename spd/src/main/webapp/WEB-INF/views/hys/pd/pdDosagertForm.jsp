@@ -502,7 +502,7 @@
 			$("td[class='finalMoney']").each(function(i,v){
 				alltotal += parseFloat($(this).text() || 0);
 			});
-			$('.total_money').html(alltotal.toFixed(2));
+			$('.total_money').html(alltotal.toFixed(4));
 		}
 		//动态计算单个金额
 		function computeSingleMoney(obj){
@@ -516,7 +516,7 @@
 			}
 			try{
 				if(singlePrice && !Number.isNaN(singlePrice) && Number.parseInt(singlePrice) > 0) {
-					total = (parseFloat(curValue || 0) * parseFloat(singlePrice)).toFixed(2);
+					total = (parseFloat(curValue || 0) * parseFloat(singlePrice)).toFixed(4);
 					obj.parent().parent().find('.finalMoney').text(total);
 				}
 			}catch(e){

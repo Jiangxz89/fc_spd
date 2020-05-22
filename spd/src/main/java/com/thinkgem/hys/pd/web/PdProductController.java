@@ -3,6 +3,7 @@
  */
 package com.thinkgem.hys.pd.web;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.thinkgem.hys.pd.constants.MinaGlobalConstants;
 import com.thinkgem.hys.pd.entity.*;
@@ -12,6 +13,7 @@ import com.thinkgem.hys.pd.service.*;
 import com.thinkgem.hys.pd.web.task.SyncProductDataTask;
 import com.thinkgem.hys.utils.AxisUtils;
 import com.thinkgem.hys.utils.CommonUtils;
+import com.thinkgem.hys.utils.HisApiUtils;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.mapper.JsonMapper;
 import com.thinkgem.jeesite.common.persistence.Page;
@@ -94,6 +96,52 @@ public class PdProductController extends BaseController {
 	}
 
 	/**
+	 * 收费代码弹出层
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value= "showChargeCodeBox")
+	public String showChargeCodeBox(String context,HttpServletRequest request , HttpServletResponse response, Model model){
+
+		model.addAttribute("isHisInterface", "false");
+		model.addAttribute("hisChargeCodeList", null);
+		model.addAttribute("context", context);
+		return "hys/pd/box/pdChargeCodeBox";
+	}
+
+	@RequiresPermissions("pd:pdProduct:view")
+	@RequestMapping(value = {"hisChargeCodeList", ""})
+	public String hisChargeCodeList(HisChargeCode hisChargeCode, RedirectAttributes redirectAttributes, HttpServletRequest request, HttpServletResponse response, Model model) {
+
+		if(hisChargeCode == null){
+			return "hys/pd/hisChargeCodeList";
+		}
+		if(StringUtils.isBlank(hisChargeCode.getSFCODE()) && StringUtils.isBlank(hisChargeCode.getSFNAME())){
+			return "hys/pd/hisChargeCodeList";
+		}
+
+        JSONObject chargeCodeJson = HisApiUtils.queryHisChargeCode(hisChargeCode.getSFCODE(),hisChargeCode.getSFNAME());
+		if(chargeCodeJson == null){
+			addMessage(redirectAttributes, "HIS返回数据为空，请重新查询或联系管理员！");
+			return "redirect:"+Global.getAdminPath()+"/pd/pdProduct/hisChargeCodeList?saveKey=error";
+		}
+		if(!MinaGlobalConstants.SUCCESS.equals(chargeCodeJson.getString("statusCode"))){
+			addMessage(redirectAttributes, "查询HIS项目收费代码失败，请重新查询或联系管理员！");
+			return "redirect:"+Global.getAdminPath()+"/pd/pdProduct/hisChargeCodeList?saveKey=error";
+		}
+
+		JSONArray jsonArray = chargeCodeJson.getJSONArray("data");
+		List<HisChargeCode> hisChargeCodeList = JSONArray.parseArray(jsonArray.toJSONString(),HisChargeCode.class);
+
+		model.addAttribute("hisChargeCodeList", hisChargeCodeList);
+		return "hys/pd/hisChargeCodeList";
+
+	}
+
+
+	/**
 	 * 产品模糊查询
 	 * @param pdProduct
 	 * @param request
@@ -128,39 +176,6 @@ public class PdProductController extends BaseController {
 			}
 		}
 		return supList;
-	}
-
-	/**
-	 * 收费代码弹出层
-	 * @param request
-	 * @param response
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping(value= "showChargeCodeBox")
-	public String showChargeCodeBox(String context,HttpServletRequest request , HttpServletResponse response, Model model){
-		//HIS收费代码接口URL，1.如果未空，则不请求接口，前端维护收费代码用,隔开。2.如果不为空，则以下拉列表方式维护收费代码
-		final String HIS_CHARGE_CODE_URL = Global.getConfig("HIS_CHARGE_CODE_URL");
-        JSONObject chargeCodeJson = AxisUtils.getHisChargeCode();
-		// TODO 这边请求HIS接口 查询HIS收费代码
-		List<String> hisChargeCodeList = new ArrayList<String>();
-		// TODO 此处用于页面测试
-		hisChargeCodeList.add("test_code_1");
-		hisChargeCodeList.add("test_code_2");
-		hisChargeCodeList.add("test_code_3");
-		hisChargeCodeList.add("test_code_4");
-
-		//HIS收费代码接口URL，1.如果未空，则不请求接口，前端维护收费代码用,隔开。2.如果不为空，则以下拉列表方式维护收费代码
-		if(StringUtils.isEmpty(HIS_CHARGE_CODE_URL)){
-            model.addAttribute("isHisInterface", "false");
-            model.addAttribute("hisChargeCodeList", null);
-        }else{
-			model.addAttribute("isHisInterface", "true");
-			model.addAttribute("hisChargeCodeList", hisChargeCodeList);
-        }
-
-		model.addAttribute("context", context);
-		return "hys/pd/box/pdChargeCodeBox";
 	}
 
 

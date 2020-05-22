@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="${ctxStatic}/spd/css/font-awesome.css">
 	<style>
 		.addRoomBox{line-height: 40px;padding:10px 5px;margin-bottom: 20px;}
-		.addRoomBox label{width:75px;display: inline-block;text-align: left;}
+		.addRoomBox label{width:85px;display: inline-block;text-align: left;}
 		.addRoomBox>input[type='text'],.addRoomBox>select{display:inline-block;width: 160px;height:30px;border:1px solid #ccc;margin:0 10px 0 5px;}
 		.totalText{text-align: right;height: 50px;line-height: 50px;}
 		#allMoney,#allNum{padding:0 50px 0 10px;font-size:15px;color:#000;font-weight: 600;}
@@ -134,21 +134,23 @@
 			<div class="addRoomBox">
 				<h4>收费信息</h4>
                 <label for="">病人姓名</label>
-                <input type="text"  id="patientInfo" value="${pdDosage.oprDeptName}" style="width:165px;" readonly="readonly"/>
+                <input type="text"  id="patientInfo" value="${pdDosage.patientInfo}" style="width:165px;" readonly="readonly"/>
                 <label for="">住院号</label>
                 <input type="text"  style="width:165px;" value="${pdDosage.inHospitalNo}" readonly="readonly" id="inHospitalNoHInput"/>
-                <label for="" style="margin-left: 10px">手术编号</label>
-                <input type="text"  style="width:165px;" value="${pdDosage.operativeNumber}" readonly="readonly" id="operativeNumberHInput"/>
+				<label for="">就诊流水号</label>
+				<input type="text"  style="width:165px;" value="${pdDosage.visitNo}" readonly="readonly" />
                 <br />
                 <label for="">所属科室</label>
                 <input type="text"  value="${pdDosage.exeDeptName}" id="exeDeptName" style="width:165px;" readonly="readonly"/>
                 <label for="">所属病区</label>
                 <input type="text"  value="${pdDosage.subordinateWard}" id="subordinateWardIn" style="width:165px;" readonly="readonly"/>
-                <label for="" style="margin-left: 10px">申请医生姓名</label>
+                <label for="">申请医生姓名</label>
                 <input type="text"  value="${pdDosage.sqrtDoctor}" id="sqrtDoctor" style="width:165px;" readonly="readonly"/>
                 <br />
                 <label for="">门诊号</label>
                 <input type="text" value="${pdDosage.outpatientNumber}" id="outpatientNumber" style="width:165px;" readonly="readonly"/>
+				<label for="">手术编号</label>
+				<input type="text"  style="width:165px;" value="${pdDosage.operativeNumber}" readonly="readonly" id="operativeNumberHInput"/>
                 <label for="">手术科室</label>
                 <input type="text" value="${pdDosage.oprDeptName}"  id="oprDeptName" style="width:165px;" readonly="readonly"/>
                 </br>
@@ -238,7 +240,7 @@
 				m_t += parseFloat(m || 0);
 			});
 			$('.all_count').html(c_t);
-			$('.all_money').html(m_t.toFixed(2));
+			$('.all_money').html(m_t.toFixed(4));
 		}
 	</script>
 </body>

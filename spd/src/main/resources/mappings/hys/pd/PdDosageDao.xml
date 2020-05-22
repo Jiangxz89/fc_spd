@@ -24,6 +24,7 @@
 		a.sqrt_doctor AS "sqrtDoctor",
 		a.sqrt_doctor_id AS "sqrtDoctorId",
 		a.in_hospital_no AS "inHospitalNo",
+		a.visit_no as "visitNo",
 		a.display_flag AS "displayFlag",
 		a.remarks AS "remarks",
 		a.create_by AS "createBy.id",
@@ -200,7 +201,8 @@
 			subordinate_wardId,
 			subordinate_ward,
 			outpatient_number,
-			operative_number
+			operative_number,
+			visit_no
 		) VALUES (
 			#{id},
 			#{dosageNo},
@@ -233,7 +235,8 @@
 			#{subordinateWardId},
 			#{subordinateWard},
 			#{outpatientNumber},
-			#{operativeNumber}
+			#{operativeNumber},
+			#{visitNo}
 		)
 	</insert>
 	
@@ -258,6 +261,7 @@
 			surgeon_id = #{surgeonId},
 			sqrt_doctor = #{sqrtDoctor},
 			sqrt_doctor_id = #{sqrtDoctorId},
+			visit_no = #{visitNo},
 			in_hospital_no = #{inHospitalNo},
 			display_flag = #{displayFlag},
 			remarks = #{remarks},

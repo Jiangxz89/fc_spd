@@ -3,6 +3,7 @@
  */
 package com.thinkgem.hys.pd.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.thinkgem.hys.pd.constants.MinaGlobalConstants;
 import com.thinkgem.hys.pd.dao.PdDosageDao;
@@ -15,12 +16,15 @@ import com.thinkgem.hys.pd.entity.PdProductStock;
 import com.thinkgem.hys.pd.entity.PdStockLog;
 import com.thinkgem.hys.pd.response.CommonRspVo;
 import com.thinkgem.hys.utils.AxisUtils;
+import com.thinkgem.hys.utils.HisApiUtils;
 import com.thinkgem.hys.utils.MD5Utils;
+import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +40,9 @@ import java.util.*;
 @Service
 @Transactional(readOnly = true)
 public class PdDosageService extends CrudService<PdDosageDao, PdDosage> {
-	
+
+	private static Logger logger = Logger.getLogger(PdDosageService.class);
+
 	@Autowired
 	private PdDosageDetailDao pdDosageDetailDao;
 	@Autowired
@@ -87,7 +93,7 @@ public class PdDosageService extends CrudService<PdDosageDao, PdDosage> {
 			String oprtDate = "";
 			if (MinaGlobalConstants.IS_CHARGE.equals(pdDosage.getChargeFlag())) {//收费
 				chargeToken = MD5Utils.getToken();
-				oprtPeople = UserUtils.getUser().getHisUserNo();
+//				oprtPeople = UserUtils.getUser().getHisUserNo();
 				oprtDate = DateUtils.formatDate(DateUtils.getNowDate(), "yyyy-MM-dd HH:mm:ss");
 			}
 			//用量总量
@@ -96,6 +102,7 @@ public class PdDosageService extends CrudService<PdDosageDao, PdDosage> {
 			List<PdDosageDetail> tempArray = new ArrayList<PdDosageDetail>();
 			//产品物流
 			List<PdStockLog> logList = new ArrayList<PdStockLog>();
+			//合并相同的用量
 			List<PdDosageDetail> afterDealList = dealRepeatData(detailList);
 			PdProductStock pps = new PdProductStock();
 			pps.setStoreroomId(UserUtils.getUser().getStoreroomId());
@@ -144,6 +151,12 @@ public class PdDosageService extends CrudService<PdDosageDao, PdDosage> {
 				prodLog.preInsert();
 				logList.add(prodLog);
 			}
+
+			pdDosage.setDosageBy(UserUtils.getUser().getId());
+			pdDosage.setAmountCount(dosageTotal);
+			pdDosage.setAmountMoney(moneyTotal.doubleValue());
+			pdDosage.setDosageDate(DateUtils.getNowDate());
+
 			if (!validFlag) {//数据校验没通过
 				vo.setCode("-200");
 				vo.setData(json);
@@ -152,7 +165,8 @@ public class PdDosageService extends CrudService<PdDosageDao, PdDosage> {
 			} else {
 				//是否收费
 				if (MinaGlobalConstants.IS_CHARGE.equals(pdDosage.getChargeFlag())) {//收费
-					for(PdDosageDetail pdd : afterDealList){
+					List<PdDosageDetail> chargeList = new ArrayList<>();
+					for(PdDosageDetail pdd : tempArray){
 						PdStockLog prodLog1 = new PdStockLog();
 						prodLog1.setBatchNo(pdd.getBatchNo());
 						prodLog1.setProductBarCode(pdd.getProdBarcode());
@@ -169,27 +183,52 @@ public class PdDosageService extends CrudService<PdDosageDao, PdDosage> {
 						//调取收费接口
 						//收费的产品才执行收费
 						if("1".equals(pdd.getIsCharges())){
-							JSONObject result = AxisUtils.exeCharge(pdd.getChargeCode(), pdd.getProdNo(), String.valueOf(pdd.getDosageCount()),
-									pdDosage.getInHospitalNo(), "0", oprtPeople, oprtDate, "",chargeToken,pdDosage.getOperativeNumber());
-							System.out.println("################收费接口返回值："+result);
-							if ("-200".equals(result.get("code"))) {
-								throw new RuntimeException("执行HIS收费接口失败！");
+							//筛选收费产品
+							chargeList.add(pdd);
+//							JSONObject result = AxisUtils.exeCharge(pdd.getChargeCode(), pdd.getProdNo(), String.valueOf(pdd.getDosageCount()),
+//									pdDosage.getInHospitalNo(), "0", oprtPeople, oprtDate, "",chargeToken,pdDosage.getOperativeNumber());
+//							System.out.println("################收费接口返回值："+result);
+//							if ("-200".equals(result.get("code"))) {
+//								throw new RuntimeException("执行HIS收费接口失败！");
+//							}
+						}
+					}
+					JSONObject result = HisApiUtils.exeCharge(pdDosage,chargeList);
+					if(result == null || result.getJSONArray("data") == null || result.getJSONArray("data").size() <= 0){
+						logger.error("HIS返回数据为空，请重新计费或联系管理员！！");
+						throw new RuntimeException("HIS返回数据为空，请重新计费或联系管理员！！");
+					}
+
+					if(!MinaGlobalConstants.SUCCESS.equals(result.getString("statusCode"))){
+						logger.error("执行HIS收费接口失败！HIS返回："+result.getString("msg"));
+						throw new RuntimeException("执行HIS收费接口失败！HIS返回："+result.getString("msg"));
+					}
+
+					JSONArray array = result.getJSONArray("data");
+					for(int k = 0; k < array.size(); k++){
+						JSONObject obj = array.getJSONObject(k);   // 遍历 jsonarray 数组，把每一个对象转成 json 对象
+						String prodNo = obj.getString("prodNo");//产品编码
+						String visitNo = obj.getString("vaa07");//就诊流水号
+						String hisChargeId = obj.getString("vai01");//计费单据id
+						String hisChargeItemId = obj.getString("vaj01");//计费单据明细id (退费用)
+						for(PdDosageDetail pdd : tempArray){
+							if(pdd.getProdNo().equals(prodNo)){
+								pdd.setHisChargeId(hisChargeId);
+								pdd.setHisChargeItemId(hisChargeItemId);
 							}
 						}
 					}
 				}
 			}
 			
-			if(!tempArray.isEmpty())
+			if(!tempArray.isEmpty()){
 				System.out.println("################修改状态：");
 				pdDosageDetailDao.batchInsert(tempArray);
-			if(!logList.isEmpty())
+			}
+			if(!logList.isEmpty()){
 				pdStockLogDao.batchInsert(logList);
+			}
 			//保存用量
-			pdDosage.setDosageBy(UserUtils.getUser().getId());
-			pdDosage.setAmountCount(dosageTotal);
-			pdDosage.setAmountMoney(moneyTotal.doubleValue());
-			pdDosage.setDosageDate(DateUtils.getNowDate());
 			super.save(pdDosage);
 			//扣减当前库房的库存
 			pdProductStockTotalService.updateUseStock(UserUtils.getUser().getStoreroomId(), afterDealList);

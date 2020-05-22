@@ -6,6 +6,8 @@ package com.thinkgem.hys.pd.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSONArray;
+import com.thinkgem.hys.utils.HisApiUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,6 +33,8 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
+
+import java.util.List;
 
 /**
  * 器械用量Controller
@@ -189,7 +193,9 @@ public class PdDosageController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "getBaseInfoByInHospital")
 	public JSONObject getBaseInfoByInHospital(@RequestParam(value="inHospital",required=true)String inHospital,String operativeNumber) {
-		JSONObject result = AxisUtils.getBaseInfoByInHospital(inHospital,operativeNumber);
+
+		JSONObject result = HisApiUtils.queryHisPatientInfo(inHospital);
+
 		return result;
 	}
 }

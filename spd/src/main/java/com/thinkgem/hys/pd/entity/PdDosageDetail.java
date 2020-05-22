@@ -41,6 +41,9 @@ public class PdDosageDetail extends DataEntity<PdDosageDetail> {
 	
 	//查询条件控制变量
 	private String cancleCharge;
+
+	private String hisChargeId;
+	private String hisChargeItemId;
 	
 	private List<PdDosageDetail> detailList;
 	
@@ -50,6 +53,22 @@ public class PdDosageDetail extends DataEntity<PdDosageDetail> {
 
 	public PdDosageDetail(String id){
 		super(id);
+	}
+
+	public String getHisChargeId() {
+		return hisChargeId;
+	}
+
+	public void setHisChargeId(String hisChargeId) {
+		this.hisChargeId = hisChargeId;
+	}
+
+	public String getHisChargeItemId() {
+		return hisChargeItemId;
+	}
+
+	public void setHisChargeItemId(String hisChargeItemId) {
+		this.hisChargeItemId = hisChargeItemId;
 	}
 
 	@Length(min=0, max=64, message="用量单号长度必须介于 0 和 64 之间")

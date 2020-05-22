@@ -26,7 +26,14 @@ public interface PdDosageDetailDao extends CrudDao<PdDosageDetail> {
 	 * 批量更新收费产品
 	 */
 	public int updateIsCharge(HashMap<String,String> map);
-	
+
+	/**
+	 * 更新HIS计费ID
+	 * @param pdDosageDetail
+	 * @return
+	 */
+	public int updateHisChargeId(PdDosageDetail pdDosageDetail);
+
 	/**
 	 * 批量更新可退数量
 	 * @param list

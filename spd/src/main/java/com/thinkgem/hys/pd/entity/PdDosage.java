@@ -39,6 +39,7 @@ public class PdDosage extends DataEntity<PdDosage> {
 	private String sqrtDoctor;		// 开方医生
 	private String sqrtDoctorId;	//开方医生ID
 	private String inHospitalNo;	//住院号
+	private String visitNo; //就诊流水号
 	private String displayFlag;//是否有his接口标识
 	private String isCharge;//产品是否计费标识
 	//-temp
@@ -80,6 +81,14 @@ public class PdDosage extends DataEntity<PdDosage> {
 
 	public void setPower(String power) {
 		this.power = power;
+	}
+
+	public String getVisitNo() {
+		return visitNo;
+	}
+
+	public void setVisitNo(String visitNo) {
+		this.visitNo = visitNo;
 	}
 
 	@Length(min=0, max=64, message="用量单号长度必须介于 0 和 64 之间")

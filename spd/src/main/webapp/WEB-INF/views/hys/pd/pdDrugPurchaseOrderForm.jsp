@@ -191,7 +191,7 @@
 			$("td[id^='finalMoney']").each(function(i,v){
 				alltotal += parseInt($(this).text());
 			});
-			$('.total_money').html(alltotal.toFixed(2)); */
+			$('.total_money').html(alltotal.toFixed(4)); */
 			return false;
 		});
 	</script>

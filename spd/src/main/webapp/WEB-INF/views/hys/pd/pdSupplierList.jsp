@@ -46,7 +46,7 @@
 					<form:options items="${fns:findSupplierList() }" itemLabel="nameAndpinyin" itemValue="supplierName" htmlEscape="false"/>
 				</form:select>
 				<input id="btnSubmit" onclick="return page();" class="hcy-btn hcy-search" style="height:inherit;line-height:1.5 ;" type="submit" value="查询"/>
-				<input class="hcy-btn hcy-btn-primary"" type="button" style="height:inherit;line-height:1.5 ;" onclick="batchDelete()" value="批量删除"/>
+				<input class="hcy-btn hcy-btn-primary" type="button" style="height:inherit;line-height:1.5 ;" onclick="batchDelete()" value="批量删除"/>
 			</form:form>
 		</div>
 		<sys:message content="${message}"/>

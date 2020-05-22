@@ -18,19 +18,19 @@
             <h5>${context}</h5><br/>
             <div id="input_div">
                 <input id="chargeCodeInp" autocomplete="off" type="text" placeholder="请输入HIS收费项目代码"
-                       style="padding:0 0 0 5px;margin:0;height:30px;border-radius:2px;width:220px;"
-                       onkeyup="javascript:this.value=this.value.replace(/，/ig,',');"/>
+                       style="padding:0 0 0 5px;margin:0;height:30px;border-radius:2px;width:220px;"/>
                 <br/>
-                <span style="color: red">若有多个，请以英文逗号","隔开</span>
+                <%--onkeyup="javascript:this.value=this.value.replace(/，/ig,',');"--%>
+                <%--<span style="color: red">若有多个，请以英文逗号","隔开</span>--%>
             </div>
-            <div id="select_div">
-                <select id="chargeCodeSel" multiple="multiple" placeholder="请选择HIS收费项目代码"
-                        style="padding:0 0 0 5px;margin:0 auto;height:30px;border-radius:2px;width:220px;" >
-                    <c:forEach items="${hisChargeCodeList}" var="item">
-                        <option value="${item}">${item}</option>
-                    </c:forEach>
-                </select>
-            </div>
+            <%--<div id="select_div">--%>
+                <%--<select id="chargeCodeSel" multiple="multiple" placeholder="请选择HIS收费项目代码"--%>
+                        <%--style="padding:0 0 0 5px;margin:0 auto;height:30px;border-radius:2px;width:220px;" >--%>
+                    <%--<c:forEach items="${hisChargeCodeList}" var="item">--%>
+                        <%--<option value="${item}">${item}</option>--%>
+                    <%--</c:forEach>--%>
+                <%--</select>--%>
+            <%--</div>--%>
         </div>
     <%--</form:form>--%>
 </div>
@@ -57,7 +57,7 @@
             // his 接口
             chargeCode = $("#chargeCodeSel").val();
         }
-        return chargeCode;
+        return chargeCode.trim();
     }
 </script>
 </body>

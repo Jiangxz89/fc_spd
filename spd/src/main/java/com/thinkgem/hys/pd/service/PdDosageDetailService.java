@@ -3,12 +3,14 @@
  */
 package com.thinkgem.hys.pd.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.thinkgem.hys.pd.constants.MinaGlobalConstants;
 import com.thinkgem.hys.pd.dao.*;
 import com.thinkgem.hys.pd.entity.*;
 import com.thinkgem.hys.utils.AxisUtils;
 import com.thinkgem.hys.utils.CommonUtils;
+import com.thinkgem.hys.utils.HisApiUtils;
 import com.thinkgem.hys.utils.MD5Utils;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
@@ -43,6 +45,8 @@ public class PdDosageDetailService extends CrudService<PdDosageDetailDao, PdDosa
 	private PdDosagertDao pdDosagertDao;
 	@Autowired
 	private PdStockLogDao pdStockLogDao;
+	@Autowired
+	private PdDosageService pdDosageService;
 
 
 	public PdDosageDetail get(String id) {
@@ -87,24 +91,52 @@ public class PdDosageDetailService extends CrudService<PdDosageDetailDao, PdDosa
 		List<PdDosageDetail> pdDosageDetail = dao.findPdDosageDetailByIds(map);
 		if (pdDosageDetail != null && pdDosageDetail.size() > 0) {
 			String token = MD5Utils.getToken();
-			String oprtPeople = UserUtils.getUser().getHisUserNo();
+			String oprtPeople = "";//UserUtils.getUser().getHisUserNo();
 			String oprtDate = DateUtils.formatDate(DateUtils.getNowDate(), "yyyy-MM-dd HH:mm:ss");
 			String inHospitalNo = "";
 			PdDosage pdo = pdDosageDao.get(dosageNo);
 			if (pdo != null)
 				inHospitalNo = pdo.getInHospitalNo();
-			if (MinaGlobalConstants.IS_CHARGE.equals(isCharge)){
+			if (MinaGlobalConstants.IS_CHARGE.equals(isCharge)){ // 收费
+
+				List<PdDosageDetail> chargeList = new ArrayList<>();
+
 				for (PdDosageDetail pd : pdDosageDetail) {
 					if("1".equals(pd.getIsCharges())){
-						JSONObject result = AxisUtils.exeCharge(pd.getChargeCode(), pd.getProdNo(), String.valueOf(pd.getDosageCount()),
-								inHospitalNo, "1", oprtPeople, oprtDate, "", token,pdo.getOperativeNumber());
-					if ("-200".equals(result.get("code"))) {
-						throw new RuntimeException("执行HIS收费接口失败！(补计费)");
-					}
-						System.out.println("执行收费了");
+						chargeList.add(pd);
 					}
 				}
-			}else if(MinaGlobalConstants.IS_CHARGE_2.equals(isCharge)){
+
+				JSONObject result = HisApiUtils.exeCharge(pdo,chargeList);
+				if(result == null || result.getJSONArray("data") == null || result.getJSONArray("data").size() <= 0){
+					logger.error("HIS返回数据为空，请重新计费或联系管理员！！");
+					throw new RuntimeException("HIS返回数据为空，请重新计费或联系管理员！！");
+				}
+
+				if(!MinaGlobalConstants.SUCCESS.equals(result.getString("statusCode"))){
+					logger.error("执行HIS收费接口失败！HIS返回："+result.getString("msg"));
+					throw new RuntimeException("执行HIS收费接口失败！HIS返回："+result.getString("msg"));
+				}
+
+				JSONArray array = result.getJSONArray("data");
+				for(int k = 0; k < array.size(); k++){
+					JSONObject obj = array.getJSONObject(k);   // 遍历 jsonarray 数组，把每一个对象转成 json 对象
+					String prodNo = obj.getString("prodNo");//产品编码
+					String visitNo = obj.getString("vaa07");//就诊流水号
+					String hisChargeId = obj.getString("vai01");//计费单据id
+					String hisChargeItemId = obj.getString("vaj01");//计费单据明细id (退费用)
+					for(PdDosageDetail pdd : pdDosageDetail){
+						if(pdd.getProdNo().equals(prodNo)){
+							PdDosageDetail update = new PdDosageDetail();
+							update.setHisChargeId(hisChargeId);
+							update.setHisChargeItemId(hisChargeItemId);
+							update.setId(pdd.getId());
+							update.setUpdateDate(DateUtils.getNowDate());
+							dao.updateHisChargeId(update); // 更新HIS计费ID
+						}
+					}
+				}
+			}else if(MinaGlobalConstants.IS_CHARGE_2.equals(isCharge)){ //取消收费
 				//退回库存生成用量退回单
 				savePdDosagert(pdDosageDetail,inHospitalNo);
 				for (PdDosageDetail pd : pdDosageDetail) {
@@ -118,7 +150,7 @@ public class PdDosageDetailService extends CrudService<PdDosageDetailDao, PdDosa
 						System.out.println("执行退费了");
 					}
 				}
-			}else if(MinaGlobalConstants.IS_CHARGE_3.equals(isCharge)){
+			}else if(MinaGlobalConstants.IS_CHARGE_3.equals(isCharge)){//退回库存
 				//只做库存扣减
 				savePdDosagert(pdDosageDetail,inHospitalNo);
 			}

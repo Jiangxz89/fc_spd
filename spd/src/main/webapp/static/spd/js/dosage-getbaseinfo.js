@@ -17,58 +17,61 @@ $(function(){
 	//拼接html
 	function appendHtml(json){
         var patientDetailInfoHtml = "";
-        if(json.手术编号){
-            $("#operativeNumberHInput").val(json.手术编号);
+        if(json.operNo){
+            $("#operativeNumberHInput").val(json.operNo);
         }
-        if(json.手术名称){
-            $("#operativeName").val(json.手术名称);
+        if(json.projectName){
+            $("#operativeName").val(json.projectName);
         }
-        if(json.住院标识){
-            if(json.住院标识=='1'){
+        if(json.vaa07){
+            $("#operativeNumberInput").val(json.vaa07);
+        }
+        if(json.type){
+            if(json.type=='1'){
                 $("#zyType").val('是');
-                 document.getElementsByName('chargeFlag')[0].checked=true;
+                 // document.getElementsByName('chargeFlag')[0].checked=true;
             }else{
                 $("#zyType").val('否');
-                document.getElementsByName('chargeFlag')[0].disabled=true;
-                document.getElementsByName('chargeFlag')[0].checked=false;
+                // document.getElementsByName('chargeFlag')[0].disabled=true;
+                // document.getElementsByName('chargeFlag')[0].checked=false;
             }
         }
-        if(json.住院号){
-            $("#inHospitalNoHInput").val(json.住院号);
+        if(json.hitaionNo){
+            $("#inHospitalNoHInput").val(json.hitaionNo);
         }
-        if(json.姓名){
-            $("#patientInfo").val(json.姓名);
-            patientDetailInfoHtml+="姓名:"+json.姓名+" ";
+        if(json.patientName){
+            $("#patientInfo").val(json.patientName);
+            patientDetailInfoHtml+="姓名:"+json.patientName+" ";
         }
-        if(json.所属科室){
-            $("#exeDeptName").val(json.所属科室);
+        if(json.blngName){
+            $("#exeDeptName").val(json.blngName);
         }
-        if(json.所属科室编码){
-            $("#exeDeptId").val(json.所属科室编码);
+        if(json.blngNo){
+            $("#exeDeptId").val(json.blngNo);
         }
-        if(json.所属病区){
-            $("#subordinateWardIn").val(json.所属病区);
+        if(json.blngDptmName){
+            $("#subordinateWardIn").val(json.blngDptmName);
         }
-        if(json.所属病区编码){
-            $("#subordinateWardIdIn").val(json.所属病区编码);
+        if(json.blngDptmNo){
+            $("#subordinateWardIdIn").val(json.blngDptmNo);
         }
-        if(json.申请医生姓名){
-            $("#sqrtDoctor").val(json.申请医生姓名);
+        if(json.doctorName){
+            $("#sqrtDoctor").val(json.doctorName);
         }
-        if(json.门诊号){
-            $("#outpatientNumber").val(json.门诊号);
+        if(json.outpatCode){
+            $("#outpatientNumber").val(json.outpatCode);
         }
-        if(json.手术科室){
-            $("#oprDeptName").val(json.所属科室);
+        if(json.departName){
+            $("#oprDeptName").val(json.departName);
         }
-        if(json.性别){
-            patientDetailInfoHtml+="性别:"+json.性别+" ";
+        if(json.sex){
+            patientDetailInfoHtml+="性别:"+json.sex+" ";
         }
-        if(json.床位号){
-            patientDetailInfoHtml+="床位号:"+json.床位号+" ";
+        if(json.bedCode){
+            patientDetailInfoHtml+="床位号:"+json.bedCode+" ";
         }
-        if(json.登记日期){
-            patientDetailInfoHtml+="登记日期:"+json.登记日期+" ";
+        if(json.createDate){
+            patientDetailInfoHtml+="登记日期:"+json.createDate+" ";
         }
         $("#patientDetailInfo").text(patientDetailInfoHtml);
 	}
@@ -98,7 +101,7 @@ $(function(){
             data:{'inHospital':inHospital,'operativeNumber':operativeNumber},
             dataType:'json',
             success:function(data){
-                if (data && '0' ==data.code ) {
+                if (data && '0' ==data.statusCode ) {
                     var jsonData = data.data;
                     if(jsonData){
                         if(jsonData.length==1){
@@ -110,24 +113,25 @@ $(function(){
                             for(var i = "0";i<jsonData.length;i++){
                                 var json =jsonData[i];
                                 html+="<tr  style='cursor:pointer'>";
-                                html+="<td><input type='radio' name='subBox'  data-op-number='"+json.手术编号+"'/></td>";
-                                html+="<td>"+json.手术编号+"</td>";
-                                html+="<td>"+json.手术名称+"</td>";
-                                html+="<td>"+json.所属病区+"</td>";
-                                html+="<td>"+json.所属科室+"</td>";
-                                html+="<td>"+json.手术科室+"</td>";
-                                html+="<td>"+json.门诊号+"</td>";
-                                html+="<td>"+json.申请医生姓名+"</td>";
-                                html+="<td>"+json.登记日期+"</td>";
+                                html+="<td><input type='radio' name='subBox'  data-op-number='"+json.vaa07+"'/></td>";
+                                html+="<td>"+json.patientName+"</td>";
+                                html+="<td>"+json.hitaionNo+"</td>";
+                                html+="<td>"+json.blngDptmName+"</td>";
+                                html+="<td>"+json.blngName+"</td>";
+                                html+="<td>"+json.departName+"</td>";
+                                html+="<td>"+json.bedCode+"</td>";
+                                html+="<td>"+json.outpatCode+"</td>";
+                                html+="<td>"+json.doctorName+"</td>";
+                                html+="<td>"+json.createDate+"</td>";
                                 html+="</tr>";
-                                jsonStr[json.手术编号] = i;
+                                jsonStr[json.vaa07] = i;
                             }
                             $("#tdodyID").empty().append(html);
                             layer.open({
                                 type:1,
-                                title:"选择哪次手术",
+                                title:"选择哪次住院",
                                 content:$(".addHighBox"),
-                                area:["500px","300px"],
+                                area:["900px","300px"],
                                 shade: [0.8, '#393D49'],
                                 btn:["确定","取消"],
                                 yes:function(index,layero) {
@@ -168,9 +172,9 @@ $(function(){
        // getBaseInfo('1', '', '');
         //getBaseInfo('2', '', '');
         //getBaseInfo('3', '', '');
-		initHtml("1","")// TODO 测试代码
-		initHtml("2","")// TODO 测试代码
-		initHtml("3","")// TODO 测试代码
+		// initHtml("1","")// TODO 测试代码
+		// initHtml("2","")// TODO 测试代码
+		// initHtml("3","")// TODO 测试代码
     }else{
         $("#chargingSelect").hide();
         $("#chargingSelect").find('input').attr("disabled",true);
