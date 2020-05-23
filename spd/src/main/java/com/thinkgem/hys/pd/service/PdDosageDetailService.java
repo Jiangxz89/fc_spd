@@ -139,17 +139,22 @@ public class PdDosageDetailService extends CrudService<PdDosageDetailDao, PdDosa
 			}else if(MinaGlobalConstants.IS_CHARGE_2.equals(isCharge)){ //取消收费
 				//退回库存生成用量退回单
 				savePdDosagert(pdDosageDetail,inHospitalNo);
+
+				List<PdDosageDetail> chargeList = new ArrayList<>();
+
 				for (PdDosageDetail pd : pdDosageDetail) {
 					//取消收费并且把库存退回
 					if("1".equals(pd.getIsCharges())){
-						JSONObject result = AxisUtils.exeRefund(pd.getChargeCode(),pd.getProdNo(), String.valueOf(pd.getDosageCount()),
-								inHospitalNo, "0", oprtPeople, oprtDate, "", token,pdo.getOperativeNumber());
-					if ("-200".equals(result.get("code"))) {
-						throw new RuntimeException("执行HIS退费接口失败！");
-					}
-						System.out.println("执行退费了");
+						chargeList.add(pd);
 					}
 				}
+
+				JSONObject result = HisApiUtils.exeRefund(pdo,chargeList);
+				if(!MinaGlobalConstants.SUCCESS.equals(result.getString("statusCode"))){
+					logger.error("执行HIS退费接口失败！HIS返回："+result.getString("msg"));
+					throw new RuntimeException("执行HIS退费接口失败！HIS返回："+result.getString("msg"));
+				}
+
 			}else if(MinaGlobalConstants.IS_CHARGE_3.equals(isCharge)){//退回库存
 				//只做库存扣减
 				savePdDosagert(pdDosageDetail,inHospitalNo);

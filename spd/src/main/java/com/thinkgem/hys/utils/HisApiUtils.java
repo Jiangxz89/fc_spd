@@ -31,22 +31,31 @@ public class HisApiUtils {
     private static String HIS_DEFAULT_NAME_SPACE = "";
     private static String HIS_CHARGE_CODE_URL = ""; // his收费代码
     private static String HIS_PATIENT_URL = "";     // his病人
-    private static String HIS_CHARGE_URL = "";      // his收/退费
+    private static String HIS_CHARGE_URL = "";      // his收费
+    private static String HIS_REFUND_URL = "";      // his退费
 
     static {
         HIS_DEFAULT_NAME_SPACE = Global.getConfig("HIS_DEFAULT_NAME_SPACE");
         HIS_CHARGE_CODE_URL = Global.getConfig("HIS_CHARGE_CODE_URL");
         HIS_PATIENT_URL = Global.getConfig("HIS_PATIENT_URL");
         HIS_CHARGE_URL = Global.getConfig("HIS_CHARGE_URL");
+        HIS_REFUND_URL = Global.getConfig("HIS_REFUND_URL");
     }
 
     private static Logger logger = Logger.getLogger(HisApiUtils.class);
 
+    /**
+     * 收费接口
+     * @param pdDosage
+     * @param dosageDetailList
+     * @return
+     */
     public static JSONObject exeCharge(PdDosage pdDosage,List<PdDosageDetail> dosageDetailList){
         JSONObject returnJson = new JSONObject();
         if(pdDosage == null || StringUtils.isBlank(pdDosage.getVisitNo()) || CollectionUtils.isEmpty(dosageDetailList)){
             returnJson.put("statusCode", "-200");
             returnJson.put("msg", "参数异常");
+            logger.error("HIS计费失败，参数异常");
             return returnJson;
         }
 
@@ -72,11 +81,13 @@ public class HisApiUtils {
 //          returnJson = HttpUtil.httpPost(HIS_DEFAULT_NAME_SPACE + HIS_CHARGE_URL, requestJson.toJSONString());
             returnJson = getTestChargeJson(pdDosage,dosageDetailList);
 
-            if (!MinaGlobalConstants.SUCCESS.equals(returnJson.get("code"))) {
+            if (!MinaGlobalConstants.SUCCESS.equals(returnJson.getString("code"))) {
+                logger.error("HIS计费失败，返回msg:"+returnJson.getString("msg"));
                 returnJson.put("statusCode", "-200");
                 returnJson.put("msg","计费失败，请重新计费或联系管理员！");
             }else{
                 returnJson.put("statusCode", MinaGlobalConstants.SUCCESS);
+                logger.info("HIS计费成功");
             }
 
         } catch (JSONException ee) {
@@ -86,12 +97,68 @@ public class HisApiUtils {
             logger.error("******调用HIS收费接口JSON转换返回信息出现错误！******");
         }
 
-//        {"vaa07":"116326","vak08":"65","bce02b":"9909",
-//    "Item":[{"bby01":"143","vaj25":"1","vaj38":"5","bck01d":"39","prodNo":"0001"},
-//            {"bby01":"4294","vaj25":"1","vaj38":"60","bck01d":"39","prodNo":"0002"}]}
+        return returnJson;
+    }
+
+    /**
+     * 退费接口
+     * @param pdDosage
+     * @param dosageDetailList
+     * @return
+     */
+    public static JSONObject exeRefund(PdDosage pdDosage,List<PdDosageDetail> dosageDetailList){
+        JSONObject returnJson = new JSONObject();
+        if(pdDosage == null || StringUtils.isBlank(pdDosage.getVisitNo()) || CollectionUtils.isEmpty(dosageDetailList)){
+            returnJson.put("statusCode", "-200");
+            returnJson.put("msg", "参数异常");
+            logger.error("HIS退费失败，参数异常");
+            return returnJson;
+        }
+
+        try{
+            JSONArray array = new JSONArray();
+            for(PdDosageDetail detail : dosageDetailList){
+                JSONObject item = new JSONObject();
+                item.put("vaj01",detail.getHisChargeItemId());
+                item.put("bby01",detail.getChargeCode());
+                item.put("vaj25",detail.getDosageCount());
+                item.put("vaj38",detail.getAmountMoney());
+                item.put("bck01d",pdDosage.getExeDeptId());
+                array.add(item);
+            }
+
+            JSONObject requestJson = new JSONObject();
+            requestJson.put("vaa07",pdDosage.getVisitNo());
+            requestJson.put("vak08",pdDosage.getAmountMoney());
+            requestJson.put("bce02b", UserUtils.getUser().getName());
+            requestJson.put("vai01", dosageDetailList.get(0).getHisChargeId());
+            requestJson.put("Item", array);
+
+            // TODO
+//          returnJson = HttpUtil.httpPost(HIS_DEFAULT_NAME_SPACE + HIS_REFUND_URL, requestJson.toJSONString());
+            returnJson = getTestRefundJson(pdDosage,dosageDetailList);
+
+            if (!MinaGlobalConstants.SUCCESS.equals(returnJson.getString("code"))) {
+                logger.error("HIS退费失败，返回msg:"+returnJson.getString("msg"));
+                returnJson.put("statusCode", "-200");
+                returnJson.put("msg","退费失败，请重新计费或联系管理员！");
+            }else{
+                returnJson.put("statusCode", MinaGlobalConstants.SUCCESS);
+            }
+
+        } catch (JSONException ee) {
+            ee.printStackTrace();
+            returnJson.put("statusCode", "-200");
+            returnJson.put("msg","调用HIS退费接口JSON转换返回信息出现错误！");
+            logger.error("******调用HIS退费接口JSON转换返回信息出现错误！******");
+        }
+
+
+        JSONObject requestJson = new JSONObject();
 
         return returnJson;
     }
+
 
     /**
      * 查询HIS项目收费代码
@@ -133,7 +200,8 @@ public class HisApiUtils {
 //            returnJson = HttpUtil.httpPost(HIS_DEFAULT_NAME_SPACE + HIS_PATIENT_URL, requestJson.toJSONString());
             returnJson = getTestPatientJson(); // 测试数据
 
-            if (!MinaGlobalConstants.SUCCESS.equals(returnJson.get("code"))) {
+            if (!MinaGlobalConstants.SUCCESS.equals(returnJson.getString("code"))) {
+                logger.error("HIS查询病人信息失败，返回msg:"+returnJson.getString("msg"));
                 returnJson.put("statusCode", "-200");
                 returnJson.put("msg","查询失败，未找到记录");
             }else{
@@ -144,7 +212,7 @@ public class HisApiUtils {
             ee.printStackTrace();
             returnJson.put("statusCode", "-200");
             returnJson.put("msg","调用HIS根据住院号查询病人信息接口JSON转换返回信息出现错误！");
-            logger.info("******调用HIS根据住院号查询病人信息接口JSON转换返回信息出现错误！******");
+            logger.error("******调用HIS根据住院号查询病人信息接口JSON转换返回信息出现错误！******");
         }
         return returnJson;
     }
@@ -174,12 +242,25 @@ public class HisApiUtils {
     }
 
     /**
+     * 退费测试
+     * @param pdDosage
+     * @param dosageDetailList
+     * @return
+     */
+    public static JSONObject getTestRefundJson(PdDosage pdDosage,List<PdDosageDetail> dosageDetailList){
+
+        JSONObject json = new JSONObject();
+        json.put("code","0");
+        json.put("msg","成功");
+        return json;
+    }
+
+
+    /**
      * 收费代码测试
      * @return
      */
     public static JSONObject getTestChargeCodeJson(){
-//        {"code":"0","msg":"成功","data": [
-//            {"SFCODE":"3","SFNO":"90103","SFNAME":"CT增强"}]}
         List<HisChargeCode> data = new ArrayList<>();
         HisChargeCode entity1 = new HisChargeCode();
         entity1.setSFCODE("111111");
@@ -204,12 +285,6 @@ public class HisApiUtils {
      * @return
      */
     public static JSONObject getTestPatientJson(){
-//        {"code":"0","msg":"成功","data": [
-//        {"vaa07":"116326","operNo":"","blngDptmNo":"01000424","blngDptmName":"妇产二科病区",
-//        "blngNo":"040004","blngName":"妇产科","type":"1","projectName":"","departName":"",
-//        "createDate":"2018-11-01 10:12:28","doctorCode":"9216","doctorName":"熊清文",
-//        "outpatCode":"","sex":"女","patientName":"陈婧","hitaionNo":"201814572","bedCode":"09"}
-//        ]}
         JSONArray jsonArray = new JSONArray();
         JSONObject hisPatient = new JSONObject();
         hisPatient.put("vaa07","116326");                   //His患者就诊流水号

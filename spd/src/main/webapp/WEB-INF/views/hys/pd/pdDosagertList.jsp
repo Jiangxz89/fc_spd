@@ -22,9 +22,9 @@
 	<div class="right-main-box"> 
 		<div class="btnBox">
 			<h4>用量退回</h4>
-			<c:if test="${fns:getUser().storeroomId !=null}">
-				<shiro:hasPermission name="pd:pdDosagert:edit"><a class="hcy-btn hcy-btn-primary" href="${ctx}/pd/pdDosagert/form">新增用量退回</a></shiro:hasPermission>
-			</c:if>
+			<%--<c:if test="${fns:getUser().storeroomId !=null}">--%>
+				<%--<shiro:hasPermission name="pd:pdDosagert:edit"><a class="hcy-btn hcy-btn-primary" href="${ctx}/pd/pdDosagert/form">新增用量退回</a></shiro:hasPermission>--%>
+			<%--</c:if>--%>
 		</div>
 		<div class="searchBox">
 			<form:form id="searchForm" modelAttribute="pdDosagert" action="${ctx}/pd/pdDosagert/list" method="post" class="breadcrumb form-search">
