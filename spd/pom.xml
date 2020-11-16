@@ -38,7 +38,7 @@
         <jackson.version>2.2.3</jackson.version>
         <fastjson_version>1.2.6</fastjson_version>
         <fastjson.version>1.2.47</fastjson.version>
-        <xstream.version>1.4.7</xstream.version>
+        <xstream.version>1.4.13-java7</xstream.version>
         <guava.version>17.0</guava.version>
         <dozer.version>5.5.1</dozer.version>
         <poi.version>3.9</poi.version>
